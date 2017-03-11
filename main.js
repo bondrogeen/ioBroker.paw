@@ -2,7 +2,8 @@
 
 // you have to require the utils module and call adapter function
 var utils =    require(__dirname + '/lib/utils'); // Get common adapter utils
-var adapter = utils.adapter('hilink');
+var adapter = utils.adapter('paw');
+var http = require('http');
 
 adapter.on('unload', function (callback) {
     try {
@@ -112,7 +113,7 @@ adapter.on('message', function (obj) {
 });
 
 adapter.on('ready', function () {
-    //main();
+    main();
 });
 
 function setHilink (setid, response ) {
@@ -131,6 +132,23 @@ function setHilink (setid, response ) {
         });
         adapter.setState(setid+'.' + key, {val: val, ack: true});
     }
+}
+
+function getpaw(setid, response ) {
+    http.get('http://192.168.1.71:8080/get.xhtml', (res) = > {
+        var body = [];
+    res.on('data', function (chunk) {
+        body.push(chunk);
+    }).on('end', function () {
+        body = Buffer.concat(body).toString();
+        adapter.log.info('body'+body);
+    });
+    res.resume();
+    }).
+    on('error', (e) = > {
+        //console.log(`error: ${e.message}`);
+    });
+
 }
 
 function timeStatus() {
@@ -160,5 +178,6 @@ function main() {
     adapter.log.info('config settime: ' + adapter.config.settime);
     adapter.log.info('config setTest: ' + adapter.config.setTest);
 
-    adapter.subscribeStates('smscount.LocalUnread');
+    //adapter.subscribeStates('smscount.LocalUnread');
 }
+
