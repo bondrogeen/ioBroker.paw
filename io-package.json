@@ -1,0 +1,41 @@
+{
+    "common": {
+        "name":                     "paw",
+        "version":                  "0.0.1",
+	    "news": {
+			"0.5.0": {
+			  "en": "beta version",
+			  "de": "Betaversion",
+			  "ru": "Бета версия"
+			},
+			"0.0.1": {
+			  "en": "initial adapter",
+			  "de": "Initiale Version",
+			  "ru": "Первоначальный адаптер"
+			}
+		},
+        "title":                    "Javascript/Node.js based paw adapter",
+        "desc":                     {
+				 "en": "ioBroker paw Adapter",
+				 "de": "ioBroker Paw Adapter",
+				 "ru": "ioBroker Paw драйвер как образец"
+		},
+        "platform":                 "Javascript/Node.js",
+        "mode":                     "daemon",
+        "icon":                     "paw.png",
+        "enabled":                  false,
+		"extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.paw/master/admin/paw.png",
+		"keywords":                 ["paw", "vis", "GUI", "graphical", "scada"],
+        "readme":                   "https://github.com/ioBroker/ioBroker.paw/blob/master/README.md",
+		"loglevel":                 "info",
+        "type":                     "common adapters",
+        "restartAdapters":          ["vis"]
+    },
+    "native": {
+        "test1": true,
+        "test2": 42
+    },
+    "objects": [
+
+    ]
+}
