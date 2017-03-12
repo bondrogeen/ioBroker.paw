@@ -163,7 +163,7 @@ function parsedata(name,data,path) {
         if(data.info) setdata (name+'.info', data.info );
         if(typeof data.gps ==='object') setdata (name+'.gps', data.gps );
     }
-    adapter.log.info("data: " + data);
+    //adapter.log.info("data: " + data);
 
 }
 
