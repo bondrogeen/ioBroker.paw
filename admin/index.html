@@ -15,7 +15,7 @@
 
 <style>
     .table_header {
-        background-color: blue;
+        background-color: yellow;
         color: white;
     }
     .ip {
@@ -27,14 +27,14 @@
 <script type="text/javascript">
     var devices = [];
     systemDictionary = {
-        "PING adapter settings": {"en": "PING adapter settings", "de": "PING Adapter-Einstellungen", "ru": "Настройки драйвера PING"},
-        "Ping settings":         {"en": "Ping settings",         "de": "PING Einstellungen",         "ru": "Настройки PING"},
-        "Ping addresses":        {"en": "IP addresses to ping",  "de": "IP Adresse für Monitoring",  "ru": "Список IP адресов для мониторинга"},
-        "Interval[ms]:":         {"en": "Ping interval[ms]",     "de": "Ping Intervall[ms]",         "ru": "Интервал опроса[мс]:"},
+        "Paw adapter settings": {"en": "Paw adapter settings", "de": "Paw Adapter-Einstellungen", "ru": "Настройки драйвера Paw"},
+        "Settings":         {"en": "Settings",         "de": "Einstellungen",         "ru": "Настройки"},
+        "Ping addresses":        {"en": "IP addresses",  "de": "IP Adresse",  "ru": "Список IP адресов"},
+        "Interval[ms]:":         {"en": "interval[ms]",     "de": "Intervall[ms]",         "ru": "Интервал опроса[мс]:"},
         "Room":                  {"en": "Room",                  "de": "Raum",                       "ru": "Комната"},
         "Name":                  {"en": "Name",                  "de": "Name",                       "ru": "Имя"},
         "IP Address":            {"en": "IP Address",            "de": "IP Adresse",                 "ru": "IP Адрес"},
-        "port":            {"en": "Port",            "de": "Port",                 "ru": "Port"}
+        "port":            {"en": "Port",            "de": "Port",                 "ru": "Порт"}
     };
 
     function setValue(id, value, onChange) {
@@ -118,11 +118,11 @@
 <div id="adapter-container">
 
     <table><tr>
-        <td><img src="ping.png" width="64" height="64"></td>
-        <td style="padding-top: 20px;padding-left: 10px"><h3 class="translate">PING adapter settings</h3></td>
+        <td><img src="paw.png" width="64" height="64"></td>
+        <td style="padding-top: 20px;padding-left: 10px"><h3 class="translate">Paw adapter settings</h3></td>
     </tr></table>
 
-    <h4 class="translate">Ping settings</h4>
+    <h4 class="translate">Settings</h4>
     <table>
         <tr><td class="translate">Interval[ms]:</td><td><input class="value number" id="interval" type="input" size="6"/></td></tr>
     </table>

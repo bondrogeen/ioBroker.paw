@@ -194,11 +194,22 @@ function getdata(ip,port,path) {
 
 
 function main() {
+
+    if (!adapter.config.devices.length) {
+        adapter.log.warn('No one IP configured');
+        adapter.stop();
+        return;
+    }
+
+    if (adapter.config.interval < 5000) adapter.config.interval = 5000;
+
+
     adapter.log.info('config getip: ' + adapter.config.getip);
     adapter.log.info('config trafficInfo: ' + adapter.config.trafficInfo);
     adapter.log.info('config settime: ' + adapter.config.settime);
     adapter.log.info('config setTest: ' + adapter.config.setTest);
-
+    adapter.log.info('config devices: ' +JSON.stringify(adapter.config.devices));
+    adapter.log.info('config: ' +adapter.config.interval);
     //adapter.subscribeStates('smscount.LocalUnread');
 }
 
