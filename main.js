@@ -191,13 +191,14 @@ function getdata(name,ip,port,path,callback) {
 
     req.on('error', (e) => {
         adapter.log.warn(`problem with request: ${e.message}`);
-});
+    });
 
     req.write('');
     req.end();
 }
 
 function time_paw() {
+    //adapter.log.info('start: ');
 
     for (var i = 0; i < adapter.config.devices.length; i++) {
         var name = adapter.config.devices[i].name
@@ -206,7 +207,7 @@ function time_paw() {
 
         if(name!=''&&ip!=''&&port!=''){
             getdata(name,ip,port,'/get.xhtml')
-            //adapter.log.info('devices: ' +JSON.stringify(adapter.config.devices[i]));
+
         }
     }
 
@@ -221,7 +222,10 @@ function main() {
         return;
     }
 
+    //adapter.config.interval = Number(adapter.config.interval);
+
     if (adapter.config.interval < 5000) adapter.config.interval = 5000;
+
     setInterval(time_paw, Number(adapter.config.interval));
 
     adapter.log.info('config devices: ' +JSON.stringify(adapter.config.devices));
