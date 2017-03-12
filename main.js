@@ -118,7 +118,8 @@ adapter.on('message', function (obj) {
 
 adapter.on('ready', function () {
     main();
-    getdata('192.168.1.71','8080','/get.xhtml');
+    //getdata('dev1','192.168.1.71','8080','/get.xhtml');
+    //getdata('dev','192.168.1.69','8080','/get.xhtml');
 });
 
 function setdata (setid, response ) {
@@ -143,31 +144,31 @@ function setdata (setid, response ) {
 
 
 
-function parsedata(data,path) {
+function parsedata(name,data,path) {
 
     if(path=='/get.xhtml'){
         if(data.sensors) {
             delete data.sensors.info
-            setdata ('sensors', data.sensors );
+            setdata (name+'.sensors', data.sensors );
         }
-        if(data.wifi) setdata ('wifi', data.wifi );
-        if(data.battery) setdata ('battery', data.battery );
-        if(data.cpu) setdata ('cpu', data.cpu );
-        if(data.audio_volume.info) setdata ('audio_volume.info', data.audio_volume.info );
+        if(data.wifi) setdata (name+'.wifi', data.wifi );
+        if(data.battery) setdata (name+'.battery', data.battery );
+        if(data.cpu) setdata (name+'.cpu', data.cpu );
+        if(data.audio_volume.info) setdata (name+'.audio_volume.info', data.audio_volume.info );
         if(data.audio_volume) {
             delete data.audio_volume.info
-            setdata ('audio_volume', data.audio_volume );
+            setdata (name+'.audio_volume', data.audio_volume );
         }
-        if(data.memory) setdata ('memory', data.memory );
-        if(data.info) setdata ('info', data.info );
-        if(typeof data.gps ==='object') setdata ('gps', data.gps );
+        if(data.memory) setdata (name+'.memory', data.memory );
+        if(data.info) setdata (name+'.info', data.info );
+        if(typeof data.gps ==='object') setdata (name+'.gps', data.gps );
     }
     adapter.log.info("data: " + data);
 
 }
 
 
-function getdata(ip,port,path) {
+function getdata(name,ip,port,path,callback) {
     var options = {
         host: ip,
         port: port,
@@ -184,13 +185,32 @@ function getdata(ip,port,path) {
         });
         res.on( "end", function( data ) {
             data = JSON.parse(buffer);
-            parsedata (data,path);
+            parsedata (name,data,path);
         });
     });
+
+    req.on('error', (e) => {
+        adapter.log.warn(`problem with request: ${e.message}`);
+});
+
     req.write('');
     req.end();
 }
 
+function time_paw() {
+
+    for (var i = 0; i < adapter.config.devices.length; i++) {
+        var name = adapter.config.devices[i].name
+        var ip = adapter.config.devices[i].ip
+        var port = adapter.config.devices[i].port
+
+        if(name!=''&&ip!=''&&port!=''){
+            getdata(name,ip,port,'/get.xhtml')
+            //adapter.log.info('devices: ' +JSON.stringify(adapter.config.devices[i]));
+        }
+    }
+
+}
 
 
 function main() {
@@ -202,14 +222,11 @@ function main() {
     }
 
     if (adapter.config.interval < 5000) adapter.config.interval = 5000;
+    setInterval(time_paw, Number(adapter.config.interval));
 
-
-    adapter.log.info('config getip: ' + adapter.config.getip);
-    adapter.log.info('config trafficInfo: ' + adapter.config.trafficInfo);
-    adapter.log.info('config settime: ' + adapter.config.settime);
-    adapter.log.info('config setTest: ' + adapter.config.setTest);
     adapter.log.info('config devices: ' +JSON.stringify(adapter.config.devices));
     adapter.log.info('config: ' +adapter.config.interval);
-    //adapter.subscribeStates('smscount.LocalUnread');
+    adapter.log.info('length: ' +adapter.config.devices.length);
+
 }
 
