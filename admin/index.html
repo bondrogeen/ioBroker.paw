@@ -33,7 +33,8 @@
         "Interval[ms]:":         {"en": "Ping interval[ms]",     "de": "Ping Intervall[ms]",         "ru": "Интервал опроса[мс]:"},
         "Room":                  {"en": "Room",                  "de": "Raum",                       "ru": "Комната"},
         "Name":                  {"en": "Name",                  "de": "Name",                       "ru": "Имя"},
-        "IP Address":            {"en": "IP Address",            "de": "IP Adresse",                 "ru": "IP Адрес"}
+        "IP Address":            {"en": "IP Address",            "de": "IP Adresse",                 "ru": "IP Адрес"},
+        "port":            {"en": "Port",            "de": "Port",                 "ru": "Port"}
     };
 
     function setValue(id, value, onChange) {
@@ -81,7 +82,7 @@
             $('#pager-devices').hide();
             values2table('values', devices, onChange);
         } else {
-            editTable('devices', ['name', 'ip', 'room'], devices, 350);
+            editTable('devices', ['name', 'ip', 'room','port'], devices, 350);
             $('#values').hide();
         }
 
@@ -106,7 +107,7 @@
         if (typeof table2values === 'function') {
             obj.devices = table2values('values');
         } else {
-            obj.devices = getTableResult('devices', ['name', 'ip', 'room']);
+            obj.devices = getTableResult('devices', ['name', 'ip', 'room','port']);
         }
 
         callback(obj);
@@ -136,6 +137,7 @@
                     <th data-name="_index"   style="width: 40px" class="translate"></th>
                     <th data-name="name"     style="width: 30%" class="translate">Name</th>
                     <th data-name="ip"       class="translate">IP Address</th>
+                    <th data-name="port"       class="translate">port</th>
                     <th data-name="room" data-type="select"    class="translate">Room</th>
                     <th data-buttons="delete" style="width: 40px"></th>
                 </tr>
