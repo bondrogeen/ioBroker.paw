@@ -118,12 +118,13 @@ adapter.on('message', function (obj) {
 
 adapter.on('ready', function () {
     main();
-    getpaw();
+    getdata('192.168.1.71','8080','/get.xhtml');
 });
 
-function setHilink (setid, response ) {
-    for (var key in response.response) {
-        var val = response.response[key];
+function setdata (setid, response ) {
+    for (var key in response) {
+        var val = response[key];
+        //adapter.log.info("key: " + response[key]);
         adapter.setObject(setid+'.'+key, {
             type: 'state',
             common: {
@@ -140,28 +141,54 @@ function setHilink (setid, response ) {
 }
 
 
-function getpaw() {
 
-    var options = {
-        host: '192.168.1.71',
-        port: 8080,
-        path: '/get.xhtml',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+
+function parsedata(data,path) {
+
+    if(path=='/get.xhtml'){
+        if(data.sensors) {
+            delete data.sensors.info
+            setdata ('sensors', data.sensors );
         }
+        if(data.wifi) setdata ('wifi', data.wifi );
+        if(data.battery) setdata ('battery', data.battery );
+        if(data.cpu) setdata ('cpu', data.cpu );
+        if(data.audio_volume.info) setdata ('audio_volume.info', data.audio_volume.info );
+        if(data.audio_volume) {
+            delete data.audio_volume.info
+            setdata ('audio_volume', data.audio_volume );
+        }
+        if(data.memory) setdata ('memory', data.memory );
+        if(data.info) setdata ('info', data.info );
+        if(typeof data.gps ==='object') setdata ('gps', data.gps );
+    }
+    adapter.log.info("data: " + data);
+
+}
+
+
+function getdata(ip,port,path) {
+    var options = {
+        host: ip,
+        port: port,
+        path: path,
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded',}
     };
 
     var req = http.request(options, function(res) {
         res.setEncoding('utf8');
-        res.on('data', function (chunk) {
-            adapter.log.info("body: " + chunk);
+        var buffer = "";
+        res.on( "data", function( data ) {
+            buffer = buffer + data;
+        });
+        res.on( "end", function( data ) {
+            data = JSON.parse(buffer);
+            parsedata (data,path);
         });
     });
-
-    req.write('{"string": "Hello, World"}');
+    req.write('');
     req.end();
-
 }
 
 
