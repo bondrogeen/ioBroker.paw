@@ -146,29 +146,42 @@ function setdata (setid, response ) {
 
 function parsedata(name,data,path) {
 
-    if(path=='/get.xhtml'){
-        if(data.sensors) {
-            delete data.sensors.info
-            setdata (name+'.sensors', data.sensors );
-        }
-        if(data.wifi) setdata (name+'.wifi', data.wifi );
-        if(data.battery) setdata (name+'.battery', data.battery );
-        if(data.cpu) setdata (name+'.cpu', data.cpu );
-        if(data.audio_volume.info) setdata (name+'.audio_volume.info', data.audio_volume.info );
-        if(data.audio_volume) {
-            delete data.audio_volume.info
-            setdata (name+'.audio_volume', data.audio_volume );
-        }
-        if(data.memory) setdata (name+'.memory', data.memory );
-        if(data.info) setdata (name+'.info', data.info );
-        if(typeof data.gps ==='object') setdata (name+'.gps', data.gps );
+
+    try {
+        data = JSON.parse(data);
+    } catch (exception) {
+        adapter.log.info('start: '+data);
+        data = null;
     }
-    //adapter.log.info("data: " + data);
+
+    if (data) {
+        adapter.log.info('ok: '+name);
+        if(path=='/get.xhtml'){
+            if(data.sensors) {
+                delete data.sensors.info
+                setdata (name+'.sensors', data.sensors );
+            }
+            if(data.wifi) setdata (name+'.wifi', data.wifi );
+            if(data.battery) setdata (name+'.battery', data.battery );
+            if(data.cpu) setdata (name+'.cpu', data.cpu );
+            if(data.audio_volume.info) setdata (name+'.audio_volume.info', data.audio_volume.info );
+            if(data.audio_volume) {
+                delete data.audio_volume.info
+                setdata (name+'.audio_volume', data.audio_volume );
+            }
+            if(data.memory) setdata (name+'.memory', data.memory );
+            if(data.info) setdata (name+'.info', data.info );
+            if(typeof data.gps ==='object') setdata (name+'.gps', data.gps );
+        }
+    }
+
+
+
 
 }
 
 
-function getdata(name,ip,port,path,callback) {
+function getdata(name,ip,port,path) {
     var options = {
         host: ip,
         port: port,
@@ -184,8 +197,7 @@ function getdata(name,ip,port,path,callback) {
             buffer = buffer + data;
         });
         res.on( "end", function( data ) {
-            data = JSON.parse(buffer);
-            parsedata (name,data,path);
+            if(buffer!='')parsedata (name,buffer,path);
         });
     });
 
