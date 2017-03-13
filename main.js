@@ -203,10 +203,30 @@ function getdata(name,ip,port,path) {
 
     req.on('error', (e) => {
         adapter.log.warn(`problem with request: ${e.message}`);
+        adapter.log.warn('e:'+ip);
+        find(ignorelist, ip)
+        if(find(ignorelist, ip)===-1){
+            adapter.log.warn('ignorelist:'+ip);
+            ignorelist[ignorelist.length] = ip;
+        }
+
     });
 
     req.write('');
     req.end();
+}
+var ignorelist = [];
+
+function find(array, value) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i] == value) return i;
+    }
+    return -1;
+}
+
+function time_reset_ignore(){
+    adapter.log.warn('ignorelist reset:');
+    ignorelist = [];
 }
 
 function time_paw() {
@@ -218,7 +238,10 @@ function time_paw() {
         var port = adapter.config.devices[i].port
 
         if(name!=''&&ip!=''&&port!=''){
-            getdata(name,ip,port,'/get.xhtml')
+            if(find(ignorelist, ip)===-1){
+                getdata(name,ip,port,'/get.xhtml')
+            }
+
 
         }
     }
@@ -239,6 +262,7 @@ function main() {
     if (adapter.config.interval < 5000) adapter.config.interval = 5000;
 
     setInterval(time_paw, Number(adapter.config.interval));
+    setInterval(time_reset_ignore, 60000);
 
     adapter.log.info('config devices: ' +JSON.stringify(adapter.config.devices));
     adapter.log.info('config: ' +adapter.config.interval);
