@@ -85,8 +85,6 @@ adapter.on('message', function (obj) {
 
 adapter.on('ready', function () {
     main();
-    //getdata('dev1','192.168.1.71','8080','/get.xhtml');
-    //getdata('dev','192.168.1.69','8080','/get.xhtml');
 });
 
 function setdata (setid, response ) {
