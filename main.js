@@ -51,69 +51,23 @@ adapter.on('stateChange', function (id, state) {
 
 // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
 adapter.on('message', function (obj) {
-    /*
-     adapter.log.info('send obg '+JSON.stringify(obj));
-     if (typeof obj == 'object' && obj.message) {
-     if (obj.command == 'control') {
-     //adapter.log.info(JSON.stringify(obj.message));
-     if (obj.message == 'conect' || obj.message == 'desconect' || obj.message == 'reboot') {
-     //adapter.log.info(JSON.stringify(obj.message));
-     hilink.control(obj.message, function (response) {
-     if (obj.callback)adapter.sendTo(obj.from, obj.command, response, obj.callback);
-     });
-     }
-     } else if (obj.command == 'send') {
-     if (obj.message.phone && obj.message.message) {
-     hilink.send(obj.message.phone, obj.message.message, function (response) {
-     if (obj.callback)adapter.sendTo(obj.from, obj.command, response, obj.callback);
-     });
-     }
-     } else if (obj.command == 'read') {
-     if (obj.message == 'outbox' || obj.message == 'inbox' || obj.message == 'new') {
-     if (obj.message == 'inbox') {
-     hilink.listInbox(function (response) {
-     if (obj.callback)adapter.sendTo(obj.from, obj.command, response, obj.callback);
-     });
-     } else if (obj.message == 'outbox') {
-     hilink.listOutbox(function (response) {
-     if (obj.callback)adapter.sendTo(obj.from, obj.command, response, obj.callback);
-     });
-     } else if (obj.message == 'new') {
-     hilink.listNew(function (response) {
-     if (obj.callback)adapter.sendTo(obj.from, obj.command, response, obj.callback);
-     });
-     }
-     }
-     } else if (obj.command == 'ussd') {
-     if (obj.message) {
-     hilink.ussd(obj.message,function(response){
-     if (obj.callback)adapter.sendTo(obj.from, obj.command, response, obj.callback);
-     });
-     }
-     }else if (obj.command == 'delete'){
-     if (obj.message) {
-     hilink.delete(obj.message,function(response){
-     if (obj.callback)adapter.sendTo(obj.from, obj.command, response, obj.callback);
-     });
-     }
-     }else if (obj.command == 'clear'){
-     if (obj.message=='inbox'||obj.message=='outbox') {
-     if(obj.message=='inbox') hilink.clearInbox();
-     if(obj.message=='outbox') hilink.clearOutbox();
-     }
-     }else if (obj.command == 'setRead'){
-     if (obj.message=='all'){
-     hilink.readAll(function(response ){
-     if (obj.callback)adapter.sendTo(obj.from, obj.command, response, obj.callback);
-     });
-     }else{
-     hilink.setRead(obj.message,function(response ){
-     if (obj.callback)adapter.sendTo(obj.from, obj.command, response, obj.callback);
-     });
-     }
-     }
-     }
-     */
+
+    adapter.log.info('send obg '+JSON.stringify(obj));
+
+    if (typeof obj == 'object' && obj.message) {
+        if (obj.command == 'say') {
+            //adapter.log.info(JSON.stringify(obj.message));
+            if (obj.message) {
+                adapter.log.info(JSON.stringify(obj.message));
+                adapter.log.info(JSON.stringify(obj.command));
+
+                // setdata('192.168.1.71','8080','/set.xhtml?send=say&text='+obj.message,function(response){
+                //     if (obj.callback)adapter.sendTo(obj.from, obj.command, response, obj.callback);
+                //})
+            }
+        }
+    }
+
 });
 
 adapter.on('ready', function () {
@@ -126,7 +80,6 @@ function setdata (setid, response ) {
     for (var key in response) {
         var val = response[key];
         //adapter.log.info("key: " + response[key]);
-
         adapter.setObject(setid+'.'+key, {
             type: 'state',
             common: {
@@ -139,7 +92,6 @@ function setdata (setid, response ) {
             native: {}
         });
         adapter.setState(setid+'.' + key, {val: val, ack: true});
-
     }
 }
 
@@ -176,14 +128,11 @@ function parsedata(name,data,path) {
             if(typeof data.gps ==='object') setdata (name+'.gps', data.gps );
         }
     }
-
-
-
-
 }
 
 
-function getdata(name,ip,port,path) {
+
+function getdata(name,ip,port,path,callback) {
     var options = {
         host: ip,
         port: port,
@@ -199,7 +148,15 @@ function getdata(name,ip,port,path) {
             buffer = buffer + data;
         });
         res.on( "end", function( data ) {
-            if(buffer!='')parsedata (name,buffer,path);
+            if(buffer!=''){
+                if(path=='/get.xhtml'){
+                    parsedata (name,buffer,path);
+                }else{
+                    callback(buffer);
+                }
+
+            }
+
         });
     });
 
