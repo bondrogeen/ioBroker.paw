@@ -4,6 +4,7 @@
 var utils =    require(__dirname + '/lib/utils'); // Get common adapter utils
 var adapter = utils.adapter('paw');
 var http = require('http');
+const querystring = require('querystring');
 
 adapter.on('unload', function (callback) {
     try {
@@ -51,19 +52,31 @@ adapter.on('stateChange', function (id, state) {
 
 // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
 adapter.on('message', function (obj) {
-
+    var postdata = {}
     adapter.log.info('send obg '+JSON.stringify(obj));
+    adapter.log.info(JSON.stringify(obj.message));
+    adapter.log.info(JSON.stringify(obj.command));
 
     if (typeof obj == 'object' && obj.message) {
-        if (obj.command == 'say') {
-            //adapter.log.info(JSON.stringify(obj.message));
+        if (obj.command) {
+            var text = obj.command.replace(/\s+/g,'') //убрать пробелы
+            var arr = text.split(','); //разбить на массив
             if (obj.message) {
-                adapter.log.info(JSON.stringify(obj.message));
-                adapter.log.info(JSON.stringify(obj.command));
 
-                // setdata('192.168.1.71','8080','/set.xhtml?send=say&text='+obj.message,function(response){
-                //     if (obj.callback)adapter.sendTo(obj.from, obj.command, response, obj.callback);
-                //})
+                for (var i = 0; i < adapter.config.devices.length; i++) {
+                    var name = adapter.config.devices[i].name
+                    var ip = adapter.config.devices[i].ip
+                    var port = adapter.config.devices[i].port
+                    if(name!=''&&ip!=''&&port!='') {
+                        if(arr=='all'||find(arr, name)!==-1||find(arr, ip)!==-1){ //поиск по имени и ip
+                            getdata(name, ip, port, '/set.xhtml', obj.message, function (response) {
+                                adapter.log.info('send:OK');
+                                if (obj.callback)adapter.sendTo(obj.from, obj.command, response, obj.callback);
+                            });
+
+                        }
+                    }
+                }
             }
         }
     }
@@ -100,7 +113,6 @@ function setdata (setid, response ) {
 
 function parsedata(name,data,path) {
 
-
     try {
         data = JSON.parse(data);
     } catch (exception) {
@@ -132,13 +144,19 @@ function parsedata(name,data,path) {
 
 
 
-function getdata(name,ip,port,path,callback) {
+function getdata(name,ip,port,path,setdata,callback) {
+
+    var setdata = querystring.stringify(setdata);
+
     var options = {
         host: ip,
         port: port,
         path: path,
         method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded',}
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(setdata)
+        }
     };
 
     var req = http.request(options, function(res) {
@@ -156,7 +174,6 @@ function getdata(name,ip,port,path,callback) {
                 }
 
             }
-
         });
     });
 
@@ -170,7 +187,7 @@ function getdata(name,ip,port,path,callback) {
 
     });
 
-    req.write('');
+    req.write(setdata);
     req.end();
 }
 
@@ -211,7 +228,7 @@ function time_paw() {
         if(name!=''&&ip!=''&&port!=''){
 
             if(find(ignorelist, ip)===-1){
-                getdata(name,ip,port,'/get.xhtml')
+                getdata(name,ip,port,'/get.xhtml','')
             }
         }
     }
@@ -220,10 +237,10 @@ function time_paw() {
 
 function main() {
 
-    if (!adapter.config.devices.length) {
+    if (!adapter.config.devices.length||!adapter.config.interval) {
         adapter.log.warn('No one IP configured');
         adapter.stop();
-        return;
+
     }
 
     //adapter.config.interval = Number(adapter.config.interval);
