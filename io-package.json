@@ -29,7 +29,8 @@
         "readme":                   "https://github.com/ioBroker/ioBroker.paw/blob/master/README.md",
 		"loglevel":                 "info",
         "type":                     "common adapters",
-        "restartAdapters":          ["vis"]
+        "restartAdapters":          ["vis"],
+        "messagebox": 	     	    true
     },
     "native": {
         "test1": true,

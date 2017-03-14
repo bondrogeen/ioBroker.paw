@@ -126,6 +126,7 @@ function setdata (setid, response ) {
     for (var key in response) {
         var val = response[key];
         //adapter.log.info("key: " + response[key]);
+
         adapter.setObject(setid+'.'+key, {
             type: 'state',
             common: {
@@ -138,6 +139,7 @@ function setdata (setid, response ) {
             native: {}
         });
         adapter.setState(setid+'.' + key, {val: val, ack: true});
+
     }
 }
 
@@ -150,7 +152,7 @@ function parsedata(name,data,path) {
     try {
         data = JSON.parse(data);
     } catch (exception) {
-        adapter.log.info('start: '+data);
+        adapter.log.info('parse_data_error: '+name);
         data = null;
     }
 
@@ -203,7 +205,6 @@ function getdata(name,ip,port,path) {
 
     req.on('error', (e) => {
         adapter.log.warn(`problem with request: ${e.message}`);
-        adapter.log.warn('e:'+ip);
         find(ignorelist, ip)
         if(find(ignorelist, ip)===-1){
             adapter.log.warn('ignorelist:'+ip);
@@ -215,9 +216,11 @@ function getdata(name,ip,port,path) {
     req.write('');
     req.end();
 }
+
 var ignorelist = [];
 
 function find(array, value) {
+
     for (var i = 0; i < array.length; i++) {
         if (array[i] == value) return i;
     }
@@ -225,8 +228,19 @@ function find(array, value) {
 }
 
 function time_reset_ignore(){
-    adapter.log.warn('ignorelist reset:');
+
+    //adapter.log.warn('ignorelist reset:');
     ignorelist = [];
+    for (var i = 0; i < adapter.config.devices.length; i++) {
+        var ip = adapter.config.devices[i].ip
+        var ign = adapter.config.devices[i].ign
+        if(ign===true||ign==="true"){
+            if(find(ignorelist, ip)===-1){
+                adapter.log.warn('ignorelist:'+ip);
+                ignorelist[ignorelist.length] = ip;
+            }
+        }
+    }
 }
 
 function time_paw() {
@@ -238,14 +252,12 @@ function time_paw() {
         var port = adapter.config.devices[i].port
 
         if(name!=''&&ip!=''&&port!=''){
+
             if(find(ignorelist, ip)===-1){
                 getdata(name,ip,port,'/get.xhtml')
             }
-
-
         }
     }
-
 }
 
 
@@ -262,11 +274,12 @@ function main() {
     if (adapter.config.interval < 5000) adapter.config.interval = 5000;
 
     setInterval(time_paw, Number(adapter.config.interval));
-    setInterval(time_reset_ignore, 60000);
+    setInterval(time_reset_ignore, 600000);
 
     adapter.log.info('config devices: ' +JSON.stringify(adapter.config.devices));
     adapter.log.info('config: ' +adapter.config.interval);
     adapter.log.info('length: ' +adapter.config.devices.length);
 
+    time_reset_ignore();
 }
 
