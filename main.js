@@ -49,42 +49,49 @@ adapter.on('stateChange', function (id, state) {
      }
      */
 });
-
+var res = [];
+var x=0;
 // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
 adapter.on('message', function (obj) {
-    var postdata = {}
-    adapter.log.info('send obg '+JSON.stringify(obj));
-    adapter.log.info(JSON.stringify(obj.message));
-    adapter.log.info(JSON.stringify(obj.command));
+
+    //adapter.log.info('send obg '+JSON.stringify(obj));
+    //adapter.log.info(JSON.stringify(obj.message));
+    //adapter.log.info(JSON.stringify(obj.command));
 
     if (typeof obj == 'object' && obj.message) {
         if (obj.command) {
+            x=0;
             var text = obj.command.replace(/\s+/g,'') //убрать пробелы
             var arr = text.split(','); //разбить на массив
             if (obj.message) {
-
-                for (var i = 0; i < adapter.config.devices.length; i++) {
+                for (var i = 0; i < adapter.config.devices.length; i++){
                     var name = adapter.config.devices[i].name
                     var ip = adapter.config.devices[i].ip
                     var port = adapter.config.devices[i].port
                     if(name!=''&&ip!=''&&port!='') {
                         if(arr=='all'||find(arr, name)!==-1||find(arr, ip)!==-1){ //поиск по имени и ip
-                            getdata(name, ip, port, '/set.xhtml', obj.message, function (response) {
-                                adapter.log.info('send:OK');
+                            getdata(name, ip, port, '/set.xhtml', obj.message, function (response,ip) {
+                                try {
+                                    response = JSON.parse(response);
+                                    response.ip = ip;
+
+                                } catch (exception) {
+                                    response = 'JSON.parse(response): error ';
+                                }
                                 if (obj.callback)adapter.sendTo(obj.from, obj.command, response, obj.callback);
                             });
-
                         }
                     }
                 }
             }
         }
     }
-
 });
 
 adapter.on('ready', function () {
     main();
+    //getdata('dev1','192.168.1.71','8080','/get.xhtml');
+    //getdata('dev','192.168.1.69','8080','/get.xhtml');
 });
 
 function setdata (setid, response ) {
@@ -168,7 +175,7 @@ function getdata(name,ip,port,path,setdata,callback) {
                 if(path=='/get.xhtml'){
                     parsedata (name,buffer,path);
                 }else{
-                    callback(buffer);
+                    callback(buffer,ip);
                 }
 
             }
@@ -177,11 +184,16 @@ function getdata(name,ip,port,path,setdata,callback) {
 
     req.on('error', (e) => {
         adapter.log.warn(`problem with request: ${e.message}`);
-        find(ignorelist, ip)
-        if(find(ignorelist, ip)===-1){
-            adapter.log.warn('ignorelist:'+ip);
-            ignorelist[ignorelist.length] = ip;
+        if(path=='/get.xhtml'){
+            find(ignorelist, ip)
+            if(find(ignorelist, ip)===-1){
+                adapter.log.warn('ignorelist:'+ip);
+                ignorelist[ignorelist.length] = ip;
+            }
+        }else{
+            callback(e,ip);
         }
+
 
     });
 
