@@ -24,32 +24,14 @@ adapter.on('objectChange', function (id, obj) {
 var sms={};
 // is called if a subscribed state changes
 adapter.on('stateChange', function (id, state) {
-    /*
-     if(sms.state_old==undefined) sms.state_old=0;
-     if(id==adapter.namespace +'.smscount.LocalUnread'){
-     if(state.val != sms.state_old&&state.val>sms.state_old&&state.val!='0'){
-     var count = Number(state.val )- sms.state_old
-     hilink.listNew(function (response) {
-     var res = {};
-     res.response = response.response[0]
-     delete res.response.Priority
-     delete res.response.SaveType
-     delete res.response.Sca
-     delete res.response.SmsType
-     delete res.response.Smstat
-     adapter.getState('last_sms.Date', function (err, state) {
-     if(state==null||state.val!=res.response.Date){
-     setHilink("last_sms",res);
-     adapter.log.info('res ' + JSON.stringify(res));
-     }
-     });
-     });
-     }
-     sms.state_old=state.val;
-     }
-     */
+    adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
+
 });
-var res = [];
+
+
+
+
+var res=[];
 var x=0;
 // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
 adapter.on('message', function (obj) {
@@ -60,10 +42,10 @@ adapter.on('message', function (obj) {
 
     if (typeof obj == 'object' && obj.message) {
         if (obj.command) {
-            x=0;
             var text = obj.command.replace(/\s+/g,'') //убрать пробелы
             var arr = text.split(','); //разбить на массив
             if (obj.message) {
+                var x=0;
                 for (var i = 0; i < adapter.config.devices.length; i++){
                     var name = adapter.config.devices[i].name
                     var ip = adapter.config.devices[i].ip
@@ -78,11 +60,20 @@ adapter.on('message', function (obj) {
                                 } catch (exception) {
                                     response = 'JSON.parse(response): error ';
                                 }
-                                if (obj.callback)adapter.sendTo(obj.from, obj.command, response, obj.callback);
+                                res[x]=response;
+                                x=x+1;
+                                if (obj.callback){
+                                    setTimeout(function () {
+                                        adapter.sendTo(obj.from, obj.command, res, obj.callback);
+                                        res=[];
+                                    },2000);
+
+                                }
                             });
                         }
                     }
                 }
+
             }
         }
     }
@@ -104,8 +95,8 @@ function setdata (setid, response ) {
                 name: key,
                 type: 'mixed',
                 role: 'indicator',
-                "read": "true",
-                "write": "false"
+                read: "true",
+                write: "false"
             },
             native: {}
         });
@@ -114,7 +105,21 @@ function setdata (setid, response ) {
 }
 
 
+function set_id (setid, name, val ) {
+    adapter.setObject(setid+'.'+name, {
+        type: 'state',
+        common: {
+            name: name,
+            type: 'mixed',
+            role: 'tts',
+            read: "true",
+            write: "true"
+        },
+        native: {}
+    });
+    adapter.setState(setid, {val: val, ack: true});
 
+}
 
 function parsedata(name,data,path) {
 
@@ -227,6 +232,19 @@ function time_reset_ignore(){
     }
 }
 
+function init(){
+    for (var i = 0; i < adapter.config.devices.length; i++) {
+        var name = adapter.config.devices[i].name
+        var ip = adapter.config.devices[i].ip
+        var port = adapter.config.devices[i].port
+
+        if(name!=''){
+            set_id (name+'.tts','resnonse',''  );
+            adapter.subscribeStates(name+'.tts.resnonse');
+        }
+    }
+}
+
 function time_paw() {
     //adapter.log.info('start: ');
 
@@ -265,5 +283,6 @@ function main() {
     adapter.log.info('length: ' +adapter.config.devices.length);
 
     time_reset_ignore();
+    init();
 }
 
