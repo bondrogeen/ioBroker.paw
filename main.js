@@ -22,10 +22,39 @@ adapter.on('objectChange', function (id, obj) {
 });
 
 var sms={};
+
+
 // is called if a subscribed state changes
 adapter.on('stateChange', function (id, state) {
-    adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
+    //adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
 
+    var arr_id = id.split('.'); //разбить на массив
+    //adapter.log.info(JSON.stringify(arr_id))
+    //adapter.log.info(id);
+    //adapter.log.info(adapter.namespace+'.'+arr_id[2]+'.tts.response');
+
+    if(id===adapter.namespace+'.'+arr_id[2]+'.tts.response'){
+
+        for (var i = 0; i < adapter.config.devices.length; i++) {
+            var name = adapter.config.devices[i].name
+            var ip = adapter.config.devices[i].ip
+            var port = adapter.config.devices[i].port
+            if (arr_id[2]==name) { //поиск по имени
+                getdata(name, ip, port, '/set.xhtml',{
+                    "send":"say",
+                    "text":state.val}, function (response, ip) {
+                    try {
+                        response = JSON.parse(response);
+                        response.ip = ip;
+
+                    } catch (exception) {
+                        response = 'JSON.parse(response): error ';
+                    }
+                    adapter.log.info(JSON.stringify(response));
+                });
+            }
+        }
+    }
 });
 
 
@@ -35,10 +64,6 @@ var res=[];
 var x=0;
 // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
 adapter.on('message', function (obj) {
-
-    //adapter.log.info('send obg '+JSON.stringify(obj));
-    //adapter.log.info(JSON.stringify(obj.message));
-    //adapter.log.info(JSON.stringify(obj.command));
 
     if (typeof obj == 'object' && obj.message) {
         if (obj.command) {
@@ -52,7 +77,7 @@ adapter.on('message', function (obj) {
                     var port = adapter.config.devices[i].port
                     if(name!=''&&ip!=''&&port!='') {
                         if(arr=='all'||find(arr, name)!==-1||find(arr, ip)!==-1){ //поиск по имени и ip
-                            getdata(name, ip, port, '/set.xhtml', obj.message, function (response,ip) {
+                            getdata(name, ip, port, '/set.xhtml', obj.message, function (response,ip){
                                 try {
                                     response = JSON.parse(response);
                                     response.ip = ip;
@@ -81,8 +106,6 @@ adapter.on('message', function (obj) {
 
 adapter.on('ready', function () {
     main();
-    //getdata('dev1','192.168.1.71','8080','/get.xhtml');
-    //getdata('dev','192.168.1.69','8080','/get.xhtml');
 });
 
 function setdata (setid, response ) {
@@ -239,8 +262,8 @@ function init(){
         var port = adapter.config.devices[i].port
 
         if(name!=''){
-            set_id (name+'.tts','resnonse',''  );
-            adapter.subscribeStates(name+'.tts.resnonse');
+            set_id (name+'.tts','response',''  );
+            adapter.subscribeStates(name+'.tts.response');
         }
     }
 }
