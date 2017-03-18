@@ -307,5 +307,23 @@ function main() {
 
     time_reset_ignore();
     init();
+
+    adapter.objects.getObjectView('system', 'instance',
+        {startkey: 'system.adapter.paw.', endkey: 'system.adapter.paw.\u9999'},
+        function (err, doc) {
+            if (doc && doc.rows) {
+                for (var i = 0; i < doc.rows.length; i++) {
+                    var id  = doc.rows[i].id;
+                    var obj = doc.rows[i].value;
+                    adapter.log.info('Found ' + id + ': ' + JSON.stringify(obj));
+                }
+                if (!doc.rows.length) console.log('No objects found.');
+            } else {
+                adapter.log.info('No objects found: ' + err);
+            }
+        });
+
+
 }
+
 
