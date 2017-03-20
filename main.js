@@ -39,7 +39,7 @@ adapter.on('stateChange', function (id, state) {
             var name = adapter.config.devices[i].name
             var ip = adapter.config.devices[i].ip
             var port = adapter.config.devices[i].port
-            if (arr_id[2]==name) { //поиск по имени
+            if (arr_id[2]==name&&state.val) { //поиск по имени
                 getdata(name, ip, port, '/set.xhtml',{
                     "send":"say",
                     "text":state.val}, function (response, ip) {
@@ -54,6 +54,28 @@ adapter.on('stateChange', function (id, state) {
                 });
             }
         }
+    }else if (id===adapter.namespace+'.all_device.tts_response'){
+        adapter.log.info(id);
+        adapter.log.info(state);
+        for (var i = 0; i < adapter.config.devices.length; i++) {
+            var name = adapter.config.devices[i].name
+            var ip = adapter.config.devices[i].ip
+            var port = adapter.config.devices[i].port
+            getdata(name, ip, port, '/set.xhtml',{
+                "send":"say",
+                "text":state.val}, function (response, ip) {
+                try {
+                    response = JSON.parse(response);
+                    response.ip = ip;
+
+                } catch (exception) {
+                    response = 'JSON.parse(response): error ';
+                }
+                adapter.log.info(JSON.stringify(response));
+            });
+
+        }
+
     }
 });
 
@@ -90,10 +112,10 @@ adapter.on('message', function (obj) {
                                 if (obj.callback){
                                     setTimeout(function () {
                                         adapter.sendTo(obj.from, obj.command, res, obj.callback);
-                                        res=[];
                                     },2000);
 
                                 }
+                                res=[];
                             });
                         }
                     }
@@ -140,7 +162,7 @@ function set_id (setid, name, val ) {
         },
         native: {}
     });
-    adapter.setState(setid, {val: val, ack: true});
+    adapter.setState(setid+'.'+name, {val: val, ack: true});
 
 }
 
@@ -262,10 +284,12 @@ function init(){
         var port = adapter.config.devices[i].port
 
         if(name!=''){
-            set_id (name+'.tts','response',''  );
+            set_id (name+'.tts','response','text'  );
             adapter.subscribeStates(name+'.tts.response');
         }
     }
+    set_id ('all_device','tts_response','text'  );
+    adapter.subscribeStates('all_device.tts_response');
 }
 
 function time_paw() {
@@ -289,7 +313,7 @@ function time_paw() {
 function main() {
 
     if (!adapter.config.devices.length||!adapter.config.interval) {
-        adapter.log.warn('No one IP configured');
+        adapter.log.warn('No one device configured');
         adapter.stop();
 
     }
@@ -316,6 +340,7 @@ function main() {
                     var id  = doc.rows[i].id;
                     var obj = doc.rows[i].value;
                     adapter.log.info('Found ' + id + ': ' + JSON.stringify(obj));
+                    //set_id ('all.test','response',JSON.stringify(obj)  );
                 }
                 if (!doc.rows.length) console.log('No objects found.');
             } else {
