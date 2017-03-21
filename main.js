@@ -26,7 +26,7 @@ var sms={};
 
 // is called if a subscribed state changes
 adapter.on('stateChange', function (id, state) {
-    //adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
+    adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
 
     var arr_id = id.split('.'); //разбить на массив
     //adapter.log.info(JSON.stringify(arr_id))
@@ -39,7 +39,12 @@ adapter.on('stateChange', function (id, state) {
             var name = adapter.config.devices[i].name
             var ip = adapter.config.devices[i].ip
             var port = adapter.config.devices[i].port
-            if (arr_id[2]==name&&state.val) { //поиск по имени
+            var time_start = adapter.config.devices[i].time_start
+            var time_end = adapter.config.devices[i].time_end
+            var date = new Date();
+            var start = false;
+            if(date.getHours()>=time_start&&date.getHours()<=time_end) start=true;  // Проверка времени оповещения
+            if (arr_id[2]==name&&start) { //поиск по имени
                 getdata(name, ip, port, '/set.xhtml',{
                     "send":"say",
                     "text":state.val}, function (response, ip) {
@@ -61,18 +66,26 @@ adapter.on('stateChange', function (id, state) {
             var name = adapter.config.devices[i].name
             var ip = adapter.config.devices[i].ip
             var port = adapter.config.devices[i].port
-            getdata(name, ip, port, '/set.xhtml',{
-                "send":"say",
-                "text":state.val}, function (response, ip) {
-                try {
-                    response = JSON.parse(response);
-                    response.ip = ip;
+            var time_start = adapter.config.devices[i].time_start
+            var time_end = adapter.config.devices[i].time_end
+            var date = new Date();
+            if(date.getHours()>=time_start&&date.getHours()<=time_end) { // Проверка времени оповещения
 
-                } catch (exception) {
-                    response = 'JSON.parse(response): error ';
-                }
-                adapter.log.info(JSON.stringify(response));
-            });
+                getdata(name, ip, port, '/set.xhtml', {
+                    "send": "say",
+                    "text": state.val
+                }, function (response, ip) {
+                    try {
+                        response = JSON.parse(response);
+                        response.ip = ip;
+
+                    } catch (exception) {
+                        response = 'JSON.parse(response): error ';
+                    }
+                    adapter.log.info(JSON.stringify(response));
+                });
+
+            }
 
         }
 
@@ -333,16 +346,18 @@ function main() {
     init();
 
     adapter.objects.getObjectView('system', 'instance',
-        {startkey: 'system.adapter.paw.', endkey: 'system.adapter.paw.\u9999'},
+        {startkey: 'system.adapter.text2command.', endkey: 'system.adapter.text2command.\u9999'},
         function (err, doc) {
             if (doc && doc.rows) {
                 for (var i = 0; i < doc.rows.length; i++) {
                     var id  = doc.rows[i].id;
                     var obj = doc.rows[i].value;
-                    adapter.log.info('Found ' + id + ': ' + JSON.stringify(obj));
-                    //set_id ('all.test','response',JSON.stringify(obj)  );
+                    var arr_sub = id.split('.');
+
+                    adapter.log.info('subscribe: '+arr_sub[2]+'.'+arr_sub[3]+'.response');
+                    adapter.subscribeForeignStates(arr_sub[2]+'.'+arr_sub[3]+'.response');
                 }
-                if (!doc.rows.length) console.log('No objects found.');
+                if (!doc.rows.length) adapter.log.info('No objects found.');
             } else {
                 adapter.log.info('No objects found: ' + err);
             }
