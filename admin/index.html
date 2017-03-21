@@ -108,7 +108,7 @@
         if (typeof table2values === 'function') {
             obj.devices = table2values('values');
         } else {
-            obj.devices = getTableResult('devices', ['name', 'ip', 'room','port']);
+            obj.devices = getTableResult('devices', ['name', 'ip', 'room','port','ign']);
         }
 
         callback(obj);
@@ -126,6 +126,8 @@
     <h4 class="translate">Settings</h4>
     <table>
         <tr><td class="translate">Interval[ms]:</td><td><input class="value number" id="interval" type="input" size="6"/></td></tr>
+        <tr><td class="translate">time_up</td><td><input class="value number" id="time_up" type="input" size="2"/></td></tr>
+        <tr><td class="translate">time_down</td><td><input class="value number" id="time_down" type="input" size="2"/></td></tr>
     </table>
     <h4 class="translate">Ping addresses</h4>
     <table id="devices"></table><div id="pager-devices"></div>

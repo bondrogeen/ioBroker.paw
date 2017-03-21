@@ -32,8 +32,10 @@ sendTo("paw.0",'192.168.1.71',{
 });
 
 /*
-Установка громкости от 0 до 15, максимальная громкость устанавливается системой, также проверяется чтобы не выходило за пределы установленных значений)
-mode=    может быть (STREAM_NOTIFICATION, STREAM_MUSIC ,STREAM_ALARM, STREAM_RING, STREAM_SYSTEM, STREAM_VOICE_CALL)  
+Установка громкости от 0 до 15, максимальная громкость устанавливается системой, 
+также проверяется чтобы не выходило за пределы установленных значений)
+mode=    может быть (STREAM_NOTIFICATION, STREAM_MUSIC ,STREAM_ALARM, 
+STREAM_RING, STREAM_SYSTEM, STREAM_VOICE_CALL)  
 если не указан то по умолчанию стоит STREAM_MUSIC
 */
 
@@ -123,8 +125,11 @@ sendTo("paw.0",'dev1',{send:  'endсall'});
 sendTo("paw.0",'dev1',{send:  'clipboard',text:'текст'});
 
 
+//Перезагрузка paw сервера 
+sendTo("paw.0",'dev1',{send:  'server',text:'restart'});
 
-
+//Остановка paw сервера
+sendTo("paw.0",'dev1',{send:  'server',text:'kill'});
 
 
 
