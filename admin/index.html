@@ -29,16 +29,17 @@
     systemDictionary = {
         "Paw adapter settings": {"en": "Paw adapter settings", "de": "Paw Adapter-Einstellungen", "ru": "Настройки драйвера Paw"},
         "Settings":         {"en": "Settings",         "de": "Einstellungen",         "ru": "Настройки"},
-        "Ping addresses":        {"en": "IP addresses",  "de": "IP Adresse",  "ru": "Список IP адресов"},
-        "Interval[ms]:":         {"en": "interval[ms]",     "de": "Intervall[ms]",         "ru": "Интервал опроса[мс]:"},
-        "Room":                  {"en": "Room",                  "de": "Raum",                       "ru": "Комната"},
-        "Name":                  {"en": "Name",                  "de": "Name",                       "ru": "Имя"},
-        "IP Address":            {"en": "IP Address",            "de": "IP Adresse",                 "ru": "IP Адрес"},
-        "port":            {"en": "Port",            "de": "Port",                 "ru": "Порт"},
-        "time_start":            {"en": "start",            "de": "start",                 "ru": "Начало"},
-        "time_end":            {"en": "end",            "de": "end",                 "ru": "Конец"},
-        "subscribe_apiai":            {"en": "subscribe apiai",    "de": "subscribe apiai",  "ru": "Подписаться  apiai"},
-        "ign":            {"en": "ignore",            "de": "ignore",                 "ru": "игнор"}
+        "Ping addresses":   {"en": "IP addresses",  "de": "IP Adresse",  "ru": "Список IP адресов"},
+        "Interval[ms]:":    {"en": "interval[ms]",     "de": "Intervall[ms]",         "ru": "Интервал опроса[мс]:"},
+        "Room":             {"en": "Room",                  "de": "Raum",                       "ru": "Комната"},
+        "Name":             {"en": "Name",                  "de": "Name",                       "ru": "Имя"},
+        "IP Address":       {"en": "IP Address",            "de": "IP Adresse",                 "ru": "IP Адрес"},
+        "port":             {"en": "Port",            "de": "Port",                 "ru": "Порт"},
+        "time_start":       {"en": "start",            "de": "start",                 "ru": "Начало"},
+        "time_end":         {"en": "end",            "de": "end",                 "ru": "Конец"},
+        "subscribe_apiai":  {"en": "subscribe apiai",    "de": "subscribe apiai",  "ru": "Подписаться  apiai"},
+        "subscribe_text2command":     {"en": "subscribe text2command", "de": "subscribe text2command",  "ru": "Подписаться  text2command"},
+        "ign":              {"en": "ignore",            "de": "ignore",                 "ru": "игнор"}
     };
 
     function setValue(id, value, onChange) {
@@ -129,8 +130,8 @@
     <h4 class="translate">Settings</h4>
     <table>
         <tr><td class="translate">Interval[ms]:</td><td><input class="value number" id="interval" type="input" size="6"/></td></tr>
-        <tr><td class="translate">subscribe_apiai</td><td><input class="value number" id="subscribe_apiai" data-type="checkbox"/></td></tr>
         <tr><td class="translate">subscribe_apiai</td><td><input class="value number" id="subscribe_apiai" type="checkbox"/></td></tr>
+        <tr><td class="translate">subscribe_text2command</td><td><input class="value number" id="text2command" type="checkbox"/></td></tr>
     </table>
     <h4 class="translate">Ping addresses</h4>
     <table id="devices"></table><div id="pager-devices"></div>

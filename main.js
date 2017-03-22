@@ -325,9 +325,9 @@ function time_paw() {
 
 function main() {
 
-    if (!adapter.config.devices.length||!adapter.config.interval) {
+    if (!adapter.config.devices.length || !adapter.config.interval) {
         adapter.log.warn('No one device configured');
-        adapter.stop();
+        return;
 
     }
 
@@ -338,31 +338,52 @@ function main() {
     setInterval(time_paw, Number(adapter.config.interval));
     setInterval(time_reset_ignore, 600000);
 
-    adapter.log.info('config devices: ' +JSON.stringify(adapter.config.devices));
-    adapter.log.info('config: ' +adapter.config.interval);
-    adapter.log.info('length: ' +adapter.config.devices.length);
+    adapter.log.info('config devices: ' + JSON.stringify(adapter.config.devices));
+    adapter.log.info('config: ' + adapter.config.interval);
+    adapter.log.info('length: ' + adapter.config.devices.length);
+
+    adapter.log.info('subscribe_apiai: ' + adapter.config.subscribe_apiai);
 
     time_reset_ignore();
     init();
-
-    adapter.objects.getObjectView('system', 'instance',
-        {startkey: 'system.adapter.text2command.', endkey: 'system.adapter.text2command.\u9999'},
-        function (err, doc) {
-            if (doc && doc.rows) {
-                for (var i = 0; i < doc.rows.length; i++) {
-                    var id  = doc.rows[i].id;
-                    var obj = doc.rows[i].value;
-                    var arr_sub = id.split('.');
-
-                    adapter.log.info('subscribe: '+arr_sub[2]+'.'+arr_sub[3]+'.response');
-                    adapter.subscribeForeignStates(arr_sub[2]+'.'+arr_sub[3]+'.response');
+    if(adapter.config.subscribe_text2command){
+        adapter.objects.getObjectView('system', 'instance',
+            {startkey: 'system.adapter.text2command.', endkey: 'system.adapter.text2command.\u9999'},
+            function (err, doc) {
+                if (doc && doc.rows) {
+                    for (var i = 0; i < doc.rows.length; i++) {
+                        var id = doc.rows[i].id;
+                        var obj = doc.rows[i].value;
+                        var arr_sub = id.split('.');
+                        adapter.log.info('subscribe: ' + arr_sub[2] + '.' + arr_sub[3] + '.response');
+                        adapter.subscribeForeignStates(arr_sub[2] + '.' + arr_sub[3] + '.response');
+                    }
+                    if (!doc.rows.length) adapter.log.info('No objects found.');
+                } else {
+                    adapter.log.info('No objects found: ' + err);
                 }
-                if (!doc.rows.length) adapter.log.info('No objects found.');
-            } else {
-                adapter.log.info('No objects found: ' + err);
-            }
-        });
+            });
+    }
 
+    if(adapter.config.subscribe_apiai){
+
+        adapter.objects.getObjectView('system', 'instance',
+            {startkey: 'system.adapter.apiai.', endkey: 'system.adapter.apiai.\u9999'},
+            function (err, doc) {
+                if (doc && doc.rows) {
+                    for (var i = 0; i < doc.rows.length; i++) {
+                        var id  = doc.rows[i].id;
+                        var obj = doc.rows[i].value;
+                        var arr_sub = id.split('.');
+                        adapter.log.info('subscribe: '+arr_sub[2]+'.'+arr_sub[3]+'.respons.speech');
+                        adapter.subscribeForeignStates(arr_sub[2]+'.'+arr_sub[3]+'.respons.speech');
+                    }
+                    if (!doc.rows.length) adapter.log.info('No objects found.');
+                } else {
+                    adapter.log.info('No objects found: ' + err);
+                }
+            });
+    }
 
 }
 
