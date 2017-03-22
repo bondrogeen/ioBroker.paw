@@ -59,7 +59,7 @@ adapter.on('stateChange', function (id, state) {
                 });
             }
         }
-    }else if (id===adapter.namespace+'.all_device.tts_response'){
+    }else if (id===adapter.namespace+'.all_device.tts_response'||find(subscribe, id)!==-1){
         adapter.log.info(id);
         adapter.log.info(state);
         for (var i = 0; i < adapter.config.devices.length; i++) {
@@ -265,6 +265,7 @@ function getdata(name,ip,port,path,setdata,callback) {
 }
 
 var ignorelist = [];
+var subscribe = [];
 
 function find(array, value) {
 
@@ -346,7 +347,7 @@ function main() {
 
     time_reset_ignore();
     init();
-    if(adapter.config.subscribe_text2command){
+    if(adapter.config.text2command){
         adapter.objects.getObjectView('system', 'instance',
             {startkey: 'system.adapter.text2command.', endkey: 'system.adapter.text2command.\u9999'},
             function (err, doc) {
@@ -357,6 +358,7 @@ function main() {
                         var arr_sub = id.split('.');
                         adapter.log.info('subscribe: ' + arr_sub[2] + '.' + arr_sub[3] + '.response');
                         adapter.subscribeForeignStates(arr_sub[2] + '.' + arr_sub[3] + '.response');
+                        subscribe[subscribe.length] = arr_sub[2] + '.' + arr_sub[3] + '.response';
                     }
                     if (!doc.rows.length) adapter.log.info('No objects found.');
                 } else {
@@ -365,7 +367,7 @@ function main() {
             });
     }
 
-    if(adapter.config.subscribe_apiai){
+    if(adapter.config.apiai){
 
         adapter.objects.getObjectView('system', 'instance',
             {startkey: 'system.adapter.apiai.', endkey: 'system.adapter.apiai.\u9999'},
@@ -377,6 +379,28 @@ function main() {
                         var arr_sub = id.split('.');
                         adapter.log.info('subscribe: '+arr_sub[2]+'.'+arr_sub[3]+'.respons.speech');
                         adapter.subscribeForeignStates(arr_sub[2]+'.'+arr_sub[3]+'.respons.speech');
+                        subscribe[subscribe.length] = arr_sub[2]+'.'+arr_sub[3]+'.respons.speech';
+                    }
+                    if (!doc.rows.length) adapter.log.info('No objects found.');
+                } else {
+                    adapter.log.info('No objects found: ' + err);
+                }
+            });
+    }
+
+    if(adapter.config.hilink){
+
+        adapter.objects.getObjectView('system', 'instance',
+            {startkey: 'system.adapter.hilink.', endkey: 'system.adapter.hilink.\u9999'},
+            function (err, doc) {
+                if (doc && doc.rows) {
+                    for (var i = 0; i < doc.rows.length; i++) {
+                        var id  = doc.rows[i].id;
+                        var obj = doc.rows[i].value;
+                        var arr_sub = id.split('.');
+                        adapter.log.info('subscribe: '+arr_sub[2]+'.'+arr_sub[3]+'.last_sms.Content');
+                        adapter.subscribeForeignStates(arr_sub[2]+'.'+arr_sub[3]+'.last_sms.Content');
+                        subscribe[subscribe.length] = arr_sub[2]+'.'+arr_sub[3]+'.last_sms.Content';
                     }
                     if (!doc.rows.length) adapter.log.info('No objects found.');
                 } else {
@@ -386,5 +410,4 @@ function main() {
     }
 
 }
-
 
