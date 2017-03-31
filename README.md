@@ -3,6 +3,30 @@
 =================
 
 
+Установка программы и настройка драйвера.
+ 
+Скачиваем и устанавливает приложение PAW Server for Android 
+https://play.google.com/store/apps/details?id=de.fun2code.android.pawserver
+Открываем приложение PAW Server for Android на устройстве.
+После инициализации нужно перенести в папку ..paw/html 
+файлы:
+
+call_log.xhtml	
+get.xhtml	
+set.xhtml
+sms_read.xhtml
+
+файлы брать тут https://github.com/bondrogeen/paw_json/tree/master/html
+Запускаем PAW Server for Android.
+
+Устанавливаем драйвер iobroke.paw c GitHub
+
+https://github.com/bondrogeen/iobroker.paw
+
+
+
+
+
 ```javascript
 /*
 dev1 - имя устройства, так же можно вводить IP устройства.
