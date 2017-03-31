@@ -45,18 +45,28 @@ adapter.on('stateChange', function (id, state) {
             var start = false;
             if(date.getHours()>=time_start&&date.getHours()<=time_end) start=true;  // Проверка времени оповещения
             if (arr_id[2]==name&&start) { //поиск по имени
-                getdata(name, ip, port, '/set.xhtml',{
-                    "send":"say",
-                    "text":state.val}, function (response, ip) {
-                    try {
-                        response = JSON.parse(response);
-                        response.ip = ip;
 
-                    } catch (exception) {
-                        response = 'JSON.parse(response): error ';
-                    }
-                    adapter.log.info(JSON.stringify(response));
-                });
+
+                if(typeof (bufer[name])!=='object'){
+                    bufer[name] = {};
+                }
+                bufer[name].ip = ip;
+                bufer[name].port = port;
+                bufer[name].name = name;
+                if(typeof (bufer[name].text)!=='object'){
+                    bufer[name].text=[]
+                }
+                if(typeof (bufer[name].start)=='undefined'){
+                    bufer[name].start=true
+                }
+
+
+                bufer[name].text.push(state.val);
+                if (bufer[name].start==true) {
+                    say_bufer(name);
+                }
+
+
             }
         }
     }else if (id===adapter.namespace+'.all_device.tts_response'||find(subscribe, id)!==-1){
@@ -71,19 +81,24 @@ adapter.on('stateChange', function (id, state) {
             var date = new Date();
             if(date.getHours()>=time_start&&date.getHours()<=time_end) { // Проверка времени оповещения
 
-                getdata(name, ip, port, '/set.xhtml', {
-                    "send": "say",
-                    "text": state.val
-                }, function (response, ip) {
-                    try {
-                        response = JSON.parse(response);
-                        response.ip = ip;
+                if(typeof (bufer[name])!=='object'){
+                    bufer[name] = {};
+                }
+                bufer[name].ip = ip;
+                bufer[name].port = port;
+                bufer[name].name = name;
+                if(typeof (bufer[name].text)!=='object'){
+                    bufer[name].text=[]
+                }
+                if(typeof (bufer[name].start)=='undefined'){
+                    bufer[name].start=true
+                }
 
-                    } catch (exception) {
-                        response = 'JSON.parse(response): error ';
-                    }
-                    adapter.log.info(JSON.stringify(response));
-                });
+
+                bufer[name].text.push(state.val);
+                if (bufer[name].start==true) {
+                    say_bufer(name);
+                }
 
             }
 
@@ -92,6 +107,35 @@ adapter.on('stateChange', function (id, state) {
     }
 });
 
+var bufer={};
+
+function say_bufer(name){
+
+    if(bufer[name].text.length!==0){
+        bufer[name].start = false;
+
+        getdata(name, bufer[name].ip, bufer[name].port, '/set.xhtml',{
+            "send":"say",
+            "text":bufer[name].text[0]}, function (response, ip) {
+            try {
+                response = JSON.parse(response);
+                response.ip = ip;
+
+            } catch (exception) {
+                response = 'JSON.parse(response): error ';
+            }
+            adapter.log.info(JSON.stringify(response));
+        });
+        var char = bufer[name].text[0].toString();
+        var num= char.length-char.replace(/\d/gm,'').length;
+        var str = char.length-num;
+        setTimeout(say_bufer, num*700+str*70+1000,name);
+        bufer[name].text.shift();
+    }else{
+        bufer[name].start = true;
+    }
+
+}
 
 
 
@@ -342,8 +386,6 @@ function main() {
     adapter.log.info('config devices: ' + JSON.stringify(adapter.config.devices));
     adapter.log.info('config: ' + adapter.config.interval);
     adapter.log.info('length: ' + adapter.config.devices.length);
-
-    adapter.log.info('subscribe_apiai: ' + adapter.config.subscribe_apiai);
 
     time_reset_ignore();
     init();
