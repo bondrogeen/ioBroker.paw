@@ -15,12 +15,12 @@ https://play.google.com/store/apps/details?id=de.fun2code.android.pawserver
 
 файлы:
 
-...
->call_log.xhtml 
->get.xhtml
->set.xhtml
->sms_read.xhtml
-... 
+
++ ul call_log.xhtml 
++ ul get.xhtml
++ ul set.xhtml
++ ul sms_read.xhtml
+
 
 файлы брать тут https://github.com/bondrogeen/paw_json/tree/master/html.
 
