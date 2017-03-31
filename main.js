@@ -233,7 +233,7 @@ function parsedata(name,data,path) {
     }
 
     if (data) {
-        adapter.log.info('ok: '+name);
+        //adapter.log.info('ok: '+name);
         if(path=='/get.xhtml'){
             if(data.sensors) {
                 delete data.sensors.info
