@@ -34,6 +34,9 @@ https://github.com/bondrogeen/iobroker.paw
 
 
 
+
+## Команды для javascript
+
 ```javascript
 /*
 dev1 - имя устройства, так же можно вводить IP устройства.
