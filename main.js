@@ -346,6 +346,8 @@ function init(){
             adapter.subscribeStates(name+'.tts.response');
         }
     }
+    set_id ('all_device','request',''  );
+    adapter.subscribeStates('all_device.request');
     set_id ('all_device','tts_response','text'  );
     adapter.subscribeStates('all_device.tts_response');
 }
