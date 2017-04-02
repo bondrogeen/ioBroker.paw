@@ -20,6 +20,7 @@ https://play.google.com/store/apps/details?id=de.fun2code.android.pawserver
 + get.xhtml
 + set.xhtml
 + sms_read.xhtml
++ settings.xhtml
 
 
 файлы брать тут https://github.com/bondrogeen/paw_json/tree/master/html.

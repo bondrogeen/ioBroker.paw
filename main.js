@@ -346,7 +346,7 @@ function init(){
         var port = adapter.config.devices[i].port
 
         if(name!=''){
-            getdata(name, ip, port, '/settings.xhtml', {server:'192.168.1.31',device:name,namespace:adapter.namespace}, function (response,ip){
+            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,device:name,namespace:adapter.namespace}, function (response,ip){
                 adapter.log.info('settings.xhtml: '+response+ip);
             });
 
