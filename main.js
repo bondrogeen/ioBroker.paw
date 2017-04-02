@@ -213,7 +213,7 @@ function set_id (setid, name, val ) {
         common: {
             name: name,
             type: 'mixed',
-            role: 'tts',
+            role: '',
             read: "true",
             write: "true"
         },
@@ -336,18 +336,32 @@ function time_reset_ignore(){
 }
 
 function init(){
+
+    adapter.log.info('adapter: '+adapter.namespace);
+
+
     for (var i = 0; i < adapter.config.devices.length; i++) {
         var name = adapter.config.devices[i].name
         var ip = adapter.config.devices[i].ip
         var port = adapter.config.devices[i].port
 
         if(name!=''){
+            getdata(name, ip, port, '/settings.xhtml', {server:'192.168.1.31',device:name,namespace:adapter.namespace}, function (response,ip){
+                adapter.log.info('settings.xhtml: '+response+ip);
+            });
+
             set_id (name+'.tts','response','text'  );
             adapter.subscribeStates(name+'.tts.response');
+            set_id (name+'.request','alert',''  );
+            adapter.subscribeStates(name+'.request.alert');
+            set_id (name+'.request','speech',''  );
+            adapter.subscribeStates(name+'.request.speech');
+            set_id (name+'.request','scan',''  );
+            adapter.subscribeStates(name+'.request.scan');
+
         }
     }
-    set_id ('all_device','request',''  );
-    adapter.subscribeStates('all_device.request');
+
     set_id ('all_device','tts_response','text'  );
     adapter.subscribeStates('all_device.tts_response');
 }
@@ -388,6 +402,8 @@ function main() {
     adapter.log.info('config devices: ' + JSON.stringify(adapter.config.devices));
     adapter.log.info('config: ' + adapter.config.interval);
     adapter.log.info('length: ' + adapter.config.devices.length);
+    adapter.log.info('server: ' + adapter.config.server);
+
 
     time_reset_ignore();
     init();
