@@ -29,7 +29,7 @@ http://IP:8080/set.xhtml?send=speech&texthead=Говорите  texthead=наз�
 
 http://IP:8080/set.xhtml?send=endсall  положить трубку
 
-http://IP:8080/set.xhtml?send=lcd_on  включить экран
+http://IP:8080/set.xhtml?send=lcd_on  активировать  экран на устройстве
 
 http://IP:8080/set.xhtml?send=clipboard&text=тест  отправить  text в буфер обмена
 
