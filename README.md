@@ -22,6 +22,9 @@ https://play.google.com/store/apps/details?id=de.fun2code.android.pawserver
 + sms_read.xhtml
 + settings.xhtml
 
+Достаточно скачать и перенести только фаил " settings.xhtml "  остальные файлы с качаются через драйвер. 
+
+И при будущих обновлениях драйвера, будут обновляться сами.
 
 файлы брать тут https://github.com/bondrogeen/paw_json/tree/master/html.
 
@@ -54,6 +57,9 @@ sendTo("paw.0",'all',{
     text:  'проверка'},function (response){
     log(JSON.stringify(response));
 });
+
+//активировать  экран на устройстве.
+sendTo("paw.0",'all',{send:'lcd_on'});
 
 //Отправка смс.
 sendTo("paw.0",'dev1',{send:  'sms', text:  'проверка', number: '8123456789'});
