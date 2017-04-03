@@ -1,0 +1,143 @@
+
+<html>
+<body>
+<bsh>
+
+import org.json.*;
+import de.fun2code.android.pawserver.AndroidInterface;
+import android.app.Service;
+import android.database.Cursor;
+import android.net.Uri;
+import java.text.DateFormat;
+import android.provider.CallLog;
+
+jsonPosition = new JSONObject();
+jsonVar = new JSONObject();
+jsonoutgoing = new JSONObject();
+jsonincoming = new JSONObject();
+jsonmissed = new JSONObject();
+list = new JSONObject();
+
+service = (Service) server.props.get("serviceContext");
+
+SORT_ORDER = CallLog.Calls.DATE + " DESC";
+
+callTypeLabelold = "1";
+incoming=0;
+outgoing=0;
+missed = 0;
+
+
+
+cursor = service.getContentResolver().query(
+  CallLog.Calls.CONTENT_URI,
+  new String[] { CallLog.Calls.NUMBER, CallLog.Calls.CACHED_NAME,
+                CallLog.Calls.DATE,
+                CallLog.Calls.DURATION, CallLog.Calls.TYPE },
+  null,
+  null,
+  SORT_ORDER);
+  
+  
+  
+if (cursor != null) {
+  try {
+    count = cursor.getCount();
+    if (cursor.moveToFirst()) {
+      do {
+        
+		position = cursor.getPosition();
+		
+        callNumber = cursor.getString(0);
+        callName = cursor.getString(1);
+        callDate = cursor.getLong(2);
+        callDuration = cursor.getLong(3);
+        callType = cursor.getLong(4);
+        callTypeLabel = "";
+        date = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(callDate));
+	
+		if (callName == null){
+		callName = "null";
+		cname = callNumber;
+		}else{
+		cname = callName;
+		}
+		
+        switch(callType) {
+          case CallLog.Calls.INCOMING_TYPE:
+            callTypeLabel = "incoming";
+			incoming = incoming + 1;
+			
+			jsonVar.put("type", callTypeLabel);
+            jsonVar.put("number", callNumber);
+	        jsonVar.put("name", callName);
+            jsonVar.put("unixtime", callDate);
+            jsonVar.put("date", date);
+            jsonVar.put("duration", callDuration);
+	
+	        jsonincoming.put(Long.toString(callDate), jsonVar);
+	        jsonVar = "";
+	        jsonVar = new JSONObject();
+            break;
+			
+          case CallLog.Calls.OUTGOING_TYPE:
+            callTypeLabel = "outgoing";
+			outgoing = outgoing + 1; 
+			jsonVar.put("type", callTypeLabel);
+            jsonVar.put("number", callNumber);
+	        jsonVar.put("name", callName);
+            jsonVar.put("unixtime", callDate);
+            jsonVar.put("date", date);
+            jsonVar.put("duration", callDuration);
+	
+	        jsonoutgoing.put(Long.toString(callDate), jsonVar);
+	        jsonVar = "";
+	        jsonVar = new JSONObject();
+            break;
+
+          case CallLog.Calls.MISSED_TYPE:
+            callTypeLabel = "missed";
+			missed = missed + 1;
+			jsonVar.put("type", callTypeLabel);
+            jsonVar.put("number", callNumber);
+	        jsonVar.put("name", callName);
+            jsonVar.put("unixtime", callDate);
+            jsonVar.put("date", date);
+            jsonVar.put("duration", callDuration);
+	
+	        jsonmissed.put(Long.toString(callDate), jsonVar);
+	        jsonVar = "";
+	        jsonVar = new JSONObject();
+          break;
+        }
+
+      } while(cursor.moveToNext());
+  
+    }
+  }
+  
+
+  
+  finally {
+  
+    cursor.close();
+	
+
+  }
+  
+
+}
+jsonPosition.put("call_all", count);
+jsonPosition.put("call_missed", missed);
+jsonPosition.put("call_outgoing", outgoing);
+jsonPosition.put("call_incoming", incoming);
+jsonPosition.put("outgoing", jsonoutgoing);
+jsonPosition.put("incoming", jsonincoming);
+jsonPosition.put("missed", jsonmissed);
+
+request.sendResponse(jsonPosition.toString().getBytes(), "text/plain");
+request.out.flush();
+request.out.close();
+</bsh>
+</body>
+</html>

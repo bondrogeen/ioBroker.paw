@@ -1,0 +1,215 @@
+
+
+<html>
+<body>
+<bsh>
+import org.json.*;
+import android.net.Uri;
+import android.provider.Contacts.People;
+import android.provider.Contacts.Phones;
+import java.text.DateFormat;
+
+jsonVar = new JSONObject();
+jsonSMS = new JSONObject();
+jsonId = new JSONObject();
+service = server.props.get("serviceContext");
+
+SMS_CONTENT_URI = Uri.parse("content://sms");
+SMS_INBOX_CONTENT_URI = Uri.withAppendedPath(SMS_CONTENT_URI, "inbox");
+SORT_ORDER = "date DESC";
+
+cursor = service.getContentResolver().query(SMS_INBOX_CONTENT_URI,
+new String[] { "_id", "thread_id", "address", "person", "date", "body" }, null, null, SORT_ORDER);
+
+numberold=0;
+smsCount = 0;
+
+if (cursor != null) {
+  try {
+    smsCount = cursor.getCount();
+  }
+  finally {
+    cursor.close();
+  }
+}  
+
+URI = Uri.parse("content://sms");
+
+// --- Thread IDs
+cur = service.getContentResolver().query(URI, new String[] {"DISTINCT thread_id"}, null, null, "date DESC");
+threadIDs = new ArrayList();
+if(cur.moveToFirst()) {
+  do {
+    threadIDs.add(cur.getInt(0));
+  } while(cur.moveToNext());
+}
+cur.close();
+
+for(id : threadIDs) {
+
+  // -- Messages in thread
+  cur = service.getContentResolver().query(URI, new String[] { "COUNT(thread_id)" }, "thread_id=?", new String[] { "" + id }, null);
+  cur.moveToFirst();
+  count = cur.getInt(0);
+  cur.close();
+
+  // -- Unread messages
+  cur = service.getContentResolver().query(URI, new String[] { "COUNT(read)" }, "thread_id=? AND read == 0", new String[] { "" + id }, null);
+  cur.moveToFirst();
+  unread = cur.getInt(0);
+  cur.close();
+
+  cur = service.getContentResolver().query(URI, null, "thread_id=?", new String[] { "" + id }, "date DESC LIMIT 1");
+  if(cur.moveToFirst()) {
+    do {
+      contactId = cur.getInt(cur.getColumnIndex("person"));
+      address = cur.getString(cur.getColumnIndex("address"));
+      date = new Date(cur.getLong(cur.getColumnIndex("date")));
+      body = cur.getString(cur.getColumnIndex("body"));
+
+      // Only if address != null. Otherwise it's a DRAFT
+      if(address != null) { 
+      
+        name = null;
+        
+        // Try to get contactId if not present (Switch between new and old Contacts API)
+        if(contactId == 0 && Integer.parseInt(android.os.Build.VERSION.SDK) >= 5) {
+      // New API
+         
+      phones = service.getContentResolver().query(
+        android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI, new String[] { android.provider.ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID }, android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER + "=?", new String[] { address }, null);
+         
+    if(phones.moveToFirst()) {
+        contactId = phones.getInt(0);
+    }
+         
+    phones.close();
+        }
+      else if(contactId == 0) {
+      phones = service.getContentResolver().query(
+        Phones.CONTENT_URI, new String[] { "person" }, "Phones.NUMBER=?", new String[] { address }, null);
+         
+    if(phones.moveToFirst()) {
+        contactId = phones.getInt(0);
+      }
+         
+    phones.close();
+      }
+     
+        
+       if(contactId != 0 && Integer.parseInt(android.os.Build.VERSION.SDK) >= 5) {
+      // New API
+      contact = service.getContentResolver().query(
+        android.provider.ContactsContract.Data.CONTENT_URI, new String[] {       android.provider.ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME }, android.provider.ContactsContract.Data.RAW_CONTACT_ID + "=? AND " + android.provider.ContactsContract.CommonDataKinds.StructuredName.MIMETYPE + "=?", new String[] { "" + contactId, android.provider.ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE }, null);
+
+      if(contact.moveToFirst()) {
+        name = contact.getString(0);
+    }
+
+      contact.close();
+        }
+        else if(contactId != 0) {
+      contact = service.getContentResolver().query(
+        People.CONTENT_URI, new String[] { People.NAME }, "People._ID=?", new String[] { "" + contactId }, null);
+
+      if(contact.moveToFirst()) {
+        name = contact.getString(0);
+      }
+
+      contact.close();
+    } 
+        
+unreadOnly = false;
+ignoreThreadId = 0;
+
+SMS_READ_COLUMN = "read";
+WHERE_CONDITION = unreadOnly ? SMS_READ_COLUMN + " = 0" : null;
+SORT_ORDER = "date DESC";
+
+if (ignoreThreadId > 0) {
+  WHERE_CONDITION += " AND thread_id != " + ignoreThreadId;
+}
+
+WHERE_CONDITION = WHERE_CONDITION == null ? "thread_id = " + id : WHERE_CONDITION + " AND thread_id = " + id;
+
+cursor = service.getContentResolver().query(
+  SMS_CONTENT_URI,
+  new String[] { "_id", "thread_id", "address", "person", "date", "body", "status"},
+  WHERE_CONDITION,
+  null,
+  SORT_ORDER);
+
+if (cursor != null) {
+  try {
+    
+    count = cursor.getCount();
+
+    if (cursor.moveToFirst()) {
+      do {
+	
+        messageId = cursor.getLong(0);
+        threadId = cursor.getLong(1);
+        number = cursor.getString(2);
+        timestamp = cursor.getLong(4);
+        body = cursor.getString(5);
+        status = cursor.getInt(6);
+        date = new Date(cursor.getLong(cur.getColumnIndex("date")));
+        date = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(date);
+		
+		jsonVar.put("messageId", messageId);
+		jsonVar.put("number", number);
+		jsonVar.put("timestamp", timestamp);
+		jsonVar.put("date", date);
+		jsonVar.put("body", body);
+		//jsonVar.put("count", count);
+		//jsonVar.put("unread", unread);
+		//jsonVar.put("threadId", threadId);
+		
+		jsonSMS.put(body+" "+messageId, jsonVar);
+		jsonSMS.put("count", count);
+		jsonSMS.put("unread", unread);
+		jsonSMS.put("thread_id", threadId);
+		if (name == null) {
+		    name = "null";
+		   }
+		jsonSMS.put("name", name);
+		jsonVar = "";
+	    jsonVar = new JSONObject();		
+		
+		
+		
+		
+		
+		
+		
+        //print (messageId+","+threadId+","+name+","+number+","+timestamp+","+body+","+unread+","+count);
+      } while(cursor.moveToNext());
+    }
+  }
+  finally {
+    cursor.close();
+  }
+}
+        
+        jsonId.put(number, jsonSMS);
+		jsonSMS = "";
+	    jsonSMS = new JSONObject();
+
+
+  }
+    } while(cur.moveToNext());
+  }
+  cur.close();
+
+
+}
+
+
+request.sendResponse(jsonId.toString().getBytes(), "text/plain");
+request.out.flush();
+request.out.close();
+</bsh>
+</body>
+</html>
+
+

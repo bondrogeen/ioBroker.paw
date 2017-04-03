@@ -1,0 +1,323 @@
+<html>
+<body>
+<bsh>
+import org.json.*;
+import de.fun2code.android.pawserver.AndroidInterface;
+
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+
+jsonVar = new JSONObject();
+
+send = parameters.get("send");
+text = parameters.get("text");
+texthead = parameters.get("texthead");
+mode = parameters.get("mode");
+number = parameters.get("number");
+textcolour = parameters.get("textcolour");
+value = parameters.get("value");
+colour = parameters.get("colour");
+font = parameters.get("font");
+date = parameters.get("date");
+
+
+pawHome = server.props.get("serviceContext").pawHome;
+File[] files = new File(pawHome + "/html").listFiles(new FilenameFilter() {
+public boolean accept(File dir, String name) {
+return name.toLowerCase().endsWith(".conf");
+}}); 
+Arrays.sort(files);
+  int c=0;
+  for(File f : files) {
+    c++;
+    props = new Properties();
+    in = new FileInputStream(f);
+    props.load(in);
+    in.close();
+  }
+server_ip = props.getProperty("server");
+device = props.getProperty("device"); 
+namespace = props.getProperty("namespace"); 
+
+
+if (send != null){
+
+switch (send) {
+
+            case "server":
+			    import de.fun2code.android.pawserver.*;
+                import android.content.Intent;
+                service = server.props.get("serviceContext");
+			    if(text == null) text = "null";
+			    if(text.equals("kill")) {
+			    AndroidInterface.shutdownServer();
+			    jsonVar.put("server", "true");
+				jsonVar.put("text", text);
+			    } else if (text.equals("restart")) {
+			    serviceIntent = new Intent(service, PawServerService.class);
+                service.stopService(serviceIntent);
+                Thread.sleep(2000);
+                service.startService(serviceIntent);
+			    jsonVar.put("server", "true");
+			    jsonVar.put("text", text);
+			    }else {
+			    jsonVar.put("server", "false");
+			    }
+      		break;
+			
+			case "mark_all_read":
+			    import android.net.Uri;
+                service = server.props.get("serviceContext");
+                SMS_CONTENT_URI = Uri.parse("content://sms");
+			    if(number != null) {
+				values = new ContentValues(1);
+                values.put("read", Integer.valueOf(1));
+                service.getContentResolver().update(SMS_CONTENT_URI, values, "thread_id=" + number, null);
+                jsonVar.put("mark_all_read", "true");
+				jsonVar.put("number", number);
+			    } else {
+			    jsonVar.put("mark_all_read", "false");
+			    }
+      		break;
+			
+			
+
+            case "delete_sms_thread":
+			    import android.net.Uri;
+                service = server.props.get("serviceContext");
+                SMS_CONTENT_URI = Uri.parse("content://sms");
+			    if(number != null) {
+			    service.getContentResolver().delete(SMS_CONTENT_URI, "thread_id=" + number, null);
+                jsonVar.put("delete_sms_thread", "true");
+				jsonVar.put("number", number);
+			    } else {
+			    jsonVar.put("delete_sms_thread", "false");
+			    }
+      		break;
+			
+			
+            case "delete_sms_id":
+			    import android.net.Uri;
+                service = server.props.get("serviceContext");
+                SMS_CONTENT_URI = Uri.parse("content://sms");
+			    if(number != null) {
+			    service.getContentResolver().delete(SMS_CONTENT_URI, "_id=" + number, null);
+                jsonVar.put("delete_sms_id", "true");
+				jsonVar.put("number", number);
+			    } else {
+			    jsonVar.put("delete_sms_id", "false");
+			    }
+      		break;			
+
+            case "scan":
+			
+			    res = scanBarcode();
+				if (res !=null){
+					
+					client = new DefaultHttpClient();
+				getURL = "http://"+server_ip+":8087/set/"+namespace+"."+device+".request.scan?value="+res.replaceAll(" ", "%20");
+				get = new HttpGet(getURL);
+				response = client.execute(get);  
+				statusline = response.getStatusLine();
+				statusCode = statusline.getStatusCode();
+				jsonVar.put("scan", "true");
+                jsonVar.put("return", res);
+				}else {
+					jsonVar.put("scan", "no_install");
+				}
+			
+                
+				break;	
+			
+
+            case "clipboard":
+			    if(text != null) {
+			    writeToClipboard(text);
+			    jsonVar.put("clipboard", "true");
+				jsonVar.put("text", text);
+			    } else {
+			    jsonVar.put("clipboard", "false");
+			    }
+      		break;
+            case "speech":
+			    if(texthead == null) texthead = "Говорите";
+			    import android.speech.RecognizerIntent;
+			    if(isIntentAvailable(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)) {
+					
+                res = speechToText(texthead);
+				
+				client = new DefaultHttpClient();
+				getURL = "http://"+server_ip+":8087/set/"+namespace+"."+device+".request.speech?value="+res.replaceAll(" ", "%20");
+				get = new HttpGet(getURL);
+				response = client.execute(get);  
+				statusline = response.getStatusLine();
+				statusCode = statusline.getStatusCode();
+				
+			    jsonVar.put("speech", "true");
+				}else {
+				res = "SpeechToText not supported!";
+				jsonVar.put("speech", "false");
+                }
+                jsonVar.put("return", res);
+				break;
+				
+			case "endсall":
+			    endCall();
+			    jsonVar.put("endCall", "true");
+				break;	
+				
+	        case "openurl":
+			    if (text != null) {
+				openUri(text);
+			    jsonVar.put("openurl", "true");
+				} else {jsonVar.put("openurl", "false");}
+                break;	
+				
+	        case "alertinput":
+			    if (texthead != null && text != null) {
+			
+				res=showInputAlert(texthead, text);	
+			
+				client = new DefaultHttpClient();
+				getURL = "http://"+server_ip+":8087/set/"+namespace+"."+device+".request.alert?value="+res.replaceAll(" ", "%20");
+				get = new HttpGet(getURL);
+				response = client.execute(get);  
+				statusline = response.getStatusLine();
+				statusCode = statusline.getStatusCode();
+				
+				jsonVar.put("return", res);
+
+				} else {jsonVar.put("alertinput", "false");}
+                break;	
+				
+	        case "alert":
+			    if (texthead != null && text != null) {
+				showAlert(texthead, text);
+			    jsonVar.put("Alert", "true");
+				} else {jsonVar.put("Alert", "false");}
+                break;
+				
+	        case "noti":
+			    if (texthead != null && text != null) {
+				showNotification(texthead, texthead, text);	
+			    jsonVar.put("noti", "true");
+				} else {jsonVar.put("noti", "false");}
+                break;
+				
+	        case "vibrate":
+			    if (number != null) {
+				number = new Integer(number);	
+			    vibrate(number);
+			   	jsonVar.put("vibrate", "true");
+				} else {jsonVar.put("vibrate", "false");}
+                break;	
+				
+            case "volume":
+			    if (number != null) {
+				if (mode == null) {mode = "STREAM_MUSIC";}
+			    import android.media.AudioManager;
+                import android.content.Context;
+				service = server.props.get("serviceContext");
+				audioMgr = service.getSystemService(Context.AUDIO_SERVICE);
+				number = new Integer(number);
+				if (number < 0) {number = 0;}
+				max = audioMgr.getStreamMaxVolume(eval("AudioManager." + mode)); 
+				if (number > max){number = max;}
+				audioMgr.setStreamVolume(eval("AudioManager." + mode), number, 0);
+			   	jsonVar.put("volume", "true");
+				} else {jsonVar.put("volume", "false");}
+                break;
+				
+	        case "dial":
+			    if (number != null) {
+			    dial(number);
+			   	jsonVar.put("dial", "true");
+				} else {jsonVar.put("dial", "false");}
+                break;
+				
+	        case "call":
+			    if (number != null) {
+			    call(number);
+			   	jsonVar.put("call", "true");
+				} else {jsonVar.put("call", "false");}
+                break;
+				
+            case "say":
+			    if (text != null) {
+			    speak(text, Locale.getDefault());
+			   	jsonVar.put("say", "true");
+				} else {jsonVar.put("say", "false");}
+                break;
+				
+			case "sms":
+			    if (text != null && number != null ) {
+			    sendSMS(number, text);
+			   	jsonVar.put("sms", "true");
+				}
+				else{jsonVar.put("sms", "false");}
+				break;
+				
+            case "app_start":
+			    if (value != null) {
+					import android.app.Service;
+                    import android.content.pm.PackageManager;
+                    import android.content.Intent;
+	                service = (Service) server.props.get("serviceContext");
+	                pkgManager = service.getPackageManager();
+	                Intent intent = pkgManager.getLaunchIntentForPackage(value);
+					service.startActivity(intent);
+					jsonVar.put("app_start", "true");
+                }
+				else{jsonVar.put("app_start", "false");}
+				break;	
+				
+            default:
+                
+        }
+
+jsonVar.put("text", text);
+jsonVar.put("send", send);
+jsonVar.put("texthead", texthead);
+jsonVar.put("mode", mode);
+jsonVar.put("number", number);
+jsonVar.put("textcolour", textcolour);
+jsonVar.put("value", value);
+jsonVar.put("colour", colour);
+jsonVar.put("font", font);
+jsonVar.put("date", date);		
+
+
+request.sendResponse(jsonVar.toString().getBytes(), "text/plain");
+request.out.flush();
+request.out.close();		
+		
+		
+} else {
+
+pawHome = server.props.get("serviceContext").pawHome;
+File f = new File(pawHome + "/html/get_info.txt");
+
+print("<p><a href=\"get_info.txt\">info</a></p>");
+
+}
+		
+
+</bsh>
+</body>
+
+</html>
+
+
+

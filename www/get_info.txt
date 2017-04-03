@@ -1,0 +1,45 @@
+
+http://IP:8080/set.xhtml?send=volume&number=15&mode=STREAM_NOTIFICATION  -  Установка громкости от 0 до 15
+(максимальная громкость устанавливается системой, также проверяется чтобы не выходило за пределы установленых значений)
+
+mode=    может быть (STREAM_NOTIFICATION, STREAM_MUSIC ,STREAM_ALARM, STREAM_RING, STREAM_SYSTEM, STREAM_VOICE_CALL)
+если не указан то по умолчанию стоит STREAM_MUSIC
+
+http://IP:8080/set.xhtml?send=say&text=привет   текст отправляем на синтез речи
+
+http://IP:8080/set.xhtml?send=app_start&value=lcf.clock      Запуск программы Tablet Clock  value=lcf.clock
+
+http://IP:8080/set.xhtml?send=sms&text=привет&number=123456789 Отправить смс на номер = number text = текст сообщения
+
+http://IP:8080/set.xhtml?send=call&number=123456789 Позвонить на номер number (для USSD запросов символ # меняем на %23  )
+
+http://IP:8080/set.xhtml?send=dial&number=123456789 Набрать на номер number (для USSD запросов символ # меняем на %23  )
+
+http://IP:8080/set.xhtml?send=vibrate&number=1000   Включает вибрацию number (время в милисекундах)
+
+http://IP:8080/set.xhtml?send=noti&texthead=название уведомления&text=текст уведомления
+
+http://IP:8080/set.xhtml?send=alert&texthead=название предупреждения&text=текст предупреждения
+
+http://IP:8080/set.xhtml?send=alertinput&texthead=название предупреждения&text=текст предупреждения ответ вернет в json "return":"данные"
+
+http://IP:8080/set.xhtml?send=openurl&text=http://ya.ru    откроет страницу в браузере
+
+http://IP:8080/set.xhtml?send=speech&texthead=Говорите  texthead=название (можно не указывать тогда по у молчанию будет равно  texthead=Говорите) ответ вернет в json "return":"текст"
+
+http://IP:8080/set.xhtml?send=endсall  положить трубку
+
+http://IP:8080/set.xhtml?send=clipboard&text=тест  отправить  text в буфер обмена
+
+http://IP:8080/set.xhtml?send=server&text=restart    перезагрузка paw сервера
+
+http://IP:8080/set.xhtml?send=server&text=kill     остановка paw сервера
+
+http://IP:8080/set.xhtml?send?send=delete_sms_thread&number=36   удалить ветку сообщений с thred_id =  36
+
+http://IP:8080/set.xhtml?send?send=delete_sms_id&number=171   удалить сообщение с id =  171
+
+http://IP:8080/set.xhtml?send?send=mark_all_read&number=36   Пометить как прочитаные с thred_id =  34
+
+http://IP:8080/set.xhtml?send?send=scan  запускает сканер штрих кода
+

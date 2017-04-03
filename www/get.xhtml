@@ -1,0 +1,367 @@
+﻿<html>
+<body>
+<bsh>
+
+import org.json.*;
+import de.fun2code.android.pawserver.AndroidInterface;
+
+import de.fun2code.android.pawserver.util.*;
+import android.content.Intent;
+import android.app.Service;
+import android.os.BatteryManager;
+import android.content.Context;
+import android.media.AudioManager;
+import android.app.ActivityManager;
+import android.app.ActivityManager.MemoryInfo;
+import android.database.Cursor;
+import android.net.Uri;
+import de.fun2code.android.pawserver.AndroidInterface;
+import android.net.wifi.WifiInfo;
+import android.util.*;
+import android.view.WindowManager;
+import android.hardware.Sensor;
+import android.location.*;
+
+jsonVar = new JSONObject();
+battery = new JSONObject();
+cpu = new JSONObject();
+wifi = new JSONObject();
+audiovol = new JSONObject();
+audiovolinfo = new JSONObject();
+memory = new JSONObject();
+info = new JSONObject();
+sens = new JSONObject();
+sensorinfo  = new JSONObject();
+gps  = new JSONObject();
+
+
+service = server.props.get("serviceContext");
+source(server.props.get("serviceContext").pawHome + "/html/app/bsh/constantsToolbar.bsh");
+preferences = service.getSharedPreferences("PawServer", 0);
+toolbarSettings = preferences.getInt("toolbarHide", 0);
+
+getall = parameters.get("get");
+getsensors = parameters.get("sensors");
+getwifi = parameters.get("wifi");
+getaudio = parameters.get("audio");
+getbattery = parameters.get("battery");
+getcpu = parameters.get("cpu");
+getgps = parameters.get("gps");
+getmemory = parameters.get("memory");
+getinfo = parameters.get("info");
+
+if (getall == null && getsensors == null && getwifi == null && getaudio == null && getbattery == null && getcpu == null && getgps == null && getmemory == null && getinfo == null ) {
+getall = "all";
+} else {
+if (getall == null){
+getall = "false";
+}
+
+}
+if (getsensors == null) {
+getsensors = "false";
+}
+if (getwifi == null) {
+getwifi = "false";
+}
+if (getbattery == null) {
+getbattery = "false";
+}
+if (getgps == null) {
+getgps = "false";
+}
+if (getaudio == null) {
+getaudio = "false";
+}
+if (getcpu == null) {
+getcpu = "false";
+}
+if (getmemory == null) {
+getmemory = "false";
+}
+if (getinfo == null) {
+getinfo = "false";
+}
+
+if (getall.equals("all")) {
+getsensors = "true";
+getwifi = "true";
+getaudio = "true";
+getbattery = "true";
+getcpu = "true";
+getgps = "true";
+getmemory = "true";
+getinfo = "true";
+}
+
+
+if (getsensors.equals("true")) {
+
+// Sensors
+
+service = server.props.get("serviceContext");
+sensorService = service.getSystemService(Context.SENSOR_SERVICE);
+sensors = sensorService.getSensorList(Sensor.TYPE_ALL);
+
+for(sensor : sensors) {
+    sensorinfo.put(sensor.getName().toLowerCase(), sensor);
+}
+sens.put("info", sensorinfo);
+
+sensorListener = AndroidInterface.getSensorListener();
+
+sens.put("gyro_x", sensorListener.getGyroX());
+sens.put("gyro_y", sensorListener.getGyroY());
+sens.put("gyro_z", sensorListener.getGyroZ());
+sens.put("bearing", sensorListener.getOrientBearing());
+sens.put("proximity", sensorListener.getProximity());
+sens.put("light", sensorListener.getBrightness());
+
+if (sensorListener.getRelativeHumidity()!=0){
+sens.put("humidity", sensorListener.getRelativeHumidity());
+}
+
+if (sensorListener.getAmbientTemperature()!=0){
+sens.put("temperature", sensorListener.getAmbientTemperature());
+}
+
+if (sensorListener.getPressure()!=0){
+sens.put("pressure", sensorListener.getPressure());
+}
+if (sensorListener.getX()!=0){
+sens.put("accelerometer_x", sensorListener.getX());
+sens.put("accelerometer_y", sensorListener.getY());
+sens.put("accelerometer_z", sensorListener.getZ());
+sens.put("accelerometer_force", sensorListener.getForce());
+}
+
+
+jsonVar.put("sensors", sens);
+
+}
+
+
+// Get BATTERY info
+
+if (getbattery.equals("true")) {
+intent = IntentUtil.getIntentResultFromBroadcast(service, Intent.ACTION_BATTERY_CHANGED);
+
+level = intent.getIntExtra("level", -1);
+scale = intent.getIntExtra("scale", -1);
+status = intent.getIntExtra("status", -1);
+voltage = intent.getIntExtra("voltage", -1);
+plugtype = intent.getIntExtra("plugged", 0);
+health = intent.getIntExtra("health", 0);
+temperature = intent.getIntExtra("temperature", 0);
+
+battery.put("level", level);
+battery.put("status", status);
+battery.put("voltage", voltage);
+battery.put("plugtype", plugtype);
+battery.put("health", health);
+battery.put("temperature", temperature);
+
+jsonVar.put("battery", battery);
+
+}
+
+// Get memory info
+
+if (getmemory.equals("true")) {
+
+activityManager = (ActivityManager) service.getSystemService(Context.ACTIVITY_SERVICE);
+memInfo = new ActivityManager.MemoryInfo();
+activityManager.getMemoryInfo(memInfo);
+
+free = memInfo.availMem / 1024 /1024;
+total = memInfo.totalMem / 1024 /1024;
+
+import android.os.StatFs;
+import android.os.Environment;
+
+getStorageInfo(type) {
+  // Default type is "sdcard"
+  stat = new StatFs(type.equals("int") ? Environment.getDataDirectory().getPath() : Environment.getExternalStorageDirectory().getPath());
+
+  megsTotal = (long)stat.getBlockSize() *(long)stat.getBlockCount() / 1024D / 1024D;
+  megsAvailable = (long)stat.getBlockSize() *(long)stat.getAvailableBlocks() / 1024D /   1024D;
+
+  String[] vals = { String.format("%.2f", new Object[] { megsTotal }),            String.format("%.2f", new Object[] { megsAvailable }) };
+  return vals;
+}
+
+memory.put("int_total", getStorageInfo("int")[0]);
+memory.put("int_free", getStorageInfo("int")[1]);
+memory.put("sdcard_total", getStorageInfo("sdcard")[0]);
+memory.put("sdcard_free", getStorageInfo("sdcard")[1]);
+memory.put("ram_free", free);
+memory.put("ram_total", total);
+
+jsonVar.put("memory", memory);
+
+}
+
+// Get cpu info
+
+if (getcpu.equals("true")) {
+
+source(server.props.get("serviceContext").pawHome + "/html/app/bsh/systemLoad.bsh");
+cpus = getCpus();
+load = getSystemLoad().get("load");	
+
+cpu.put("cpus", cpus);
+cpu.put("load", load);
+
+jsonVar.put("cpu", cpu);
+	
+}	
+
+
+// Get WiFi info
+
+if (getwifi.equals("true")) {
+
+wifiService = service.getSystemService(Context.WIFI_SERVICE);
+	      
+	// Check for connected WiFi network
+	wifiInfo = wifiService.getConnectionInfo();
+	wifiActive = false;
+	if(wifiInfo != null && wifiInfo.getIpAddress() != 0) {
+		wifiActive = true;
+		ip = wifiInfo.getIpAddress();
+		
+		ip = String.format("%d.%d.%d.%d", (ip & 0xff), (ip >> 8 & 0xff), (ip >> 16 & 0xff),
+            (ip >> 24 & 0xff));
+			
+		mac = wifiInfo.getMacAddress();
+	}
+	if(wifiActive) {
+		SSID = wifiInfo.getSSID();
+		if(SSID == null) { SSID = "unknown"; }
+
+		
+		linkspeed = wifiInfo.getLinkSpeed() + " " + WifiInfo.LINK_SPEED_UNITS;
+		if(wifiInfo.getLinkSpeed() < 0) { linkspeed = "unknown"; }
+
+		wifiStrengthPercent = (100 + wifiInfo.getRssi() + 20)+"%";
+		Rssi = wifiInfo.getRssi();
+		 
+	}
+wifi.put("ssid", SSID);
+wifi.put("strengthpercent", wifiStrengthPercent);
+wifi.put("linkspeed", linkspeed);
+wifi.put("ip", ip);
+wifi.put("rssi", Rssi);
+wifi.put("mac", mac);
+
+jsonVar.put("wifi", wifi);
+
+}
+
+	
+	
+	
+	
+	
+// Get info
+
+if (getinfo.equals("true")) {
+	
+import android.content.Context;
+import android.os.PowerManager;
+       
+
+pm = service.getSystemService(Context.POWER_SERVICE);
+x = pm.isScreenOn();
+
+info.put("lcd", x);	
+
+BOARD = android.os.Build.BOARD;
+BRAND = android.os.Build.BRAND;
+DISPLAY = android.os.Build.DISPLAY;
+MODEL = android.os.Build.MODEL;
+PRODUCT = android.os.Build.PRODUCT;
+TIME = android.os.Build.TIME;
+TYPE = android.os.Build.TYPE;
+USER = android.os.Build.USER;
+INCREMENTAL = android.os.Build.VERSION.INCREMENTAL;
+RELEASE = android.os.Build.VERSION.RELEASE;
+SDK = android.os.Build.VERSION.SDK;
+	
+info.put("board", BOARD);
+info.put("brand", BRAND);
+info.put("display", DISPLAY);
+info.put("model", MODEL);
+info.put("product", PRODUCT);
+info.put("time", TIME);
+info.put("type", TYPE);
+info.put("user", USER);
+info.put("incremental", INCREMENTAL);
+info.put("release", RELEASE);
+info.put("sdk", SDK);
+
+if(readFromClipboard() == null) {
+clipboard = "";
+} else {
+clipboard = readFromClipboard();
+}
+
+info.put("clipboard", clipboard);
+
+jsonVar.put("info", info);
+
+}
+	
+// Get audio info	
+
+if (getaudio.equals("true")) {
+
+audio = service.getSystemService(Context.AUDIO_SERVICE);
+
+STREAM_RING = audio.getStreamVolume(AudioManager.STREAM_RING);
+STREAM_MUSIC = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
+STREAM_ALARM = audio.getStreamVolume(AudioManager.STREAM_ALARM);
+STREAM_NOTIFICATION = audio.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+STREAM_SYSTEM = audio.getStreamVolume(AudioManager.STREAM_SYSTEM);
+STREAM_VOICE_CALL = audio.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+
+STREAM_RINGMax = audio.getStreamMaxVolume(AudioManager.STREAM_RING);
+STREAM_MUSICMax = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+STREAM_ALARMMax = audio.getStreamMaxVolume(AudioManager.STREAM_ALARM);
+STREAM_NOTIFICATIONMax = audio.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION);
+STREAM_SYSTEMMax = audio.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
+STREAM_VOICE_CALLMax = audio.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
+
+
+
+audiovolinfo.put("ring_max", STREAM_RINGMax);
+audiovolinfo.put("music_max", STREAM_MUSICMax);
+audiovolinfo.put("alarm_max", STREAM_ALARMMax);
+audiovolinfo.put("notification_max", STREAM_NOTIFICATIONMax);
+audiovolinfo.put("system_max", STREAM_SYSTEMMax);
+audiovolinfo.put("voice_call_max", STREAM_VOICE_CALLMax);
+
+audiovol.put("info", audiovolinfo);
+
+audiovol.put("ring", STREAM_RING);
+audiovol.put("music", STREAM_MUSIC);
+audiovol.put("alarm", STREAM_ALARM);
+audiovol.put("notification", STREAM_NOTIFICATION);
+audiovol.put("system", STREAM_SYSTEM);
+audiovol.put("voice_call", STREAM_VOICE_CALL);
+
+jsonVar.put("audio_volume", audiovol);
+	
+}
+
+jsonVar.put("test", "test");
+
+request.sendResponse(jsonVar.toString().getBytes(), "text/plain");
+request.out.flush();
+request.out.close();
+
+</bsh>
+
+</body>
+
+</html>
