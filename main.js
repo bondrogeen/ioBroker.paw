@@ -237,19 +237,19 @@ function parsedata(name,data,path) {
         if(path=='/get.xhtml'){
             if(data.sensors) {
                 delete data.sensors.info
-                setdata (name+'.sensors', data.sensors );
+                setdata (name+'.info.sensors', data.sensors );
             }
-            if(data.wifi) setdata (name+'.wifi', data.wifi );
-            if(data.battery) setdata (name+'.battery', data.battery );
-            if(data.cpu) setdata (name+'.cpu', data.cpu );
-            if(data.audio_volume.info) setdata (name+'.audio_volume.info', data.audio_volume.info );
+            if(data.wifi) setdata (name+'.info.wifi', data.wifi );
+            if(data.battery) setdata (name+'.info.battery', data.battery );
+            if(data.cpu) setdata (name+'.info.cpu', data.cpu );
+            if(data.audio_volume.info) setdata (name+'.info.audio_volume.info', data.audio_volume.info );
             if(data.audio_volume) {
                 delete data.audio_volume.info
-                setdata (name+'.audio_volume', data.audio_volume );
+                setdata (name+'.info.audio_volume', data.audio_volume );
             }
-            if(data.memory) setdata (name+'.memory', data.memory );
-            if(data.info) setdata (name+'.info', data.info );
-            if(typeof data.gps ==='object') setdata (name+'.gps', data.gps );
+            if(data.memory) setdata (name+'.info.memory', data.memory );
+            if(data.info) setdata (name+'.info.info', data.info );
+            if(typeof data.gps ==='object') setdata (name+'.info.gps', data.gps );
         }
     }
 }
@@ -335,6 +335,8 @@ function time_reset_ignore(){
     }
 }
 
+var  upload_file = "set.xhtml,get.xhtml"
+
 function init(){
 
     adapter.log.info('adapter: '+adapter.namespace);
@@ -350,6 +352,10 @@ function init(){
                 adapter.log.info('settings.xhtml: '+response+ip);
             });
 
+            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,file:upload_file,port:"8082"}, function (response,ip){
+                adapter.log.info('settings.xhtml: '+response+ip);
+            });
+
             set_id (name+'.tts','response','text'  );
             adapter.subscribeStates(name+'.tts.response');
             set_id (name+'.request','alert',''  );
@@ -358,6 +364,8 @@ function init(){
             adapter.subscribeStates(name+'.request.speech');
             set_id (name+'.request','scan',''  );
             adapter.subscribeStates(name+'.request.scan');
+            set_id (name+'.command','command',''  );
+            adapter.subscribeStates(name+'.command.command');
 
         }
     }
