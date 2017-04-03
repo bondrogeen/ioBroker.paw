@@ -2,24 +2,26 @@
 <body>
 <bsh>
 
+import java.io.*;
 import org.json.*;
 import de.fun2code.android.pawserver.AndroidInterface;
+
 jsonVar = new JSONObject();
 ip = parameters.get("server");
 device = parameters.get("device");
 namespace = parameters.get("namespace");
-import java.io.*;
+port = parameters.get("port");
+file = parameters.get("file");
 
 
-if (namespace!= null&&device!= null&&ip!= null){
-
-	
 pawHome = server.props.get("serviceContext").pawHome;
-String text = "server="+ip+"\ndevice="+device+"\nnamespace="+namespace;
-String fileName = pawHome +"/html/settings.conf";
 
 
-void write(String fileName, String text) {
+void write(ip, device, namespace) {
+	
+text = "server="+ip+"\ndevice="+device+"\nnamespace="+namespace;
+fileName = pawHome +"/html/settings.conf";
+	
     File file = new File(fileName);
      try {
         if(!file.exists()){
@@ -36,24 +38,68 @@ void write(String fileName, String text) {
     }
 }
 
-write(fileName, text);	
+
+void upload(ip,file,port){
+url = "http://"+ip+":"+port+"/paw/"+file;
+filedir = pawHome +"/html/"+file;
+        URL url = new URL(url );
+        BufferedInputStream bis = new BufferedInputStream(url.openStream());
+        FileOutputStream fis = new FileOutputStream(filedir );
+        byte[] buffer = new byte[1024];
+        int count=0;
+        while((count = bis.read(buffer,0,1024)) != -1)
+        {
+            fis.write(buffer, 0, count);
+        }
+        fis.close();
+        bis.close();
+}
+
+
+if (namespace!= null&&device!= null&&ip!= null){
+
+write(ip, device, namespace);	
 	
 jsonVar.put("server", ip);	
 jsonVar.put("device", device);
 jsonVar.put("namespace", namespace);
 
 
-request.sendResponse(jsonVar.toString().getBytes(), "text/plain");
+}else if(ip!= null&&file!= null&&port!= null){
 
+
+parts = file.split(",");
+
+for (int i = 0; i < parts.length; i++) {
+	
+try { 
+upload(ip,parts[i], port);
+jsonVar.put(parts[i].toString(), "true");
+} catch (e) { 
+jsonVar.put(parts[i].toString(), "error");
+jsonVar.put("response", "error");
+} 
+
+}
+
+
+jsonVar.put("server", ip);	
+jsonVar.put("port", port);
+jsonVar.put("file", file);
+	
 }else{
 
 jsonVar.put("response", "error");
 
-request.sendResponse(jsonVar.toString().getBytes(), "text/plain");	
 }
 
+jsonVar.put("server", ip);	
+jsonVar.put("device", device);
+jsonVar.put("namespace", namespace);
+jsonVar.put("port", port);
+jsonVar.put("file", file);
 
-
+request.sendResponse(jsonVar.toString().getBytes(), "text/plain");	
 request.out.flush();
 request.out.close();		
 
