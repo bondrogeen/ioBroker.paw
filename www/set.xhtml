@@ -90,8 +90,20 @@ switch (send) {
 			    } else {
 			    jsonVar.put("mark_all_read", "false");
 			    }
+				
       		break;
 			
+			case "lcd_on":
+			    import android.content.Context;
+				import android.os.PowerManager;
+				service = server.props.get("serviceContext");
+				PowerManager pm = service.getSystemService(Context.POWER_SERVICE);
+				int wakeFlags;
+				wakeFlags = PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP;
+				wakeLock = pm.newWakeLock(wakeFlags, "paw");
+				wakeLock.acquire();
+				jsonVar.put("lcd_on", "true");
+			break;
 			
 
             case "delete_sms_thread":
