@@ -5,10 +5,6 @@ import org.json.*;
 import de.fun2code.android.pawserver.AndroidInterface;
 
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -33,23 +29,29 @@ font = parameters.get("font");
 date = parameters.get("date");
 
 
-pawHome = server.props.get("serviceContext").pawHome;
-File[] files = new File(pawHome + "/html").listFiles(new FilenameFilter() {
-public boolean accept(File dir, String name) {
-return name.toLowerCase().endsWith(".conf");
-}}); 
-Arrays.sort(files);
-  int c=0;
-  for(File f : files) {
-    c++;
-    props = new Properties();
-    in = new FileInputStream(f);
-    props.load(in);
-    in.close();
-  }
-server_ip = props.getProperty("server");
-device = props.getProperty("device"); 
-namespace = props.getProperty("namespace"); 
+  
+source(server.props.get("serviceContext").pawHome + "/html/settings.bsh");
+  
+
+void send_res(res,texthead,text){
+    url = "http://"+server_ip+":9876/";
+    client = new DefaultHttpClient();
+    HttpPost post = new HttpPost(url);
+    post.setHeader("User-Agent", "Mozilla/5.0");
+    urlParameters = new ArrayList<NameValuePair>();
+    urlParameters.add(new BasicNameValuePair("device", device));
+    urlParameters.add(new BasicNameValuePair("namespace", namespace));
+	urlParameters.add(new BasicNameValuePair("res", res));
+	urlParameters.add(new BasicNameValuePair("send", send));
+	if(texthead!=null){
+		urlParameters.add(new BasicNameValuePair("texthead", texthead));	
+	}
+	if(text!=null){
+		urlParameters.add(new BasicNameValuePair("textX", text));	
+	}
+	post.setEntity(new UrlEncodedFormEntity(urlParameters,"UTF-8"));
+    HttpResponse response = client.execute(post);
+}
 
 
 if (send != null){
@@ -93,6 +95,39 @@ switch (send) {
 				
       		break;
 			
+
+			case "rec":
+				import java.util.*;
+				import java.text.SimpleDateFormat;
+				import android.media.MediaRecorder;
+				pawHome = server.props.get("serviceContext").pawHome;
+				curTime = new Date(); 
+				format1 = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+				outputFile = pawHome+"/voice/"+format1.format(curTime )+".3gp";
+				File folder = new File(pawHome+"/voice" );
+				
+				if (!folder.exists()) {
+					folder.mkdir();
+				}
+				if(number != null) {
+				MediaRecorder recorder = new MediaRecorder();
+				recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+				recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+				recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+				recorder.setOutputFile(outputFile );
+				recorder.prepare();
+				recorder.start();  
+				Thread.sleep(new Integer(number));
+				recorder.stop();
+				jsonVar.put("rec", "true");
+				jsonVar.put("number", number);
+				} else {
+			    jsonVar.put("rec", "false");
+			    }
+				
+			break;	
+			
+				
 			case "lcd_on":
 			    import android.content.Context;
 				import android.os.PowerManager;
@@ -137,21 +172,17 @@ switch (send) {
 			
 			    res = scanBarcode();
 				if (res !=null){
-					
-					client = new DefaultHttpClient();
-				getURL = "http://"+server_ip+":8087/set/"+namespace+"."+device+".request.scan?value="+res.replaceAll(" ", "%20");
-				get = new HttpGet(getURL);
-				response = client.execute(get);  
-				statusline = response.getStatusLine();
-				statusCode = statusline.getStatusCode();
-				jsonVar.put("scan", "true");
+					try {
+						send_res(res,null,null);
+						jsonVar.put("scan", "true");
+						} catch (e) {
+							jsonVar.put("error", e);
+							}
                 jsonVar.put("return", res);
 				}else {
 					jsonVar.put("scan", "no_install");
-				}
-			
-                
-				break;	
+				}				
+			break;	
 			
 
             case "clipboard":
@@ -167,23 +198,19 @@ switch (send) {
 			    if(texthead == null) texthead = "Говорите";
 			    import android.speech.RecognizerIntent;
 			    if(isIntentAvailable(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)) {
-					
-                res = speechToText(texthead);
-				
-				client = new DefaultHttpClient();
-				getURL = "http://"+server_ip+":8087/set/"+namespace+"."+device+".request.speech?value="+res.replaceAll(" ", "%20");
-				get = new HttpGet(getURL);
-				response = client.execute(get);  
-				statusline = response.getStatusLine();
-				statusCode = statusline.getStatusCode();
-				
-			    jsonVar.put("speech", "true");
+					res = speechToText(texthead);
+					try {
+						send_res(res,texthead,null);
+						jsonVar.put("speech", "true");
+						} catch (e) {
+							jsonVar.put("error", e);
+							}
 				}else {
 				res = "SpeechToText not supported!";
 				jsonVar.put("speech", "false");
                 }
                 jsonVar.put("return", res);
-				break;
+			break;
 				
 			case "endсall":
 			    endCall();
@@ -199,16 +226,13 @@ switch (send) {
 				
 	        case "alertinput":
 			    if (texthead != null && text != null) {
-			
-				res=showInputAlert(texthead, text);	
-			
-				client = new DefaultHttpClient();
-				getURL = "http://"+server_ip+":8087/set/"+namespace+"."+device+".request.alert?value="+res.replaceAll(" ", "%20");
-				get = new HttpGet(getURL);
-				response = client.execute(get);  
-				statusline = response.getStatusLine();
-				statusCode = statusline.getStatusCode();
-				
+					res=showInputAlert(texthead, text);
+					try {
+						send_res(res,texthead,text);
+						jsonVar.put("scan", "true");
+						} catch (e) {
+							jsonVar.put("error", e);
+							}
 				jsonVar.put("return", res);
 
 				} else {jsonVar.put("alertinput", "false");}
@@ -317,9 +341,6 @@ request.out.close();
 		
 		
 } else {
-
-pawHome = server.props.get("serviceContext").pawHome;
-File f = new File(pawHome + "/html/get_info.txt");
 
 print("<p><a href=\"get_info.txt\">info</a></p>");
 

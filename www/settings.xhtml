@@ -13,14 +13,12 @@ namespace = parameters.get("namespace");
 port = parameters.get("port");
 file = parameters.get("file");
 
-
 pawHome = server.props.get("serviceContext").pawHome;
 
-
-void write(ip, device, namespace) {
+void write(ip, device, namespace,port) {
 	
-text = "server="+ip+"\ndevice="+device+"\nnamespace="+namespace;
-fileName = pawHome +"/html/settings.conf";
+text = "server_ip=\""+ip+"\";\ndevice=\""+device+"\";\nnamespace=\""+namespace+"\";\port=\""+port+"\";";
+fileName = pawHome +"/html/settings.bsh";
 	
     File file = new File(fileName);
      try {
@@ -40,7 +38,7 @@ fileName = pawHome +"/html/settings.conf";
 
 
 void upload(ip,file,port){
-url = "http://"+ip+":"+port+"/paw/"+file;
+url = "http://"+ip+":"+port+"/"+file;
 filedir = pawHome +"/html/"+file;
         URL url = new URL(url );
         BufferedInputStream bis = new BufferedInputStream(url.openStream());
@@ -56,13 +54,14 @@ filedir = pawHome +"/html/"+file;
 }
 
 
-if (namespace!= null&&device!= null&&ip!= null){
+if (namespace!= null&&device!= null&&ip!= null&&port!= null){
 
-write(ip, device, namespace);	
+write(ip, device, namespace,port);	
 	
 jsonVar.put("server", ip);	
 jsonVar.put("device", device);
 jsonVar.put("namespace", namespace);
+jsonVar.put("port", port);
 
 
 }else if(ip!= null&&file!= null&&port!= null){

@@ -348,11 +348,11 @@ function init(){
         var port = adapter.config.devices[i].port
 
         if(name!=''){
-            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,device:name,namespace:adapter.namespace}, function (response,ip){
+            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,device:name,namespace:adapter.namespace,port:"9876"}, function (response,ip){
                 adapter.log.info('settings.xhtml: '+response+ip);
             });
 
-            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,file:upload_file,port:"8082"}, function (response,ip){
+            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,file:upload_file,port:"9876"}, function (response,ip){
                 adapter.log.info('settings.xhtml: '+response+ip);
             });
 
@@ -394,8 +394,8 @@ function time_paw() {
 
 function main() {
 
-    if (!adapter.config.devices.length || !adapter.config.interval) {
-        adapter.log.warn('No one device configured');
+    if (!adapter.config.devices.length || !adapter.config.interval||!adapter.config.server) {
+        adapter.log.warn('No one device, or no interval,or no server configured');
         return;
 
     }
