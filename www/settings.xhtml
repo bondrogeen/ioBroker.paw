@@ -17,7 +17,7 @@ pawHome = server.props.get("serviceContext").pawHome;
 
 void write(ip, device, namespace,port) {
 	
-text = "server_ip=\""+ip+"\";\ndevice=\""+device+"\";\nnamespace=\""+namespace+"\";\port=\""+port+"\";";
+text = "server_ip=\""+ip+"\";\ndevice=\""+device+"\";\nnamespace=\""+namespace+"\";\nport=\""+port+"\";";
 fileName = pawHome +"/html/settings.bsh";
 	
     File file = new File(fileName);
@@ -80,7 +80,6 @@ jsonVar.put("response", "error");
 } 
 
 }
-
 
 jsonVar.put("server", ip);	
 jsonVar.put("port", port);
