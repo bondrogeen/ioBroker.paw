@@ -34,7 +34,7 @@ source(server.props.get("serviceContext").pawHome + "/html/settings.bsh");
   
 
 void send_res(res,texthead,text){
-    url = "http://"+server_ip+":9876/";
+    url = "http://"+server_ip+":"+port+"/";
     client = new DefaultHttpClient();
     HttpPost post = new HttpPost(url);
     post.setHeader("User-Agent", "Mozilla/5.0");

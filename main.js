@@ -4,7 +4,12 @@
 var utils =    require(__dirname + '/lib/utils'); // Get common adapter utils
 var adapter = utils.adapter('paw');
 var http = require('http');
-const querystring = require('querystring');
+var querystring = require('querystring');
+var url = require('url');
+var fs = require('fs');
+var server =  null;
+
+
 
 adapter.on('unload', function (callback) {
     try {
@@ -22,6 +27,7 @@ adapter.on('objectChange', function (id, obj) {
 });
 
 var sms={};
+
 
 
 // is called if a subscribed state changes
@@ -348,11 +354,11 @@ function init(){
         var port = adapter.config.devices[i].port
 
         if(name!=''){
-            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,device:name,namespace:adapter.namespace,port:"9876"}, function (response,ip){
+            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,device:name,namespace:adapter.namespace,port:"86"}, function (response,ip){
                 adapter.log.info('settings.xhtml: '+response+ip);
             });
 
-            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,file:upload_file,port:"9876"}, function (response,ip){
+            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,file:upload_file,port:"86"}, function (response,ip){
                 adapter.log.info('settings.xhtml: '+response+ip);
             });
 
@@ -391,6 +397,42 @@ function time_paw() {
     }
 }
 
+function restApi(req, res) {
+    if (req.method == 'POST') {
+        adapter.log.info("POST");
+        var body = '';
+        req.on('data', function (data) {
+            body += data;
+        });
+        req.on('end', function () {
+            body = decodeURI(body);
+            body = querystring.parse(body);
+            adapter.log.info(body);
+            adapter.log.info(body.device);
+
+        });
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.end('post received');
+    } else {
+        var srvUrl = url.parse(decodeURI(req.url));
+        adapter.log.info(req.url);
+        adapter.log.info(srvUrl.pathname);
+        if (fs.existsSync(__dirname +'/www' + srvUrl.pathname)) {
+            var html = fs.readFileSync(__dirname +'/www' + srvUrl.pathname);
+        } else {
+            if (srvUrl.pathname == "/favicon.ico") {
+                res.end();
+            } else {
+                var html = '<html><body>404 Not Found</body>';
+            }
+        }
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.end(html);
+    }
+
+
+}
+
 
 function main() {
 
@@ -400,13 +442,16 @@ function main() {
 
     }
 
+    server = require('http').createServer(restApi);
+    server.listen("86");
+
+
     //adapter.config.interval = Number(adapter.config.interval);
 
     if (adapter.config.interval < 5000) adapter.config.interval = 5000;
-
     setInterval(time_paw, Number(adapter.config.interval));
     setInterval(time_reset_ignore, 600000);
-
+    //adapter.setState('info.connection', false, true);
     adapter.log.info('config devices: ' + JSON.stringify(adapter.config.devices));
     adapter.log.info('config: ' + adapter.config.interval);
     adapter.log.info('length: ' + adapter.config.devices.length);
@@ -415,6 +460,7 @@ function main() {
 
     time_reset_ignore();
     init();
+
     if(adapter.config.text2command){
         adapter.objects.getObjectView('system', 'instance',
             {startkey: 'system.adapter.text2command.', endkey: 'system.adapter.text2command.\u9999'},
@@ -478,4 +524,5 @@ function main() {
     }
 
 }
+
 
