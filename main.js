@@ -364,7 +364,7 @@ function init(){
 
             set_id (name+'.tts','response','text'  );
             adapter.subscribeStates(name+'.tts.response');
-            set_id (name+'.request','alert',''  );
+            set_id (name+'.request','alertinput',''  );
             adapter.subscribeStates(name+'.request.alert');
             set_id (name+'.request','speech',''  );
             adapter.subscribeStates(name+'.request.speech');
@@ -399,7 +399,6 @@ function time_paw() {
 
 function restApi(req, res) {
     if (req.method == 'POST') {
-        adapter.log.info("POST");
         var body = '';
         req.on('data', function (data) {
             body += data;
@@ -408,8 +407,12 @@ function restApi(req, res) {
             body = decodeURI(body);
             body = querystring.parse(body);
             adapter.log.info("POST "+JSON.stringify(body));
+            adapter.log.info(body.namespace+'.'+body.device+'.request.'+body.send);
+            adapter.log.info(adapter.namespace+' '+body.namespace);
             if(adapter.namespace==body.namespace){
-                set_id (body.device+'.request',body.send,body.res);
+
+                adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send, body.res );
+                //set_id (body.device+'.request',body.send,body.res);
             }
         });
         res.writeHead(200, {'Content-Type': 'text/html'});
