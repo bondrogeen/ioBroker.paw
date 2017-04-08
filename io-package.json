@@ -33,10 +33,14 @@
         "messagebox": 	     	    true
     },
     "native": {
-        "test1": true,
-        "test2": 42
+      "test1": true,
+      "test2": 42,
+      "interval":"10000",
+      "port":"8898"
     },
     "objects": [
 
     ]
+
+
 }

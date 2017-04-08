@@ -354,11 +354,11 @@ function init(){
         var port = adapter.config.devices[i].port
 
         if(name!=''){
-            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,device:name,namespace:adapter.namespace,port:"86"}, function (response,ip){
+            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,device:name,namespace:adapter.namespace,port:adapter.config.port}, function (response,ip){
                 adapter.log.info('settings.xhtml: '+response+ip);
             });
 
-            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,file:upload_file,port:"86"}, function (response,ip){
+            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,file:upload_file,port:adapter.config.port}, function (response,ip){
                 adapter.log.info('settings.xhtml: '+response+ip);
             });
 
@@ -376,7 +376,7 @@ function init(){
         }
     }
 
-    set_id ('all_device','tts_response','text'  );
+    set_id ('all_device','tts_response',""  );
     adapter.subscribeStates('all_device.tts_response');
 }
 
@@ -417,6 +417,8 @@ function restApi(req, res) {
         var srvUrl = url.parse(decodeURI(req.url));
         adapter.log.info(req.url);
         adapter.log.info(srvUrl.pathname);
+        if(srvUrl.pathname == "/")srvUrl.pathname="/index.html";
+        adapter.log.info(srvUrl.pathname);
         if (fs.existsSync(__dirname +'/www' + srvUrl.pathname)) {
             var html = fs.readFileSync(__dirname +'/www' + srvUrl.pathname);
         } else {
@@ -443,7 +445,7 @@ function main() {
     }
 
     server = require('http').createServer(restApi);
-    server.listen("86");
+    server.listen(adapter.config.port);
 
 
     //adapter.config.interval = Number(adapter.config.interval);
@@ -456,6 +458,7 @@ function main() {
     adapter.log.info('config: ' + adapter.config.interval);
     adapter.log.info('length: ' + adapter.config.devices.length);
     adapter.log.info('server: ' + adapter.config.server);
+    adapter.log.info('port: ' + adapter.config.port);
 
 
     time_reset_ignore();
