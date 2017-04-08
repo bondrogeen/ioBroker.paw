@@ -37,7 +37,7 @@ adapter.on('stateChange', function (id, state) {
     var arr_id = id.split('.'); //разбить на массив
     //adapter.log.info(JSON.stringify(arr_id))
     //adapter.log.info(id);
-    //adapter.log.info(adapter.namespace+'.'+arr_id[2]+'.tts.response');
+    adapter.log.info(adapter.namespace+'.'+arr_id[2]+'.command.command');
 
     if(id===adapter.namespace+'.'+arr_id[2]+'.tts.response'){
 
@@ -77,7 +77,7 @@ adapter.on('stateChange', function (id, state) {
         }
     }else if (id===adapter.namespace+'.all_device.tts_response'||find(subscribe, id)!==-1){
         adapter.log.info(id);
-        adapter.log.info(state);
+        adapter.log.info(JSON.stringify(state));
         for (var i = 0; i < adapter.config.devices.length; i++) {
             var name = adapter.config.devices[i].name
             var ip = adapter.config.devices[i].ip
@@ -110,6 +110,37 @@ adapter.on('stateChange', function (id, state) {
 
         }
 
+    }else if(id===adapter.namespace+'.'+arr_id[2]+'.command.command') {
+
+        for (var i = 0; i < adapter.config.devices.length; i++) {
+            var name = adapter.config.devices[i].name
+            var ip = adapter.config.devices[i].ip
+            var port = adapter.config.devices[i].port
+            if (arr_id[2] == name) { //поиск по имени
+
+                adapter.log.info(JSON.stringify(state));
+                var com_date = null
+                if(state.val=="lcd_on") com_date = {"send":"lcd_on"};
+                if(state.val=="endсall") com_date = {"send":"endсall"};
+                if(state.val=="scan") com_date = {"send":"scan"};
+                if(state.val=="speech") com_date = {"send":"speech"};
+                if(state.val=="restart") com_date = {"send":"server","text":"restart"};
+                if(state.val=="kill") com_date = {"send":"server","text":"kill"};
+
+                if(com_date != null){
+                    getdata(name,ip,port,"/set.xhtml",com_date,function (response, ip){
+                        adapter.log.info("command: "+com_date+" "+ip+" "+response);
+                    })
+                }
+
+
+
+
+
+
+
+            }
+        }
     }
 });
 
@@ -370,9 +401,26 @@ function init(){
             adapter.subscribeStates(name+'.request.speech');
             set_id (name+'.request','scan',''  );
             adapter.subscribeStates(name+'.request.scan');
-            set_id (name+'.command','command',''  );
+            set_id (name+'.command','command','[speech] or [lcd_on]'  );
             adapter.subscribeStates(name+'.command.command');
-
+            set_id (name+'.command','send_sms','[text],[number]'  );
+            adapter.subscribeStates(name+'.command.send_sms');
+            set_id (name+'.command','call','[number]'  );
+            adapter.subscribeStates(name+'.command.call');
+            set_id (name+'.command','app_start','[lcf.clock]'  );
+            adapter.subscribeStates(name+'.command.app_start');
+            set_id (name+'.command','vibrate','[time(ms)]'  );
+            adapter.subscribeStates(name+'.command.vibrate');
+            set_id (name+'.command','alert','[Внимание!],[Нет связи!!!]' );
+            adapter.subscribeStates(name+'.command.alert');
+            set_id (name+'.command','openurl','[http://ya.ru]'  );
+            adapter.subscribeStates(name+'.command.openurl');
+            set_id (name+'.command','clipboard','[Ab123]'  );
+            adapter.subscribeStates(name+'.command.clipboard');
+            set_id (name+'.command','volume','[0-max]'  );
+            adapter.subscribeStates(name+'.command.volume');
+            set_id (name+'.command','alertinput','[Внимание!],[введите команду]'  );
+            adapter.subscribeStates(name+'.command.alertinput');
         }
     }
 
