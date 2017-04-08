@@ -485,7 +485,7 @@ function main() {
     time_reset_ignore();
     init();
 
-    function search_adapter(name,subscribe) {
+    function search_adapter(name,sub) {
         adapter.objects.getObjectView('system', 'instance',
             {startkey: 'system.adapter.'+name+'.', endkey: 'system.adapter.'+name+'.\u9999'},
             function (err, doc) {
@@ -494,9 +494,9 @@ function main() {
                         var id = doc.rows[i].id;
                         var obj = doc.rows[i].value;
                         var arr_sub = id.split('.');
-                        adapter.log.info('subscribe: ' + arr_sub[2] + '.' + arr_sub[3] + subscribe);
-                        adapter.subscribeForeignStates(arr_sub[2] + '.' + arr_sub[3] + subscribe);
-                        subscribe[subscribe.length] = arr_sub[2] + '.' + arr_sub[3] + subscribe;
+                        adapter.log.info('subscribe: ' + arr_sub[2] + '.' + arr_sub[3] + sub);
+                        adapter.subscribeForeignStates(arr_sub[2] + '.' + arr_sub[3] + sub);
+                        subscribe[subscribe.length] = arr_sub[2] + '.' + arr_sub[3] + sub;
                     }
                     if (!doc.rows.length) adapter.log.info(name+': No objects found.');
                 } else {
