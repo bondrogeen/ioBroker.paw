@@ -407,7 +407,7 @@ function restApi(req, res) {
         req.on('end', function () {
             body = decodeURI(body);
             body = querystring.parse(body);
-            adapter.log.info(body);
+            adapter.log.info(JSON.stringify(body));
             adapter.log.info(body.device);
 
         });
@@ -444,8 +444,25 @@ function main() {
 
     }
 
-    server = require('http').createServer(restApi);
-    server.listen(adapter.config.port);
+    if (adapter.config.server) {
+        adapter.config.port = parseInt(adapter.config.port, 10) || 0;
+        if (adapter.config.port) {
+            server = require('http').createServer(restApi);
+
+            adapter.getPort(adapter.config.port, function (port) {
+                if (port != adapter.config.port && !adapter.config.findNextPort) {
+                    adapter.log.warn('port ' + adapter.config.port + ' already in use');
+                } else {
+                    server.listen(port);
+                    adapter.log.info('http server listening on port ' + port);
+                }
+            });
+        } else {
+            adapter.log.info('No port specified');
+        }
+    }
+    //server = require('http').createServer(restApi);
+    //server.listen(adapter.config.port);
 
 
     //adapter.config.interval = Number(adapter.config.interval);
