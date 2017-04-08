@@ -407,9 +407,10 @@ function restApi(req, res) {
         req.on('end', function () {
             body = decodeURI(body);
             body = querystring.parse(body);
-            adapter.log.info(JSON.stringify(body));
-            adapter.log.info(body.device);
-
+            adapter.log.info("POST "+JSON.stringify(body));
+            if(adapter.namespace==body.namespace){
+                set_id (body.device+'.request',body.send,body.res);
+            }
         });
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.end('post received');
@@ -461,22 +462,15 @@ function main() {
             adapter.log.info('No port specified');
         }
     }
-    //server = require('http').createServer(restApi);
-    //server.listen(adapter.config.port);
-
-
-    //adapter.config.interval = Number(adapter.config.interval);
 
     if (adapter.config.interval < 5000) adapter.config.interval = 5000;
     setInterval(time_paw, Number(adapter.config.interval));
     setInterval(time_reset_ignore, 600000);
-    //adapter.setState('info.connection', false, true);
-    adapter.log.info('config devices: ' + JSON.stringify(adapter.config.devices));
-    adapter.log.info('config: ' + adapter.config.interval);
-    adapter.log.info('length: ' + adapter.config.devices.length);
+
+    adapter.log.info('devices: ' + JSON.stringify(adapter.config.devices));
+    adapter.log.info('interval: ' + adapter.config.interval);
     adapter.log.info('server: ' + adapter.config.server);
     adapter.log.info('port: ' + adapter.config.port);
-
 
     time_reset_ignore();
     init();
