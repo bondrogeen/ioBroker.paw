@@ -378,6 +378,7 @@ function init(){
 
     set_id ('all_device','tts_response',""  );
     adapter.subscribeStates('all_device.tts_response');
+
 }
 
 function time_paw() {
@@ -409,11 +410,9 @@ function restApi(req, res) {
             adapter.log.info("POST "+JSON.stringify(body));
             adapter.log.info(body.namespace+'.'+body.device+'.request.'+body.send);
             adapter.log.info(adapter.namespace+' '+body.namespace);
-            if(adapter.namespace==body.namespace){
 
-                adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send, body.res );
-                //set_id (body.device+'.request',body.send,body.res);
-            }
+            adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send, body.res,true );
+
         });
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.end('post received');
@@ -440,15 +439,23 @@ function restApi(req, res) {
 }
 
 
+
+
 function main() {
 
-    if (!adapter.config.devices.length || !adapter.config.interval||!adapter.config.server) {
-        adapter.log.warn('No one device, or no interval,or no server configured');
+    if (!adapter.config.devices.length || !adapter.config.interval||!adapter.config.server||!adapter.config.port) {
+        adapter.log.warn('Enter the data ip, port, interval and devices');
         return;
-
     }
 
-    if (adapter.config.server) {
+    var ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+
+    if(!adapter.config.server.match(ipformat)) {
+        adapter.log.warn('You have entered an invalid IP address!');
+        return;
+    }
+
+    if (adapter.config.server.match(ipformat)) {
         adapter.config.port = parseInt(adapter.config.port, 10) || 0;
         if (adapter.config.port) {
             server = require('http').createServer(restApi);
@@ -467,7 +474,7 @@ function main() {
     }
 
     if (adapter.config.interval < 5000) adapter.config.interval = 5000;
-    setInterval(time_paw, Number(adapter.config.interval));
+    setInterval(time_paw, Number(adapter.config.interval));  // интервал обновления данных от уст.
     setInterval(time_reset_ignore, 600000);
 
     adapter.log.info('devices: ' + JSON.stringify(adapter.config.devices));
@@ -478,67 +485,32 @@ function main() {
     time_reset_ignore();
     init();
 
-    if(adapter.config.text2command){
+    function search_adapter(name,subscribe) {
         adapter.objects.getObjectView('system', 'instance',
-            {startkey: 'system.adapter.text2command.', endkey: 'system.adapter.text2command.\u9999'},
+            {startkey: 'system.adapter.'+name+'.', endkey: 'system.adapter.'+name+'.\u9999'},
             function (err, doc) {
                 if (doc && doc.rows) {
                     for (var i = 0; i < doc.rows.length; i++) {
                         var id = doc.rows[i].id;
                         var obj = doc.rows[i].value;
                         var arr_sub = id.split('.');
-                        adapter.log.info('subscribe: ' + arr_sub[2] + '.' + arr_sub[3] + '.response');
-                        adapter.subscribeForeignStates(arr_sub[2] + '.' + arr_sub[3] + '.response');
-                        subscribe[subscribe.length] = arr_sub[2] + '.' + arr_sub[3] + '.response';
+                        adapter.log.info('subscribe: ' + arr_sub[2] + '.' + arr_sub[3] + subscribe);
+                        adapter.subscribeForeignStates(arr_sub[2] + '.' + arr_sub[3] + subscribe);
+                        subscribe[subscribe.length] = arr_sub[2] + '.' + arr_sub[3] + subscribe;
                     }
-                    if (!doc.rows.length) adapter.log.info('No objects found.');
+                    if (!doc.rows.length) adapter.log.info(name+': No objects found.');
                 } else {
-                    adapter.log.info('No objects found: ' + err);
+                    adapter.log.info(name+': No objects found: ' + err);
                 }
             });
+
     }
 
-    if(adapter.config.apiai){
+    // поиск драйвера и подписка на него.
+    if(adapter.config.text2command) search_adapter("text2command",".response");
+    if(adapter.config.apiai) search_adapter("apiai",".respons.speech");
+    if(adapter.config.hilink)search_adapter("hilink",".last_sms.Content");
 
-        adapter.objects.getObjectView('system', 'instance',
-            {startkey: 'system.adapter.apiai.', endkey: 'system.adapter.apiai.\u9999'},
-            function (err, doc) {
-                if (doc && doc.rows) {
-                    for (var i = 0; i < doc.rows.length; i++) {
-                        var id  = doc.rows[i].id;
-                        var obj = doc.rows[i].value;
-                        var arr_sub = id.split('.');
-                        adapter.log.info('subscribe: '+arr_sub[2]+'.'+arr_sub[3]+'.respons.speech');
-                        adapter.subscribeForeignStates(arr_sub[2]+'.'+arr_sub[3]+'.respons.speech');
-                        subscribe[subscribe.length] = arr_sub[2]+'.'+arr_sub[3]+'.respons.speech';
-                    }
-                    if (!doc.rows.length) adapter.log.info('No objects found.');
-                } else {
-                    adapter.log.info('No objects found: ' + err);
-                }
-            });
-    }
-
-    if(adapter.config.hilink){
-
-        adapter.objects.getObjectView('system', 'instance',
-            {startkey: 'system.adapter.hilink.', endkey: 'system.adapter.hilink.\u9999'},
-            function (err, doc) {
-                if (doc && doc.rows) {
-                    for (var i = 0; i < doc.rows.length; i++) {
-                        var id  = doc.rows[i].id;
-                        var obj = doc.rows[i].value;
-                        var arr_sub = id.split('.');
-                        adapter.log.info('subscribe: '+arr_sub[2]+'.'+arr_sub[3]+'.last_sms.Content');
-                        adapter.subscribeForeignStates(arr_sub[2]+'.'+arr_sub[3]+'.last_sms.Content');
-                        subscribe[subscribe.length] = arr_sub[2]+'.'+arr_sub[3]+'.last_sms.Content';
-                    }
-                    if (!doc.rows.length) adapter.log.info('No objects found.');
-                } else {
-                    adapter.log.info('No objects found: ' + err);
-                }
-            });
-    }
 
 }
 
