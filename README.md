@@ -37,63 +37,81 @@ https://github.com/bondrogeen/iobroker.paw
 ![pic](admin/1.jpg)
 
 
-Для управление через vis можно управлять уст. изменяя переменную 
+Для управление через vis, можно управлять устройством [name_device] изменяя переменную 
 
 paw.*.[name_device].command.command 
 
-+ lcd_on      активировать экран
-+ endсall     конец связи (положить трубку)
-+ scan        запустить приложение сканер штрих кода.
-+ speech      активация голоса
-+ restart     перезагрузка paw сервера 
-+ kill        отключить paw сервер 
++ lcd_on
+> активировать экран
++ endсall     
+> конец связи (положить трубку)
++ scan        
+> запустить приложение сканер штрих кода.
++ speech
+>активация голоса
++ restart
+>перезагрузка paw сервера 
++ kill
+>отключить paw сервер 
 
 paw.*.[name_device].command.*
 
 Так же и для остальных  переменных 
 
 
-alert               [Внимание!],[Нет связи!!!]	    
+paw.*.[name_device].command.alert
+> Пример:  Внимание , Нет связи!!!	    
 > Предупреждения 
 
-alertinput          [Внимание!],[введите команду]	   
+paw.*.[name_device].command.alertinput 
+> Пример:   Внимание! , Введите команду	   
 > Предупреждения c запросом, ответ сохраниться в переменной  paw.*.[name_device].request.alertinput
 
-app_start			lcf.clock	
+paw.*.[name_device].command.send_sms
+> Пример:  123456789 , Проверка	
+> Отправить смс сообщение на номер [number] , с текстом [text]  
+	
+paw.*.[name_device].command.noti
+> Пример: Внимание , Нет ответа от уст.	
+> Уведомление  [название уведомления] , [техт уведомления] 
+
+paw.*.[name_device].command.app_start			
+> Пример:  lcf.clock	
 > Запуск приложение  
 
-call				112
+paw.*.[name_device].command.call
+> Пример: 123456789
 > Позвонить по номеру [number]  
 
-clipboard			Ab123	 
+paw.*.[name_device].command.clipboard
+> Пример:Ab123	 
 > Сохранить текст в буфере обмена   
 
-dial				123456789
+paw.*.[name_device].command.dial	
+> Пример: 123456789
 > Набрать номер [number] на уст.  
 	
-noti				Внимание , Нет ответа от уст.	
-> Уведомление  [название уведомления] , [техт уведомления]  
-	
-openurl				http://ya.ru	
+paw.*.[name_device].command.openurl
+> Пример: http://ya.ru	
 > Открыть url в браузере  
 
-rec				1000 	
+paw.*.[name_device].command.rec
+> Пример: 1000 	
 > Включить запись длительностью  [time(ms)]  
 
-send_sms			123456789 , Проверка	
-> Отправить смс сообщение на номер [number] , с текстом [text]  
-
-vibrate		    		500
+paw.*.[name_device].command.vibrate
+> Пример:  500
 > Включить вибрацию, время в миллисекундах [time(ms)]  
 
-volume		        [0-max]
+paw.*.[name_device].command.volume
+> Пример: 7
 > Установка громкости на устройстве от 0 до максимального значения,   
 > максимальное значение модно посмотреть тут (обычно это 15)
 > paw.*.[name_device].info.audio_volume.info.music_max 
 
 
 
-
+![pic](admin/2.jpg)
 
 ## Команды для javascript
 
