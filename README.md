@@ -22,9 +22,9 @@ https://play.google.com/store/apps/details?id=de.fun2code.android.pawserver
 + sms_read.xhtml
 + settings.xhtml
 
-Достаточно скачать и перенести только фаил " settings.xhtml "  остальные файлы с качаются через драйвер. 
+Достаточно скачать и перенести только фаил " settings.xhtml "  остальные файлы с качаются через драйвер 
 
-И при будущих обновлениях драйвера, будут обновляться сами.
+и при будущих обновлениях драйвера, будут обновляться сами.
 
 файлы брать тут https://github.com/bondrogeen/paw_json/tree/master/html.
 
@@ -35,6 +35,62 @@ https://play.google.com/store/apps/details?id=de.fun2code.android.pawserver
 https://github.com/bondrogeen/iobroker.paw
 
 ![pic](admin/1.jpg)
+
+
+Для управление через vis можно управлять уст. изменяя переменную 
+
+paw.*.[name_device].command.command 
+
+lcd_on     // активировать экран
+endсall    // конец связи (положить трубку)
+scan       // запустить приложение сканер штрих кода.
+speech   // активация голоса
+restart   // перезагрузка paw сервера 
+kill         // отключить paw сервер 
+
+paw.*.[name_device].command.*
+
+Так же и для остальных  переменных 
+
+
+alert               [Внимание!],[Нет связи!!!]	    
+Предупреждения 
+
+alertinput          [Внимание!],[введите команду]	   
+Предупреждения c запросом, ответ сохраниться в переменной  paw.*.[name_device].request.alertinput
+
+app_start			lcf.clock	
+Запуск приложение  
+
+call				112
+Позвонить по номеру [number]  
+
+clipboard			Ab123	 
+Сохранить текст в буфере обмена   
+
+dial				123456789
+Набрать номер [number] на уст.  
+	
+noti				Внимание , Нет ответа от уст.	
+Уведомление  [название уведомления] , [техт уведомления]  
+	
+openurl				http://ya.ru	
+Открыть url в браузере  
+
+rec				1000 	
+Включить запись длительностью  [time(ms)]  
+
+send_sms			123456789 , Проверка	
+Отправить смс сообщение на номер [number] , с текстом [text]  
+
+vibrate		    		500
+Включить вибрацию, время в миллисекундах [time(ms)]  
+
+volume		        [0-max]
+Установка громкости на устройстве от 0 до максимального значения,   
+максимальное значение модно посмотреть тут (обычно это 15)
+paw.*.[name_device].info.audio_volume.info.music_max 
+
 
 
 

@@ -38,6 +38,7 @@ adapter.on('stateChange', function (id, state) {
     //adapter.log.info(JSON.stringify(arr_id))
     //adapter.log.info(id);
     adapter.log.info(adapter.namespace+'.'+arr_id[2]+'.command.command');
+    adapter.log.info(arr_id[4]+"  "+adapter.namespace+'.'+arr_id[2]+'.command.'+find_command(command, arr_id[4]));
 
     if(id===adapter.namespace+'.'+arr_id[2]+'.tts.response'){
 
@@ -113,9 +114,9 @@ adapter.on('stateChange', function (id, state) {
     }else if(id===adapter.namespace+'.'+arr_id[2]+'.command.command') {
 
         for (var i = 0; i < adapter.config.devices.length; i++) {
-            var name = adapter.config.devices[i].name
-            var ip = adapter.config.devices[i].ip
-            var port = adapter.config.devices[i].port
+            var name = adapter.config.devices[i].name;
+            var ip = adapter.config.devices[i].ip;
+            var port = adapter.config.devices[i].port;
             if (arr_id[2] == name) { //поиск по имени
 
                 adapter.log.info(JSON.stringify(state));
@@ -132,17 +133,60 @@ adapter.on('stateChange', function (id, state) {
                         adapter.log.info("command: "+com_date+" "+ip+" "+response);
                     })
                 }
+            }
+        }
 
+    }else if(arr_id[4]&&id===adapter.namespace+'.'+arr_id[2]+'.command.'+find_command(command, arr_id[4])) {
 
+        for (var i = 0; i < adapter.config.devices.length; i++) {
+            var name = adapter.config.devices[i].name;
+            var ip = adapter.config.devices[i].ip;
+            var port = adapter.config.devices[i].port;
+            if (arr_id[2] == name) { //поиск по имени
+                adapter.log.info("------- " + id);
+                adapter.log.info(String(state.val).match(","));
+                adapter.log.info(state.val);
+                state.val = String(state.val);
+                var com_date = null;
+                if(state.val.match(",")){
+                    var com_val =  state.val.replace(",", "^");
+                    com_val =  com_val.split('^');
+                    if(com_val[0]&&com_val[1]&&arr_id[4]=="alertinput") com_date = {"send":"alertinput","texthead":com_val[0],"text":com_val[1]};
+                    if(com_val[0]&&com_val[1]&&arr_id[4]=="alert") com_date = {"send":"alert","texthead":com_val[0],"text":com_val[1]};
+                    if(com_val[0]&&com_val[1]&&arr_id[4]=="send_sms") com_date = {"send":"send_sms","number":com_val[0],"text":com_val[1]};
+                    if(com_val[0]&&com_val[1]&&arr_id[4]=="noti") com_date = {"send":"noti","texthead":com_val[0],"text":com_val[1]};
+                }else {
+                    if (arr_id[4] == "volume"&&+state.val) com_date = {"send": "volume","number": state.val};
+                    if (arr_id[4] == "openurl") com_date = {"send": "openurl","text": "kill"};
+                    if (arr_id[4] == "vibrate"&&+state.val) com_date = {"send": "vibrate","number": state.val};
+                    if (arr_id[4] == "rec"&&+state.val) com_date = {"send": "rec", "number": state.val};
+                    if (arr_id[4] == "app_start") com_date = {"send": "app_start", "text": state.val};
+                    if (arr_id[4] == "call"&&+state.val) com_date = {"send": "call", "number": state.val};
+                    if (arr_id[4] == "clipboard") com_date = {"send": "clipboard", "text": state.val};
+                    if (arr_id[4] == "dial"&&+state.val) com_date = {"send": "dial", "number": state.val};
+                }
 
-
-
+                if(com_date){
+                    adapter.log.info("Как так то?");
+                    adapter.log.info(JSON.stringify(com_date));
+                }
 
 
             }
         }
     }
 });
+
+var command = ["alertinput","volume","openurl","vibrate","alert","noti","rec","app_start","dial","send_sms","call","clipboard"];
+
+
+function find_command(array, value) {
+
+    for (var i = 0; i < array.length; i++) {
+        if (array[i] == value) return value;
+    }
+    return false;
+}
 
 var bufer={};
 
@@ -372,7 +416,7 @@ function time_reset_ignore(){
     }
 }
 
-var  upload_file = "set.xhtml,get.xhtml"
+var  upload_file = "set.xhtml,get.xhtml"//файлы которые нужно загрузить с папки 'www' на устройства
 
 function init(){
 
@@ -385,44 +429,48 @@ function init(){
         var port = adapter.config.devices[i].port
 
         if(name!=''){
-            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,device:name,namespace:adapter.namespace,port:adapter.config.port}, function (response,ip){
+            getdata(name, ip, port, '/settings.xhtml', {  //запись настроек (ip,port,device,namespace )в устройство
+                server:adapter.config.server,
+                device:name,
+                namespace:adapter.namespace,
+                port:adapter.config.port}, function (response,ip){
                 adapter.log.info('settings.xhtml: '+response+ip);
             });
 
-            getdata(name, ip, port, '/settings.xhtml', {server:adapter.config.server,file:upload_file,port:adapter.config.port}, function (response,ip){
+            getdata(name, ip, port, '/settings.xhtml', {  //загрузка файлов на уст.
+                server:adapter.config.server,
+                file:upload_file,
+                port:adapter.config.port }, function (response,ip){
                 adapter.log.info('settings.xhtml: '+response+ip);
             });
 
             set_id (name+'.tts','response','text'  );
             adapter.subscribeStates(name+'.tts.response');
+
             set_id (name+'.request','alertinput',''  );
-            adapter.subscribeStates(name+'.request.alert');
             set_id (name+'.request','speech',''  );
-            adapter.subscribeStates(name+'.request.speech');
             set_id (name+'.request','scan',''  );
-            adapter.subscribeStates(name+'.request.scan');
+
             set_id (name+'.command','command','[speech] or [lcd_on]'  );
-            adapter.subscribeStates(name+'.command.command');
-            set_id (name+'.command','send_sms','[text],[number]'  );
-            adapter.subscribeStates(name+'.command.send_sms');
+            set_id (name+'.command','send_sms','[number],[text]'  );
             set_id (name+'.command','call','[number]'  );
-            adapter.subscribeStates(name+'.command.call');
             set_id (name+'.command','app_start','[lcf.clock]'  );
-            adapter.subscribeStates(name+'.command.app_start');
             set_id (name+'.command','vibrate','[time(ms)]'  );
-            adapter.subscribeStates(name+'.command.vibrate');
+            set_id (name+'.command','rec','[time(ms)]'  );
             set_id (name+'.command','alert','[Внимание!],[Нет связи!!!]' );
-            adapter.subscribeStates(name+'.command.alert');
             set_id (name+'.command','openurl','[http://ya.ru]'  );
-            adapter.subscribeStates(name+'.command.openurl');
             set_id (name+'.command','clipboard','[Ab123]'  );
-            adapter.subscribeStates(name+'.command.clipboard');
             set_id (name+'.command','volume','[0-max]'  );
-            adapter.subscribeStates(name+'.command.volume');
             set_id (name+'.command','alertinput','[Внимание!],[введите команду]'  );
-            adapter.subscribeStates(name+'.command.alertinput');
+            set_id (name+'.command','dial','[number]'  );
+            set_id (name+'.command','noti','[название увед.],[техт]' );
+
+            adapter.subscribeStates(name+'.command.*');
+
         }
     }
+
+
 
     set_id ('all_device','tts_response',""  );
     adapter.subscribeStates('all_device.tts_response');
