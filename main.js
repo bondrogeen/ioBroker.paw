@@ -153,11 +153,11 @@ adapter.on('stateChange', function (id, state) {
                     com_val =  com_val.split('^');
                     if(com_val[0]&&com_val[1]&&arr_id[4]=="alertinput") com_date = {"send":"alertinput","texthead":com_val[0],"text":com_val[1]};
                     if(com_val[0]&&com_val[1]&&arr_id[4]=="alert") com_date = {"send":"alert","texthead":com_val[0],"text":com_val[1]};
-                    if(com_val[0]&&com_val[1]&&arr_id[4]=="send_sms") com_date = {"send":"send_sms","number":com_val[0],"text":com_val[1]};
+                    if(com_val[0]&&com_val[1]&&arr_id[4]=="send_sms") com_date = {"send":"sms","number":com_val[0],"text":com_val[1]};
                     if(com_val[0]&&com_val[1]&&arr_id[4]=="noti") com_date = {"send":"noti","texthead":com_val[0],"text":com_val[1]};
                 }else {
                     if (arr_id[4] == "volume"&&+state.val) com_date = {"send": "volume","number": state.val};
-                    if (arr_id[4] == "openurl") com_date = {"send": "openurl","text": "kill"};
+                    if (arr_id[4] == "openurl") com_date = {"send": "openurl","text": state.val};
                     if (arr_id[4] == "vibrate"&&+state.val) com_date = {"send": "vibrate","number": state.val};
                     if (arr_id[4] == "rec"&&+state.val) com_date = {"send": "rec", "number": state.val};
                     if (arr_id[4] == "app_start") com_date = {"send": "app_start", "text": state.val};
@@ -167,8 +167,10 @@ adapter.on('stateChange', function (id, state) {
                 }
 
                 if(com_date){
-                    adapter.log.info("Как так то?");
-                    adapter.log.info(JSON.stringify(com_date));
+                    getdata(name,ip,port,"/set.xhtml",com_date,function (response, ip){
+                        adapter.log.info("command: "+com_date+" "+ip+" "+response);
+                    })
+
                 }
 
 
