@@ -505,9 +505,9 @@ function restApi(req, res) {
         req.on('end', function () {
             body = decodeURI(body);
             body = querystring.parse(body);
-            adapter.log.info("POST "+JSON.stringify(body));
-            adapter.log.info(body.namespace+'.'+body.device+'.request.'+body.send);
-            adapter.log.info(adapter.namespace+' '+body.namespace);
+            //adapter.log.info("POST "+JSON.stringify(body));
+            //adapter.log.info(body.namespace+'.'+body.device+'.request.'+body.send);
+            //adapter.log.info(adapter.namespace+' '+body.namespace);
 
             adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send, body.res,true );
 
@@ -516,8 +516,8 @@ function restApi(req, res) {
         res.end('post received');
     } else {
         var srvUrl = url.parse(decodeURI(req.url));
-        adapter.log.info(req.url);
-        adapter.log.info(srvUrl.pathname);
+        //adapter.log.info(req.url);
+        //adapter.log.info(srvUrl.pathname);
         if(srvUrl.pathname == "/")srvUrl.pathname="/index.html";
         adapter.log.info(srvUrl.pathname);
         if (fs.existsSync(__dirname +'/www' + srvUrl.pathname)) {
