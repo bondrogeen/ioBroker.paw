@@ -39,7 +39,7 @@ https://github.com/bondrogeen/iobroker.paw
 
 Для управление через vis, можно управлять устройством [name_device] изменяя переменную 
 
-paw.*.[name_device].command.command 
+***paw.*.[name_device].command.command*** 
 
 + lcd_on
 > активировать экран
@@ -104,7 +104,7 @@ paw.*.[name_device].command.command
 > Пример:  500      
 > Включить вибрацию, время в миллисекундах [time(ms)]  
 
-***paw.0.[name_device].command.volume *** 
+***paw.0.[name_device].command.volume*** 
 > Пример: 7    
 > Установка громкости на устройстве от 0 до максимального значения,       
 > максимальное значение модно посмотреть тут (обычно это 15)   
@@ -114,7 +114,11 @@ paw.*.[name_device].command.command
 
 ![pic](admin/2.jpg)
 
+
+
 ## Команды для javascript
+
+
 
 ```javascript
 /*
