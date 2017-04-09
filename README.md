@@ -60,7 +60,7 @@ paw.*.[name_device].command.command
 
 
 
-***paw.*.[name_device].command.alert***
+***paw.0.[name_device].command.alert***
 > Пример:  Внимание , Нет связи!!!	    
 > Предупреждения 
 
