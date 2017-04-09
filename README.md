@@ -54,12 +54,13 @@ paw.*.[name_device].command.command
 + kill
 >отключить paw сервер 
 
+
+Для остальных  переменных, но только некоторые команды   
+требует второго параметра, который вводиться через запятую.    
 paw.*.[name_device].command.*
 
-Так же и для остальных  переменных 
 
-
-paw.*.[name_device].command.alert  
+*paw.*.[name_device].command.alert*
 > Пример:  Внимание , Нет связи!!!	    
 > Предупреждения 
 
@@ -96,11 +97,11 @@ paw.*.[name_device].command.openurl
 > Открыть url в браузере  
 
 paw.*.[name_device].command.rec
-> Пример: 1000    	
+> Пример: 1000      	
 > Включить запись длительностью  [time(ms)]  
 
 paw.*.[name_device].command.vibrate
-> Пример:  500    
+> Пример:  500      
 > Включить вибрацию, время в миллисекундах [time(ms)]  
 
 paw.*.[name_device].command.volume  
