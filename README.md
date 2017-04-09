@@ -64,47 +64,47 @@ paw.*.[name_device].command.command
 > Пример:  Внимание , Нет связи!!!	    
 > Предупреждения 
 
-paw.*.[name_device].command.alertinput 
+***paw.*.[name_device].command.alertinput*** 
 > Пример:   Внимание! , Введите команду	    
 > Предупреждения c запросом, ответ сохраниться в переменной  paw.*.[name_device].request.alertinput
 
-paw.*.[name_device].command.send_sms
+***paw.0.[name_device].command.send_sms***
 > Пример:  123456789 , Проверка	  
 > Отправить смс сообщение на номер [number] , с текстом [text]  
 	
-paw.*.[name_device].command.noti
+***paw.0.[name_device].command.noti***
 > Пример: Внимание , Нет ответа от уст.	  
 > Уведомление  [название уведомления] , [техт уведомления] 
 
-paw.*.[name_device].command.app_start			
+***paw.0.[name_device].command.app_start***			
 > Пример:  lcf.clock	   
 > Запуск приложение  
 
-paw.*.[name_device].command.call
+***paw.0.[name_device].command.call***
 > Пример: 123456789    
 > Позвонить по номеру [number]  
 
-paw.*.[name_device].command.clipboard
+***paw.0.[name_device].command.clipboard***
 > Пример:Ab123	   
 > Сохранить текст в буфере обмена   
 
-paw.*.[name_device].command.dial	
+***paw.0.[name_device].command.dial***	
 > Пример: 123456789  
 > Набрать номер [number] на уст.  
 	
-paw.*.[name_device].command.openurl
+***paw.0.[name_device].command.openurl***
 > Пример: http://ya.ru   
 > Открыть url в браузере  
 
-paw.*.[name_device].command.rec
+***paw.0.[name_device].command.rec***
 > Пример: 1000      	
 > Включить запись длительностью  [time(ms)]  
 
-paw.*.[name_device].command.vibrate
+***paw.0.[name_device].command.vibrate***
 > Пример:  500      
 > Включить вибрацию, время в миллисекундах [time(ms)]  
 
-paw.*.[name_device].command.volume  
+***paw.0.[name_device].command.volume *** 
 > Пример: 7    
 > Установка громкости на устройстве от 0 до максимального значения,       
 > максимальное значение модно посмотреть тут (обычно это 15)   
