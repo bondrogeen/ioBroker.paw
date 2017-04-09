@@ -57,10 +57,10 @@ paw.*.[name_device].command.command
 
 Для остальных  переменных, но только некоторые команды   
 требует второго параметра, который вводиться через запятую.    
-paw.*.[name_device].command.*
 
 
-*paw.*.[name_device].command.alert*
+
+***paw.*.[name_device].command.alert***
 > Пример:  Внимание , Нет связи!!!	    
 > Предупреждения 
 
