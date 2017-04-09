@@ -39,10 +39,12 @@ https://github.com/bondrogeen/iobroker.paw
 
 Для управление через vis, можно управлять устройством [name_device] изменяя переменную 
 
-***paw.*.[name_device].command.command*** 
+***paw.0.[name_device].command.command*** 
 
 + lcd_on
 > активировать экран
++ home
+> эмулировать нажатие на кнопку HOME
 + endсall     
 > конец связи (положить трубку)
 + scan        
@@ -64,7 +66,7 @@ https://github.com/bondrogeen/iobroker.paw
 > Пример:  Внимание , Нет связи!!!	    
 > Предупреждения 
 
-***paw.*.[name_device].command.alertinput*** 
+***paw.0.[name_device].command.alertinput*** 
 > Пример:   Внимание! , Введите команду	    
 > Предупреждения c запросом, ответ сохраниться в переменной  paw.*.[name_device].request.alertinput
 

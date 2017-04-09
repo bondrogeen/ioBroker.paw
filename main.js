@@ -127,6 +127,7 @@ adapter.on('stateChange', function (id, state) {
                 if(state.val=="speech") com_date = {"send":"speech"};
                 if(state.val=="restart") com_date = {"send":"server","text":"restart"};
                 if(state.val=="kill") com_date = {"send":"server","text":"kill"};
+                if(state.val=="home") com_date = {"send":"home"};
 
                 if(com_date != null){
                     getdata(name,ip,port,"/set.xhtml",com_date,function (response, ip){
@@ -167,6 +168,11 @@ adapter.on('stateChange', function (id, state) {
                 }
 
                 if(com_date){
+
+                    getdata(name,ip,port,"/set.xhtml",{"send":"lcd_on"},function (response, ip){
+                        adapter.log.info("command: "+com_date+" "+ip+" "+response);
+                    })
+
                     getdata(name,ip,port,"/set.xhtml",com_date,function (response, ip){
                         adapter.log.info("command: "+com_date+" "+ip+" "+response);
                     })
@@ -519,7 +525,7 @@ function restApi(req, res) {
         //adapter.log.info(req.url);
         //adapter.log.info(srvUrl.pathname);
         if(srvUrl.pathname == "/")srvUrl.pathname="/index.html";
-        adapter.log.info(srvUrl.pathname);
+        //adapter.log.info(srvUrl.pathname);
         if (fs.existsSync(__dirname +'/www' + srvUrl.pathname)) {
             var html = fs.readFileSync(__dirname +'/www' + srvUrl.pathname);
         } else {

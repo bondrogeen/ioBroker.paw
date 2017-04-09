@@ -140,7 +140,19 @@ switch (send) {
 				jsonVar.put("lcd_on", "true");
 			break;
 			
-
+			case "home":
+			    import android.os.*;
+				import android.content.*;
+				import de.fun2code.android.pawserver.*;
+				import android.content.Intent;
+				service = server.props.get("serviceContext");
+				i = new Intent(Intent.ACTION_MAIN);
+				i.addCategory(Intent.CATEGORY_HOME);
+				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				AndroidInterface.sendResultIntent(i);
+				jsonVar.put("home", "true");
+			break;
+			
             case "delete_sms_thread":
 			    import android.net.Uri;
                 service = server.props.get("serviceContext");
