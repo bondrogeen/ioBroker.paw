@@ -41,12 +41,12 @@ https://github.com/bondrogeen/iobroker.paw
 
 paw.*.[name_device].command.command 
 
-lcd_on     // активировать экран
-endсall    // конец связи (положить трубку)
-scan       // запустить приложение сканер штрих кода.
-speech   // активация голоса
-restart   // перезагрузка paw сервера 
-kill         // отключить paw сервер 
++ lcd_on      активировать экран
++ endсall     конец связи (положить трубку)
++ scan        запустить приложение сканер штрих кода.
++ speech      активация голоса
++ restart     перезагрузка paw сервера 
++ kill        отключить paw сервер 
 
 paw.*.[name_device].command.*
 
