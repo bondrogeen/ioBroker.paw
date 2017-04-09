@@ -26,7 +26,7 @@ https://play.google.com/store/apps/details?id=de.fun2code.android.pawserver
 
 и при будущих обновлениях драйвера, будут обновляться сами.
 
-файлы брать тут https://github.com/bondrogeen/paw_json/tree/master/html.
+файлы брать тут https://github.com/bondrogeen/iobroker.paw/tree/master/www
 
 Запускаем PAW Server for Android.
 
@@ -99,7 +99,7 @@ https://github.com/bondrogeen/iobroker.paw
 > Открыть url в браузере  
 
 ***paw.0.[name_device].command.rec***
-> Пример: 1000      	
+> Пример: 1000                                 	
 > Включить запись длительностью  [time(ms)]  
 
 ***paw.0.[name_device].command.vibrate***
