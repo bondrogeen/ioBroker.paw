@@ -97,7 +97,7 @@ jsonVar.put("namespace", namespace);
 jsonVar.put("port", port);
 jsonVar.put("file", file);
 
-request.sendResponse(jsonVar.toString().getBytes(), "text/plain");	
+request.sendResponse(jsonVar.toString().getBytes(), "text/plain; charset=UTF-8");	
 request.out.flush();
 request.out.close();		
 

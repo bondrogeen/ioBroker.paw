@@ -26,14 +26,14 @@ callTypeLabelold = "1";
 incoming=0;
 outgoing=0;
 missed = 0;
-
+new_call=0;
 
 
 cursor = service.getContentResolver().query(
   CallLog.Calls.CONTENT_URI,
   new String[] { CallLog.Calls.NUMBER, CallLog.Calls.CACHED_NAME,
                 CallLog.Calls.DATE,
-                CallLog.Calls.DURATION, CallLog.Calls.TYPE },
+                CallLog.Calls.DURATION, CallLog.Calls.TYPE, CallLog.Calls.NEW},
   null,
   null,
   SORT_ORDER);
@@ -53,6 +53,7 @@ if (cursor != null) {
         callDate = cursor.getLong(2);
         callDuration = cursor.getLong(3);
         callType = cursor.getLong(4);
+		call_new = cursor.getLong(5);
         callTypeLabel = "";
         date = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(callDate));
 	
@@ -75,7 +76,7 @@ if (cursor != null) {
             jsonVar.put("date", date);
             jsonVar.put("duration", callDuration);
 	
-	        jsonincoming.put(Long.toString(callDate), jsonVar);
+	        jsonincoming.put(incoming.toString(), jsonVar);
 	        jsonVar = "";
 	        jsonVar = new JSONObject();
             break;
@@ -90,7 +91,7 @@ if (cursor != null) {
             jsonVar.put("date", date);
             jsonVar.put("duration", callDuration);
 	
-	        jsonoutgoing.put(Long.toString(callDate), jsonVar);
+	        jsonoutgoing.put(outgoing.toString(), jsonVar);
 	        jsonVar = "";
 	        jsonVar = new JSONObject();
             break;
@@ -98,6 +99,10 @@ if (cursor != null) {
           case CallLog.Calls.MISSED_TYPE:
             callTypeLabel = "missed";
 			missed = missed + 1;
+			if(call_new==1){
+				new_call=new_call+1;
+				}
+			jsonVar.put("unread", call_new);
 			jsonVar.put("type", callTypeLabel);
             jsonVar.put("number", callNumber);
 	        jsonVar.put("name", callName);
@@ -105,7 +110,7 @@ if (cursor != null) {
             jsonVar.put("date", date);
             jsonVar.put("duration", callDuration);
 	
-	        jsonmissed.put(Long.toString(callDate), jsonVar);
+	        jsonmissed.put(missed.toString(), jsonVar);
 	        jsonVar = "";
 	        jsonVar = new JSONObject();
           break;
@@ -134,8 +139,9 @@ jsonPosition.put("call_incoming", incoming);
 jsonPosition.put("outgoing", jsonoutgoing);
 jsonPosition.put("incoming", jsonincoming);
 jsonPosition.put("missed", jsonmissed);
+jsonPosition.put("unread", new_call);
 
-request.sendResponse(jsonPosition.toString().getBytes(), "text/plain");
+request.sendResponse(jsonPosition.toString().getBytes(), "text/plain; charset=UTF-8");
 request.out.flush();
 request.out.close();
 </bsh>

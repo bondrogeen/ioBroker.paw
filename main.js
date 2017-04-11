@@ -128,7 +128,10 @@ adapter.on('stateChange', function (id, state) {
                 if(state.val=="restart") com_date = {"send":"server","text":"restart"};
                 if(state.val=="kill") com_date = {"send":"server","text":"kill"};
                 if(state.val=="home") com_date = {"send":"home"};
-
+                if(state.val=="gong") com_date = {"send":"gong"};
+                if(state.val=="sound_noti") com_date = {"send":"sound_noti"};
+                if(state.val=="sound_ring") com_date = {"send":"sound_ring"};
+                if(state.val=="apps") com_date = {"send":"apps"};
                 if(com_date != null){
                     getdata(name,ip,port,"/set.xhtml",com_date,function (response, ip){
                         adapter.log.info("command: "+com_date+" "+ip+" "+response);

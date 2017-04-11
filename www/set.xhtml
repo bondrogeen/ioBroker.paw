@@ -4,7 +4,7 @@
 import org.json.*;
 import de.fun2code.android.pawserver.AndroidInterface;
 
-
+import java.util.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -31,7 +31,7 @@ date = parameters.get("date");
 
   
 source(server.props.get("serviceContext").pawHome + "/html/settings.bsh");
-  
+service = server.props.get("serviceContext"); 
 
 void send_res(res,texthead,text){
     url = "http://"+server_ip+":"+port+"/";
@@ -140,6 +140,70 @@ switch (send) {
 				jsonVar.put("lcd_on", "true");
 			break;
 			
+			case "gong":
+				import java.io.File;
+			    import android.media.AudioManager;
+				import android.media.MediaPlayer;
+				import android.content.Intent;
+				fileName = service.pawHome +"/html/gong.mp3";
+				file = new File(fileName);
+				
+				if(file.exists()){
+					mediaPlayer=new MediaPlayer();
+					mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+					mediaPlayer.setDataSource(fileName);
+					mediaPlayer.prepare();
+					mediaPlayer.start();
+					jsonVar.put("gong", "true");
+					startTime = System.currentTimeMillis();
+					while((System.currentTimeMillis()-startTime) < 3000) {}
+					mediaPlayer.stop();
+				} else	{
+					jsonVar.put("error", "no_file");
+				}
+
+			break;
+			
+			case "sound_noti":
+				import android.media.RingtoneManager;
+				service = server.props.get("serviceContext");
+				notify = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+				r = RingtoneManager.getRingtone(service, notify);
+				r.play();
+				startTime = System.currentTimeMillis();
+				while((System.currentTimeMillis()-startTime) < 1000) {}
+				r.stop();
+				jsonVar.put("sound_noti", "true");
+			break;
+			
+			case "apps":
+			    import android.app.Service;
+				import android.content.pm.PackageManager;
+				import android.content.pm.ApplicationInfo;
+				service = (Service) server.props.get("serviceContext");
+				pkgManager = service.getPackageManager();
+				apps = pkgManager.getInstalledApplications(PackageManager.GET_META_DATA);
+				for (int i=0;i<apps.size();i++) {
+					if((apps.get(i).flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) { continue; } 
+					//print("Имя "+apps.get(i).loadLabel(pkgManager)+" " + "процесс "+apps.get(i).processName);
+					jsonVar.put(apps.get(i).loadLabel(pkgManager), apps.get(i).processName);
+					}
+				jsonVar.put("apps", "true");
+			break;
+			
+			
+			case "sound_ring":
+				import android.media.RingtoneManager;
+				service = server.props.get("serviceContext");
+				notify = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+				r = RingtoneManager.getRingtone(service, notify);
+				r.play();
+				startTime = System.currentTimeMillis();
+				while((System.currentTimeMillis()-startTime) < 10000) {}
+				r.stop();
+				jsonVar.put("sound_ring", "true");
+			break;
+			
 			case "home":
 			    import android.os.*;
 				import android.content.*;
@@ -206,6 +270,7 @@ switch (send) {
 			    jsonVar.put("clipboard", "false");
 			    }
       		break;
+			
             case "speech":
 			    if(texthead == null) texthead = "Говорите";
 			    import android.speech.RecognizerIntent;
@@ -347,7 +412,7 @@ jsonVar.put("font", font);
 jsonVar.put("date", date);		
 
 
-request.sendResponse(jsonVar.toString().getBytes(), "text/plain");
+request.sendResponse(jsonVar.toString().getBytes(), "text/plain; charset=UTF-8");
 request.out.flush();
 request.out.close();		
 		
