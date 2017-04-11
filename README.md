@@ -150,6 +150,23 @@ sendTo("paw.0",'all',{send:'lcd_on'});
 //эмулировать нажатие на кнопку HOME
 sendTo("paw.0",'all',{send:'home'});
 
+//запустить приложение, для примера - Tablet Clock указывается "системное название"
+sendTo("paw.0",'all',{send:'app_start',value:'lcf.clock'});
+
+sendTo("paw.0",'dev1',{
+    send:'app_start',
+    value:'lcf.clock'
+},function (response){
+    log(JSON.stringify(response));
+});
+
+// Получить список установленных приложений  "название":"системное название"
+sendTo("paw.0",'dev1',{
+    send:  'apps'
+},function (response){
+    log(JSON.stringify(response));
+});
+
 //Отправка смс.
 sendTo("paw.0",'dev1',{send:  'sms', text:  'проверка', number: '8123456789'});
 
@@ -267,7 +284,7 @@ sendTo("paw.0",'dev1',{send:  'server',text:'kill'});
 
 
 
-#### 0.0.1
+#### 0.1.0
 * (bondrogeen) initial release
 
 ## License

@@ -242,6 +242,7 @@ adapter.on('message', function (obj) {
             var arr = text.split(','); //разбить на массив
             if (obj.message) {
                 var x=0;
+                res=[];
                 for (var i = 0; i < adapter.config.devices.length; i++){
                     var name = adapter.config.devices[i].name
                     var ip = adapter.config.devices[i].ip
@@ -249,10 +250,10 @@ adapter.on('message', function (obj) {
                     if(name!=''&&ip!=''&&port!='') {
                         if(arr=='all'||find(arr, name)!==-1||find(arr, ip)!==-1){ //поиск по имени и ip
                             getdata(name, ip, port, '/set.xhtml', obj.message, function (response,ip){
+                                adapter.log.info(response);
                                 try {
                                     response = JSON.parse(response);
                                     response.ip = ip;
-
                                 } catch (exception) {
                                     response = 'JSON.parse(response): error ';
                                 }
@@ -261,15 +262,13 @@ adapter.on('message', function (obj) {
                                 if (obj.callback){
                                     setTimeout(function () {
                                         adapter.sendTo(obj.from, obj.command, res, obj.callback);
+                                        //res=[];
                                     },2000);
-
                                 }
-                                res=[];
                             });
                         }
                     }
                 }
-
             }
         }
     }
@@ -375,6 +374,7 @@ function getdata(name,ip,port,path,setdata,callback) {
                     parsedata (name,buffer,path);
                 }else{
                     callback(buffer,ip);
+
                 }
 
             }

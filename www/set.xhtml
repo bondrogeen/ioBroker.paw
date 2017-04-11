@@ -390,8 +390,13 @@ switch (send) {
 	                service = (Service) server.props.get("serviceContext");
 	                pkgManager = service.getPackageManager();
 	                Intent intent = pkgManager.getLaunchIntentForPackage(value);
-					service.startActivity(intent);
-					jsonVar.put("app_start", "true");
+					try {
+						service.startActivity(intent);
+						jsonVar.put("app_start", "true");	
+						} catch (e) {
+							jsonVar.put("app", "no_install");
+							jsonVar.put("app_start", "false");
+					}
                 }
 				else{jsonVar.put("app_start", "false");}
 				break;	
