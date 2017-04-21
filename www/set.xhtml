@@ -28,9 +28,13 @@ colour = parameters.get("colour");
 font = parameters.get("font");
 date = parameters.get("date");
 
+File file = new File(server.props.get("serviceContext").pawHome + "/html/settings.bsh");
 
-  
-source(server.props.get("serviceContext").pawHome + "/html/settings.bsh");
+if(file.exists()){
+	source(server.props.get("serviceContext").pawHome + "/html/settings.bsh");
+}
+
+
 service = server.props.get("serviceContext"); 
 
 void send_res(res,texthead,text){
@@ -242,8 +246,34 @@ switch (send) {
 			    } else {
 			    jsonVar.put("delete_sms_id", "false");
 			    }
-      		break;			
-
+      		break;
+			
+			case "exec":			
+			    execRootShell(String[] commands , boolean silent) {
+					shellCmd = "su -c sh";
+					sh = Runtime.getRuntime().exec(shellCmd);
+					os = sh.getOutputStream();
+					for(cmd : commands) {
+						os.write((cmd + "\n").getBytes());
+					}
+				os.write(("exit\n").getBytes());
+				os.flush(); 
+				sh.waitFor();
+				}
+				if (text != null) {
+					try {
+						execRootShell(new String[]{text}, false);
+						jsonVar.put("exec", "true");
+						
+						} catch (e) {
+							jsonVar.put("exec", "false");
+							jsonVar.put("error", e);
+							}
+				
+				} else {jsonVar.put("exec", "false");}
+		
+			break;
+			
             case "scan":
 			
 			    res = scanBarcode();

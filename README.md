@@ -147,6 +147,12 @@ sendTo("paw.0",'all',{
 //активировать  экран на устройстве.
 sendTo("paw.0",'all',{send:'lcd_on'});
 
+//выполнить shell команду (нужен root)  
+//"input tap x y" эмулирует нажатие на экран x — координаты по гор. y — координаты по верт.
+//"poweroff -f" выключить устройства
+//"reboot" перезагрузка
+sendTo("paw.0",'all',{send:'exec',text:'input tap 100 100'});
+
 //эмулировать нажатие на кнопку HOME
 sendTo("paw.0",'all',{send:'home'});
 

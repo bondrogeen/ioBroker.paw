@@ -4,7 +4,6 @@
 
 import org.json.*;
 import de.fun2code.android.pawserver.AndroidInterface;
-
 import de.fun2code.android.pawserver.util.*;
 import android.content.Intent;
 import android.app.Service;
@@ -40,76 +39,17 @@ source(server.props.get("serviceContext").pawHome + "/html/app/bsh/constantsTool
 preferences = service.getSharedPreferences("PawServer", 0);
 toolbarSettings = preferences.getInt("toolbarHide", 0);
 
-getall = parameters.get("get");
-getsensors = parameters.get("sensors");
-getwifi = parameters.get("wifi");
-getaudio = parameters.get("audio");
-getbattery = parameters.get("battery");
-getcpu = parameters.get("cpu");
-getgps = parameters.get("gps");
-getmemory = parameters.get("memory");
-getinfo = parameters.get("info");
-
-if (getall == null && getsensors == null && getwifi == null && getaudio == null && getbattery == null && getcpu == null && getgps == null && getmemory == null && getinfo == null ) {
-getall = "all";
-} else {
-if (getall == null){
-getall = "false";
-}
-
-}
-if (getsensors == null) {
-getsensors = "false";
-}
-if (getwifi == null) {
-getwifi = "false";
-}
-if (getbattery == null) {
-getbattery = "false";
-}
-if (getgps == null) {
-getgps = "false";
-}
-if (getaudio == null) {
-getaudio = "false";
-}
-if (getcpu == null) {
-getcpu = "false";
-}
-if (getmemory == null) {
-getmemory = "false";
-}
-if (getinfo == null) {
-getinfo = "false";
-}
-
-if (getall.equals("all")) {
-getsensors = "true";
-getwifi = "true";
-getaudio = "true";
-getbattery = "true";
-getcpu = "true";
-getgps = "true";
-getmemory = "true";
-getinfo = "true";
-}
-
-
-if (getsensors.equals("true")) {
 
 // Sensors
 
-service = server.props.get("serviceContext");
 sensorService = service.getSystemService(Context.SENSOR_SERVICE);
 sensors = sensorService.getSensorList(Sensor.TYPE_ALL);
-
 for(sensor : sensors) {
     sensorinfo.put(sensor.getName().toLowerCase(), sensor);
 }
 sens.put("info", sensorinfo);
 
 sensorListener = AndroidInterface.getSensorListener();
-
 sens.put("gyro_x", sensorListener.getGyroX());
 sens.put("gyro_y", sensorListener.getGyroY());
 sens.put("gyro_z", sensorListener.getGyroZ());
@@ -138,12 +78,12 @@ sens.put("accelerometer_force", sensorListener.getForce());
 
 jsonVar.put("sensors", sens);
 
-}
+
 
 
 // Get BATTERY info
 
-if (getbattery.equals("true")) {
+
 intent = IntentUtil.getIntentResultFromBroadcast(service, Intent.ACTION_BATTERY_CHANGED);
 
 level = intent.getIntExtra("level", -1);
@@ -163,11 +103,11 @@ battery.put("temperature", temperature);
 
 jsonVar.put("battery", battery);
 
-}
+
 
 // Get memory info
 
-if (getmemory.equals("true")) {
+
 
 activityManager = (ActivityManager) service.getSystemService(Context.ACTIVITY_SERVICE);
 memInfo = new ActivityManager.MemoryInfo();
@@ -199,11 +139,11 @@ memory.put("ram_total", total);
 
 jsonVar.put("memory", memory);
 
-}
+
 
 // Get cpu info
 
-if (getcpu.equals("true")) {
+
 
 source(server.props.get("serviceContext").pawHome + "/html/app/bsh/systemLoad.bsh");
 cpus = getCpus();
@@ -214,12 +154,12 @@ cpu.put("load", load);
 
 jsonVar.put("cpu", cpu);
 	
-}	
+
 
 
 // Get WiFi info
 
-if (getwifi.equals("true")) {
+
 
 wifiService = service.getSystemService(Context.WIFI_SERVICE);
 	      
@@ -256,7 +196,7 @@ wifi.put("mac", mac);
 
 jsonVar.put("wifi", wifi);
 
-}
+
 
 	
 	
@@ -265,7 +205,7 @@ jsonVar.put("wifi", wifi);
 	
 // Get info
 
-if (getinfo.equals("true")) {
+
 	
 import android.content.Context;
 import android.os.PowerManager;
@@ -310,11 +250,11 @@ info.put("clipboard", clipboard);
 
 jsonVar.put("info", info);
 
-}
+
 	
 // Get audio info	
 
-if (getaudio.equals("true")) {
+
 
 audio = service.getSystemService(Context.AUDIO_SERVICE);
 
@@ -351,8 +291,6 @@ audiovol.put("system", STREAM_SYSTEM);
 audiovol.put("voice_call", STREAM_VOICE_CALL);
 
 jsonVar.put("audio_volume", audiovol);
-	
-}
 
 jsonVar.put("test", "test");
 
