@@ -168,6 +168,7 @@ adapter.on('stateChange', function (id, state) {
                     if (arr_id[4] == "call"&&+state.val) com_date = {"send": "call", "number": state.val};
                     if (arr_id[4] == "clipboard") com_date = {"send": "clipboard", "text": state.val};
                     if (arr_id[4] == "dial"&&+state.val) com_date = {"send": "dial", "number": state.val};
+                    if (arr_id[4] == "brightness"&&+state.val) com_date = {"send": "brightness", "number": state.val};
                 }
 
                 if(com_date){
@@ -188,7 +189,7 @@ adapter.on('stateChange', function (id, state) {
     }
 });
 
-var command = ["alertinput","volume","openurl","vibrate","alert","noti","rec","app_start","dial","send_sms","call","clipboard"];
+var command = ["alertinput","volume","openurl","vibrate","alert","noti","rec","brightness","app_start","dial","send_sms","call","clipboard"];
 
 
 function find_command(array, value) {
@@ -475,6 +476,7 @@ function init(){
             set_id (name+'.command','alertinput','[Внимание!],[введите команду]'  );
             set_id (name+'.command','dial','[number]'  );
             set_id (name+'.command','noti','[название увед.],[техт]' );
+            set_id (name+'.command','brightness','[1-255]' );
 
             adapter.subscribeStates(name+'.command.*');
 

@@ -221,6 +221,30 @@ switch (send) {
 				jsonVar.put("home", "true");
 			break;
 			
+			case "brightness":
+			    import android.content.Context;
+				import android.provider.Settings;
+				service = server.props.get("serviceContext");
+			
+				if (number != null) {
+					try {
+						number = new Integer(number);
+						Settings.System.putInt(service.getContentResolver(),Settings.System.SCREEN_BRIGHTNESS_MODE,Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+						Settings.System.putInt(service.getContentResolver(),Settings.System.SCREEN_BRIGHTNESS,number );
+						
+						jsonVar.put("brightness", "true");
+						Brightness = Settings.System.getInt(service .getContentResolver(),Settings.System.SCREEN_BRIGHTNESS,0);
+						} catch (NumberFormatException e) {
+						jsonVar.put("brightness", "false");	
+						jsonVar.put("error", e);
+						}
+					}else{
+					jsonVar.put("brightness", "false");
+					jsonVar.put("number", "null");
+				}
+				
+			break;	
+			
             case "delete_sms_thread":
 			    import android.net.Uri;
                 service = server.props.get("serviceContext");
