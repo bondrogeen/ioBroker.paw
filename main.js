@@ -164,7 +164,7 @@ adapter.on('stateChange', function (id, state) {
                     if (arr_id[4] == "openurl") com_date = {"send": "openurl","text": state.val};
                     if (arr_id[4] == "vibrate"&&+state.val) com_date = {"send": "vibrate","number": state.val};
                     if (arr_id[4] == "rec"&&+state.val) com_date = {"send": "rec", "number": state.val};
-                    if (arr_id[4] == "app_start") com_date = {"send": "app_start", "text": state.val};
+                    if (arr_id[4] == "app_start") com_date = {"send": "app_start", "value": state.val};
                     if (arr_id[4] == "call"&&+state.val) com_date = {"send": "call", "number": state.val};
                     if (arr_id[4] == "clipboard") com_date = {"send": "clipboard", "text": state.val};
                     if (arr_id[4] == "dial"&&+state.val) com_date = {"send": "dial", "number": state.val};
