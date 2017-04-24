@@ -14,7 +14,7 @@
 			  "ru": "Первоначальный адаптер"
 			}
 		},
-        "title":                    "Javascript/Node.js based paw adapter",
+        "title":                    "paw adapter",
         "desc":                     {
 				 "en": "ioBroker paw Adapter",
 				 "de": "ioBroker Paw Adapter",
