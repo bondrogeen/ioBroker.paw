@@ -1,9 +1,9 @@
 {
     "common": {
         "name":                     "paw",
-        "version":                  "0.0.1",
+        "version":                  "0.0.2",
 	    "news": {
-			"0.0.1": {
+			"0.0.2": {
 			  "en": "beta version",
 			  "de": "Betaversion",
 			  "ru": "Бета версия"
@@ -16,9 +16,9 @@
 		},
         "title":                    "paw adapter",
         "desc":                     {
-				 "en": "ioBroker paw Adapter",
-				 "de": "ioBroker Paw Adapter",
-				 "ru": "ioBroker Paw драйвер как образец"
+				 "en": "Android Device Management",
+				 "de": "Android Geräte-Management",
+				 "ru": "Управление андроид устройством"
 		},
         "platform":                 "Javascript/Node.js",
         "mode":                     "daemon",
