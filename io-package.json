@@ -24,7 +24,7 @@
         "mode":                     "daemon",
         "icon":                     "paw.png",
         "enabled":                  false,
-		"extIcon":                  "https://github.com/bondrogeen/iobroker.paw/blob/master/admin/paw48.png",
+		"extIcon":                  "https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/admin/paw48.png",
 		"keywords":                 ["paw", "vis", "GUI", "graphical", "scada"],
         "readme":                   "https://github.com/ioBroker/ioBroker.paw/blob/master/README.md",
 		"loglevel":                 "info",
