@@ -47,7 +47,7 @@ if(file.exists()){		// чтение json из фаил /html/infosetting.json.
 	jsonVar.put("speed", "10");
 	jsonVar.put("direction", "left");
 	
-	jsonVar.put("text", "Текст по умолчанию, Default Text, der Standardtext ");
+	jsonVar.put("text", "Текст по умолчанию, Default Text, der Standardtext");
 	}
 
 
@@ -95,7 +95,7 @@ if(parameters.size()==0){ // если нет get и post данных созда
 		StringBuilder result = new StringBuilder(str.length());
 		for (int i = 0; i < str.length(); i++) {
 			char c = str.charAt(i);
-			if ("{ }".indexOf(c) < 0) {
+			if ("{}".indexOf(c) < 0) {
 				result.append(c);
 			}
 		}
@@ -106,9 +106,10 @@ if(parameters.size()==0){ // если нет get и post данных созда
 	
 	if(paramet!=""){ // разбираем и заносим в json массив
 		for (retval : paramet.split(",")) {
-		x = retval.split("=");
+			jsonVar.put("retval", retval);
+			x = retval.split("=");
 		try {
-			jsonVar.put(x[0].toString(), x[1].toString());
+			jsonVar.put(x[0].toString().replace(" ",""), x[1].toString());
 			} catch(e) {
 				jsonVar.put("error", e);
 	    }
