@@ -428,7 +428,7 @@ function time_reset_ignore(){
     }
 }
 
-var  upload_file = "set.xhtml,get.xhtml"//файлы которые нужно загрузить с папки 'www' на устройства
+var  upload_file = "set.xhtml,get.xhtml,infosetting.xhtml,info.xhtml"//файлы которые нужно загрузить с папки 'www' на устройства
 
 function init(){
 

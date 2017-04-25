@@ -1,0 +1,151 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>infosetting</title>
+</head>
+
+ <style>
+   P { 
+    line-height: 2; 
+    text-align: justify; 
+   }
+  </style> 
+  
+<body>
+
+<bsh>
+
+import java.io.*;
+import org.json.*;
+import de.fun2code.android.pawserver.AndroidInterface;
+pawHome = server.props.get("serviceContext").pawHome;
+file = new File(pawHome +"/html/infosetting.json");
+
+jsonVar = new JSONObject();
+
+
+if(file.exists()){		// чтение json из фаил /html/infosetting.json.
+	    fin = new FileInputStream(file);
+		bin = new BufferedInputStream(fin);
+		byte[] contents = new byte[1024];
+		int bytesRead = 0;
+		String strFileContents;
+		while ((bytesRead = bin.read(contents)) != -1) {
+			strFileContents = new String(contents, 0, bytesRead);
+		}
+		bin.close();
+		
+		jsonVar = new JSONObject(strFileContents);
+		
+		
+		
+	}else{
+	
+	jsonVar.put("bgcolor", "#ffffff");
+	jsonVar.put("color", "#000000");
+	jsonVar.put("fontsize", "40");
+	jsonVar.put("speed", "10");
+	jsonVar.put("direction", "left");
+	
+	jsonVar.put("text", "Текст по умолчанию, Default Text, der Standardtext ");
+	}
+
+
+
+if(parameters.size()==0){ // если нет get и post данных создаем стриницу настроек.
+		
+	print("<h1>Настройки страницы.</h1>");
+	print("<form action=\"infosetting.xhtml\"><p>");
+	print("Укажите цвет фона:<br>");
+	print("<input type=\"color\" name=\"bgcolor\" value=\""+jsonVar.getString("bgcolor")+"\"><br>");
+	print("Укажите цвет текста:<br>");
+	print("<input type=\"color\" name=\"color\" value=\""+jsonVar.getString("color")+"\"><br>");
+	print("Размер текста:<br>");
+	print("<input type=\"input\" name=\"fontsize\" size=\"1\" value=\""+jsonVar.getString("fontsize")+"\"><br>");
+	print("Скорость текста:<br>");
+	print("<input type=\"input\" name=\"speed\" size=\"1\" value=\""+jsonVar.getString("speed")+"\"><br>");
+	print("Текст:<br>");
+	print("<input type=\"input\" name=\"text\" size=\"100\" value=\""+jsonVar.getString("text")+"\"><br>");
+	print("Направление текста:<br>");
+	print("<select name=\"direction\">");
+	print("<option "); 
+	if(jsonVar.getString("direction").equals("left")) print("selected");
+	print(">left</option>");
+	print("<option "); 
+	if(jsonVar.getString("direction").equals("right")) print("selected");
+	print(">right</option>");
+	print("<option "); 
+	if(jsonVar.getString("direction").equals("up")) print("selected");
+	print(">up</option>");
+	print("<option "); 
+	if(jsonVar.getString("direction").equals("down")) print("selected");
+	print(">down</option>");
+    print("</select>");
+	
+	print("<br>");
+	print("<br><input type=\"submit\" value=\"Сохранить\"></p>");
+	print("</form>");
+
+}else{  //  если есть get и post данных  обрабатываем их.
+	
+	
+	paramet = parameters.toString(); // получаем все get и post параметры и переводим в строку "по другому не получается забрать их"
+		
+	removePunct2(String str) {  // удал. из строки "{ }"
+		StringBuilder result = new StringBuilder(str.length());
+		for (int i = 0; i < str.length(); i++) {
+			char c = str.charAt(i);
+			if ("{ }".indexOf(c) < 0) {
+				result.append(c);
+			}
+		}
+		return result.toString();
+	}
+	
+	paramet = removePunct2(paramet);
+	
+	if(paramet!=""){ // разбираем и заносим в json массив
+		for (retval : paramet.split(",")) {
+		x = retval.split("=");
+		try {
+			jsonVar.put(x[0].toString(), x[1].toString());
+			} catch(e) {
+				jsonVar.put("error", e);
+	    }
+			
+		
+		
+	}
+		
+	}
+	
+	
+	void write(jsonVar) { // запись json в фаил /html/infosetting.json.
+		try {
+			if(!file.exists()){
+				file.createNewFile();
+				}
+			PrintWriter out = new PrintWriter(file.getAbsoluteFile());
+			try {
+				out.print(jsonVar);
+			} finally {
+				out.close();
+				}
+		} catch(IOException e) {
+			throw new RuntimeException(e);
+		    }
+	}
+
+	
+	write(jsonVar);
+	request.sendResponse(jsonVar.toString().getBytes(), "text/plain; charset=UTF-8");	
+	request.out.flush();
+	request.out.close();	
+  
+
+}
+	
+
+</bsh>
+</body>
+</html>

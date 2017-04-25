@@ -148,6 +148,9 @@ sendTo("paw.0",'all',{
     log(JSON.stringify(response));
 });
 
+//установка времени подсветки экрана в милисек. '-1' - не гасить экран (работает не на всех уст.) 
+sendTo("paw.0",'dev1',{send:'screen_off_time',number: '5000'});
+
 //активировать  экран на устройстве.
 sendTo("paw.0",'all',{send:'lcd_on'});
 

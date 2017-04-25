@@ -245,6 +245,31 @@ switch (send) {
 				
 			break;	
 			
+			
+			case "screen_off_time":
+			    
+				import android.provider.Settings;
+				service = server.props.get("serviceContext");
+			
+				if (number != null) {
+					try {
+						number = new Integer(number);
+						Settings.System.putInt(service.getContentResolver(),Settings.System.SCREEN_OFF_TIMEOUT,number);
+						jsonVar.put("screen_off_time", "true");
+						
+						} catch (NumberFormatException e) {
+							
+						jsonVar.put("screen_off_time", "false");	
+						jsonVar.put("error", e);
+						}
+					}else{
+					jsonVar.put("screen_off_time", "false");
+					jsonVar.put("number", "null");
+				}
+				
+			break;	
+	
+			
             case "delete_sms_thread":
 			    import android.net.Uri;
                 service = server.props.get("serviceContext");
