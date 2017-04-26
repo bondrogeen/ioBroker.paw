@@ -12,8 +12,8 @@ import de.fun2code.android.pawserver.AndroidInterface;
 pawHome = server.props.get("serviceContext").pawHome;
 file = new File(pawHome +"/html/infosetting.json");
 
+// проверяем существует ли файл если true читаем из него json данные.
 if(file.exists()){
-
 fin = new FileInputStream(file);
 bin = new BufferedInputStream(fin);
 byte[] contents = new byte[1024];
@@ -27,6 +27,7 @@ bin.close();
 
 jsonVar = new JSONObject(strFileContents);
 
+// если false задаем по умолчанию
 }else{
 	jsonVar = new JSONObject();
 	jsonVar.put("bgcolor", "#ffffff");
@@ -34,7 +35,6 @@ jsonVar = new JSONObject(strFileContents);
 	jsonVar.put("fontsize", "40");
 	jsonVar.put("speed", "10");
 	jsonVar.put("direction", "left");
-	
 	jsonVar.put("text", "Текст по умолчанию, Default Text, der Standardtext ");
 }
 

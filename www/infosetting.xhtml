@@ -50,9 +50,9 @@ if(file.exists()){		// чтение json из фаил /html/infosetting.json.
 	jsonVar.put("text", "Текст по умолчанию, Default Text, der Standardtext");
 	}
 
+// если нет get и post данных создаем стриницу настроек.
 
-
-if(parameters.size()==0){ // если нет get и post данных создаем стриницу настроек.
+if(parameters.size()==0){ 
 		
 	print("<h1>Настройки страницы.</h1>");
 	print("<form action=\"infosetting.xhtml\"><p>");
@@ -86,42 +86,23 @@ if(parameters.size()==0){ // если нет get и post данных созда
 	print("<br><input type=\"submit\" value=\"Сохранить\"></p>");
 	print("</form>");
 
-}else{  //  если есть get и post данных  обрабатываем их.
-	
-	
-	paramet = parameters.toString(); // получаем все get и post параметры и переводим в строку "по другому не получается забрать их"
+}else{	//  если есть get и post данных  обрабатываем их.
 		
-	removePunct2(String str) {  // удал. из строки "{ }"
-		StringBuilder result = new StringBuilder(str.length());
-		for (int i = 0; i < str.length(); i++) {
-			char c = str.charAt(i);
-			if ("{}".indexOf(c) < 0) {
-				result.append(c);
-			}
-		}
-		return result.toString();
-	}
+	// разбор параметров запроса	
+	set = parameters.entrySet(); 
 	
-	paramet = removePunct2(paramet);
-	
-	if(paramet!=""){ // разбираем и заносим в json массив
-		for (retval : paramet.split(",")) {
-			jsonVar.put("retval", retval);
-			x = retval.split("=");
+	for (me : set) {
 		try {
-			jsonVar.put(x[0].toString().replace(" ",""), x[1].toString());
-			} catch(e) {
-				jsonVar.put("error", e);
-	    }
-			
+			jsonVar.put(me.getKey(), me.getValue());
+		} catch(e) {
+			jsonVar.put("error", e);
+			}
+	}	
 		
-		
-	}
-		
-	}
 	
 	
-	void write(jsonVar) { // запись json в фаил /html/infosetting.json.
+	// запись json в фаил /html/infosetting.json.
+	void write(jsonVar) { 
 		try {
 			if(!file.exists()){
 				file.createNewFile();
