@@ -1,4 +1,4 @@
-![Logo](admin/paw.png)
+![Logo](admin/paw_big.png)
 # ioBroker.paw
 =================
 
@@ -300,7 +300,7 @@ sendTo("paw.0",'dev1',{send:  'server',text:'kill'});
 
 
 
-#### 0.0.1
+#### 0.0.3
 * (bondrogeen) initial release
 
 ## License

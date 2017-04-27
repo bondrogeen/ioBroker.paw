@@ -1,9 +1,9 @@
 {
     "common": {
         "name":                     "paw",
-        "version":                  "0.0.3",
+        "version":                  "0.0.4",
 	    "news": {
-			"0.0.2": {
+			"0.0.4": {
 			  "en": "beta version",
 			  "de": "Betaversion",
 			  "ru": "Бета версия"
@@ -24,7 +24,7 @@
         "mode":                     "daemon",
         "icon":                     "paw.png",
         "enabled":                  false,
-		"extIcon":                  "https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/admin/paw48.png",
+		"extIcon":                  "https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/admin/paw.png",
 		"keywords":                 ["paw", "vis", "GUI", "graphical", "scada"],
         "readme":                   "https://github.com/bondrogeen/iobroker.paw",
 		"loglevel":                 "info",
