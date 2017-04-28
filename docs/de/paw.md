@@ -1,4 +1,4 @@
-![Logo]()
+![Logo](https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/admin/paw_big.png)
 # ioBroker.paw
 =================
 

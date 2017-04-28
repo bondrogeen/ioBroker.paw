@@ -1,4 +1,4 @@
-![Logo](admin/paw_big.png)
+![Logo](https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/admin/paw_big.png)
 # ioBroker.paw
 =================
 
@@ -38,7 +38,7 @@ https://play.google.com/store/apps/details?id=de.fun2code.android.pawserver
 
 https://github.com/bondrogeen/iobroker.paw
 
-![pic](docs/ru/img/1.jpg)
+![pic](https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/docs/ru/img/1.jpg)
 
 
 Для управление через vis, можно управлять устройством [name_device] изменяя переменную 
@@ -127,7 +127,7 @@ https://github.com/bondrogeen/iobroker.paw
 
 
 
-![pic](docs/ru/img/2.jpg)
+![pic](https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/docs/ru/img/2.jpg)
 
 
 
