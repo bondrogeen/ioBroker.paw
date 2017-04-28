@@ -7,9 +7,9 @@
 
 [![NPM](https://nodei.co/npm/iobroker.paw.png?downloads=true)](https://nodei.co/npm/iobroker.paw/)
 
-###[на русском](https://github.com/bondrogeen/iobroker.paw/blob/master/docs/ru/paw.md)
+[на русском](https://github.com/bondrogeen/iobroker.paw/blob/master/docs/ru/paw.md)
 
-###[deutsch](https://github.com/bondrogeen/iobroker.paw/blob/master/docs/de/paw.md)
+[deutsch](https://github.com/bondrogeen/iobroker.paw/blob/master/docs/de/paw.md)
 
 
 ## Install the program and configure the adapter.
