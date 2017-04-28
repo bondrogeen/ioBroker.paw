@@ -38,7 +38,7 @@ Install the driver iobroke.paw with GitHub.
 
 https://github.com/bondrogeen/iobroker.paw
 
-![pic](admin/1.jpg)
+![pic](https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/admin/1.jpg)
 
 
 To control via vis, you can control the device [name_device] by changing the variable
@@ -127,7 +127,7 @@ require a second parameter, which is entered through a comma.
 
 
 
-![pic](admin/2.jpg)
+![pic](https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/admin/2.jpg)
 
 
 
