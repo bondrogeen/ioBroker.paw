@@ -304,7 +304,7 @@ sendTo("paw.0",'dev1',{send:  'server',text:'kill'});
 
 
 
-#### 0.0.3
+#### 0.0.4
 * (bondrogeen) initial release
 
 ## License
