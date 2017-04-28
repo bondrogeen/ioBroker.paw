@@ -130,7 +130,7 @@ Beispiel: 1000
 
 
 
-![pic](docs/ru/img/2.jpg)
+![pic](https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/docs/de/img/2.jpg)
 
 
 
