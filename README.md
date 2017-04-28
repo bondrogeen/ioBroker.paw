@@ -7,9 +7,9 @@
 
 [![NPM](https://nodei.co/npm/iobroker.paw.png?downloads=true)](https://nodei.co/npm/iobroker.paw/)
 
-[на русском](https://github.com/bondrogeen/iobroker.paw/blob/master/docs/ru/paw.md)
+[Русский](https://github.com/bondrogeen/iobroker.paw/blob/master/docs/ru/paw.md)
 
-[deutsch](https://github.com/bondrogeen/iobroker.paw/blob/master/docs/de/paw.md)
+[Deutsch](https://github.com/bondrogeen/iobroker.paw/blob/master/docs/de/paw.md)
 
 
 ## Install the program and configure the adapter.
@@ -157,13 +157,13 @@ sendTo("paw.0",'all',{
     log(JSON.stringify(response));
 });
 
-//set the screen backlight time in milliseconds. '-1' - do not quit the screen (does not work on all devices) 
+// set the screen backlight time in milliseconds. '-1' - do not quit the screen (does not work on all devices) 
 sendTo("paw.0",'dev1',{send:'screen_off_time',number: '5000'});
 
-//activate the screen on the device.
+// activate the screen on the device.
 sendTo("paw.0",'all',{send:'lcd_on'});
 
-//backlight brightness level from 1-255
+// backlight brightness level from 1-255
 sendTo("paw.0",'dev1',{send:'brightness',number: '50'});
 
 // execute shell command (need root)
@@ -192,7 +192,7 @@ sendTo("paw.0",'dev1',{
     log(JSON.stringify(response));
 });
 
-//Send message.
+// send message.
 sendTo("paw.0",'dev1',{send:  'sms', text:  'Any text', number: '8123456789'});
 
 sendTo("paw.0",'192.168.1.71',{
@@ -222,7 +222,7 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//call to number
+// call to number
 sendTo("paw.0",'dev1',{send:  'call', number: '0611'});
 
 // with  callback
@@ -233,7 +233,7 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//Call the number or send ussd command.
+// call the number or send ussd command.
 sendTo("paw.0",'dev1',{send:  'call', number: '*100#'});
 
 // callback
@@ -244,7 +244,7 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//enables vibration, [number] (time in milliseconds)
+// enables vibration, [number] (time in milliseconds)
 sendTo("paw.0",'dev1',{send:  'vibrate', number: '1000'});
 
 sendTo("paw.0",'192.168.1.71',{
@@ -254,7 +254,7 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//Send notifications to devices
+// send notifications to devices
 sendTo("paw.0",'dev1',{send:  'noti', texthead: 'Attention',text: 'Any text'});
 
 // with callback
@@ -266,7 +266,7 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//Send warning to devices.
+// send warning to devices.
 sendTo("paw.0",'dev1',{send:  'alert', texthead: 'Attention',text: 'Any text'});
 
 
@@ -279,7 +279,7 @@ sendTo("paw.0",'192.168.1.71',{
 });
 
 
-//Open the browser at the specified address
+// open the browser at the specified address
 sendTo("paw.0",'dev1',{send:  'openurl', text: 'http://iobroker.net'});
 
 
@@ -290,17 +290,17 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//End call
+// end call
 sendTo("paw.0",'dev1',{send:  'endсall'});
 
-//send text to the clipboard  
+// send text to the clipboard  
 sendTo("paw.0",'dev1',{send:  'clipboard',text:'test or number'});
 
 
-//restart server paw 
+// restart server paw 
 sendTo("paw.0",'dev1',{send:  'server',text:'restart'});
 
-//stop paw the server
+// stop paw the server
 sendTo("paw.0",'dev1',{send:  'server',text:'kill'});
 
 

@@ -52,8 +52,6 @@ adapter.on('stateChange', function (id, state) {
             var start = false;
             if(date.getHours()>=time_start&&date.getHours()<=time_end) start=true;  // Проверка времени оповещения
             if (arr_id[2]==name&&start) { //поиск по имени
-
-
                 if(typeof (bufer[name])!=='object'){
                     bufer[name] = {};
                 }
@@ -66,8 +64,6 @@ adapter.on('stateChange', function (id, state) {
                 if(typeof (bufer[name].start)=='undefined'){
                     bufer[name].start=true
                 }
-
-
                 bufer[name].text.push(state.val);
                 if (bufer[name].start==true) {
                     say_bufer(name);
@@ -76,6 +72,22 @@ adapter.on('stateChange', function (id, state) {
 
             }
         }
+    }else if (id===adapter.namespace+'.all_device.brightness'||find(subscribe, id)!==-1){
+        adapter.log.info(id);
+        adapter.log.info(JSON.stringify(state));
+        for (var i = 0; i < adapter.config.devices.length; i++) {
+            var name = adapter.config.devices[i].name
+            var ip = adapter.config.devices[i].ip
+            var port = adapter.config.devices[i].port
+
+            if(state.val) {
+                com_date = {"send": "brightness", "number": state.val};
+                getdata(name, ip, port, "/set.xhtml", com_date, function (response, ip) {
+                    adapter.log.info("command: " + com_date + " " + ip + " " + response);
+                })
+            }
+        }
+
     }else if (id===adapter.namespace+'.all_device.tts_response'||find(subscribe, id)!==-1){
         adapter.log.info(id);
         adapter.log.info(JSON.stringify(state));
@@ -160,15 +172,15 @@ adapter.on('stateChange', function (id, state) {
                     if(com_val[0]&&com_val[1]&&arr_id[4]=="send_sms") com_date = {"send":"sms","number":com_val[0],"text":com_val[1]};
                     if(com_val[0]&&com_val[1]&&arr_id[4]=="noti") com_date = {"send":"noti","texthead":com_val[0],"text":com_val[1]};
                 }else {
-                    if (arr_id[4] == "volume"&&+state.val) com_date = {"send": "volume","number": state.val};
+                    if (arr_id[4] == "volume"&& state.val) com_date = {"send": "volume","number": state.val};
                     if (arr_id[4] == "openurl") com_date = {"send": "openurl","text": state.val};
-                    if (arr_id[4] == "vibrate"&&+state.val) com_date = {"send": "vibrate","number": state.val};
-                    if (arr_id[4] == "rec"&&+state.val) com_date = {"send": "rec", "number": state.val};
+                    if (arr_id[4] == "vibrate"&& state.val) com_date = {"send": "vibrate","number": state.val};
+                    if (arr_id[4] == "rec"&& state.val) com_date = {"send": "rec", "number": state.val};
                     if (arr_id[4] == "app_start") com_date = {"send": "app_start", "value": state.val};
-                    if (arr_id[4] == "call"&&+state.val) com_date = {"send": "call", "number": state.val};
+                    if (arr_id[4] == "call"&& state.val) com_date = {"send": "call", "number": state.val};
                     if (arr_id[4] == "clipboard") com_date = {"send": "clipboard", "text": state.val};
-                    if (arr_id[4] == "dial"&&+state.val) com_date = {"send": "dial", "number": state.val};
-                    if (arr_id[4] == "brightness"&&+state.val) com_date = {"send": "brightness", "number": state.val};
+                    if (arr_id[4] == "dial"&& state.val) com_date = {"send": "dial", "number": state.val};
+                    if (arr_id[4] == "brightness"&& state.val) com_date = {"send": "brightness", "number": state.val};
                 }
 
                 if(com_date){
@@ -457,7 +469,6 @@ function init(){
             });
 
             set_id (name+'.tts','response','text'  );
-            adapter.subscribeStates(name+'.tts.response');
 
             set_id (name+'.request','alertinput',''  );
             set_id (name+'.request','speech',''  );
@@ -479,14 +490,16 @@ function init(){
             set_id (name+'.command','brightness','[1-255]' );
 
             adapter.subscribeStates(name+'.command.*');
+            adapter.subscribeStates(name+'.tts.response');
 
         }
     }
 
 
+    set_id ('all_device','brightness',""  );
+    set_id ('all_device','tts_response',"text"  );
 
-    set_id ('all_device','tts_response',""  );
-    adapter.subscribeStates('all_device.tts_response');
+    adapter.subscribeStates('all_device.*');
 
 }
 
