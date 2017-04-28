@@ -1,4 +1,4 @@
-![Logo](admin/paw_big.png)
+![Logo]()
 # ioBroker.paw
 =================
 
@@ -40,7 +40,7 @@ Installieren Sie den Adapter iobroke.paw vom GitHub.
 
 https://github.com/bondrogeen/iobroker.paw
 
-![pic](docs/ru/img/1.jpg)
+![pic](https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/docs/de/img/1.jpg)
 
 
 Zur Steuerung über vis, kann Das Gerät [name_device] über varianle gesteuert werden.
