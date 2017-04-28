@@ -7,174 +7,173 @@
 
 [![NPM](https://nodei.co/npm/iobroker.paw.png?downloads=true)](https://nodei.co/npm/iobroker.paw/)
 
-
-
-
-
-## Install the program and configure the adapter.
+## Die Installation und Einstellungen.
  
-Download and install the application PAW Server for Android.
+Herunterladen und Ausführen PAW Server für Android.
 
 https://play.google.com/store/apps/details?id=de.fun2code.android.pawserver 
 
-Open the PAW Server for Android app on your device
+Öffnen Sie die Anwendung PAW Server auf ihrem Android Gerät
+   
+Starten PAW Server und wieder stoppen.  Sie müssen nach ..paw/html ordner
+   
+folgende Dateien verschieben:
 
-after initialization, you need to transfer it to the ..paw / html folder.
 
-files:
-
-+ settings.xhtml
 + call_log.xhtml 
 + get.xhtml
 + set.xhtml
 + sms_read.xhtml
++ settings.xhtml
 
+Eigentlich sollte nur "settings.xhtml" reichen, da die andere    
+ 
+Dateien werden automatisch Heruntergeladen und in der    
+  
+Zukunft werden selbst aktualisiert.   
 
-It's enough to download and transfer only the file "settings.xhtml" the other files are downloaded using the adapter
+Dateien gibst Hier: https://github.com/bondrogeen/iobroker.paw/tree/master/www
 
-and with future adapter updates, will be updated themselves.
+Starten wir PAW Server für Android erneut.
 
-files to take here https://github.com/bondrogeen/iobroker.paw/tree/master/www
-
-Launch PAW Server for Android.
-
-Install the driver iobroke.paw with GitHub.
+Installieren Sie den Adapter iobroke.paw vom GitHub.
 
 https://github.com/bondrogeen/iobroker.paw
 
-![pic](admin/1.jpg)
+![pic](docs/ru/img/1.jpg)
 
 
-To control via vis, you can control the device [name_device] by changing the variable
+Zur Steuerung über vis, kann Das Gerät [name_device] über varianle gesteuert werden.
 
 ***paw.0.[name_device].command.command*** 
 
 + lcd_on
-> activate the screen
+> aktiviren Bildschirm
 + home
-> emulate pressing the HOME button
+> emulieren die HOME-Taste
 + endсall     
-> end call 
+> Enden Verbindung (Auflegen)
 + scan        
-> launch the barcode scanner application.
+> ausführen ein Barcode-Scanner Anwendung.
 + speech
-> voice activation
+> Sprachaktivierung
 + restart
-> reboot server paw
+> paw server neustarten 
 + kill
-> disable paw server
+> paw server stoppen 
 + gong
-> plays the file ..paw/html/gong.mp3 
+> Wiedergabe vom mp3 Datei ..paw/html/gong.mp3 
 + sound_noti
-> loses the standard notification sound
+> Wiedergabe vom Standard Notifizierungston
 + sound_ring
-> loses the standard ring tone
+> Wiedergabe vom Standart-Klingelton
 
 
-It's the same for the other variables, but only some commands
-require a second parameter, which is entered through a comma.
+Varieablen die Brauchen einen zweiten Parametr, 
 
-***paw.0.[name_device].command.alert***
-> Example: Warning, No connection !!!
-> Warnings
-
-***paw.0.[name_device].command.alertinput*** 
-> Example: Attention! , Enter the command	    
-> Warnings with the request, the answer is saved in the variable paw.*.[name_device].request.alertinput
-
-***paw.0.[name_device].command.send_sms***
-> Example: 123456789, Test message	  
-> Send an SMS message to the number [number], with the text [text]  
-	
-***paw.0.[name_device].command.noti***
-> Example: Attention, No response from the device.	  
-> Notification [name of notification], [notification text] 
-
-***paw.0.[name_device].command.app_start***			
-> Example: lcf.clock	   
-> Launch the application  
-
-***paw.0.[name_device].command.call***
-> Example: 123456789   
-> Call the number [number]  
-
-***paw.0.[name_device].command.clipboard***
-> Example: Ab123
-> Save text to the clipboard  
-
-***paw.0.[name_device].command.dial***	
-> Example: 123456789
-> Dial the number on the device.
-
-***paw.0.[name_device].command.brightness***
-> Example: 255
-> Backlight brightness level from 1-255
-	
-***paw.0.[name_device].command.openurl***
-> Example: http://google.com
-> Open url in browser
-
-***paw.0.[name_device].command.rec***
-> Example: 1000
-> Enable recording with the duration [time (ms)]
-
-***paw.0.[name_device].command.vibrate***
-> Example: 500
-> Enable vibration, time in milliseconds [time (ms)]  
-
-***paw.0.[name_device].command.volume*** 
-> Example: 7
-> Set the volume on the device from 0 to the maximum value,
-> The maximum value can be found here (usually 15)
-> > paw.*.[name_device].info.audio_volume.info.music_max   
+die durch Komma getrennt eingegeben werden.
    
 
+***paw.0.[name_device].command.alert***
+> Beispeil: Achtung, keine Verbindung!!!
+> Warnugen
+
+***paw.0.[name_device].command.alertinput*** 
+> Beispiel: Achtung! , Befehl Eingabe
+> Warnung mit Anforderung, antwort wird in der variable gespeichert paw.*.[name_device].request.alertinput
+
+***paw.0.[name_device].command.send_sms***
+> Beispiel: 123456789 , Überprüfen
+> Senden eiene SMS an die Nummer [number] , mit dem Text [text]
+	
+***paw.0.[name_device].command.noti***
+> Beispiel: Achtung, keine Antwort vom Gerät.
+> Mitteilung [Name der Mitteilung] , [text Nachricht]
+
+***paw.0.[name_device].command.app_start***			
+> Beispiel: lcf.clock
+> Ausführen ein Anwendung
+
+***paw.0.[name_device].command.call***
+> Beispiel: 123456789
+> Wehlen  [number]
+
+***paw.0.[name_device].command.clipboard***
+> Beispiel:Ab123
+> Text wird in die Zwieschenablage gespeichert   
+
+***paw.0.[name_device].command.dial***	
+> Beispiel: 123456789
+> Anrufen Nummer [number].
+
+***paw.0.[name_device].command.brightness***
+> Beispiel: 255     
+> Helligkeitspegel von 1 bis 255 
+	
+***paw.0.[name_device].command.openurl***
+> Beispiel: http://google.de
+> URL öffnen im Browser 
+
+***paw.0.[name_device].command.rec***
+Beispiel: 1000
+> Starten eine Aufnahme, dauer [time(ms)]  
+
+***paw.0.[name_device].command.vibrate***
+> Beispiel: 500
+> Aktivieren Vibrationszeit in Millisekunden [time(ms)] 
+
+***paw.0.[name_device].command.volume*** 
+> Beispiel: 7
+> Lautstärkeeinstellung auf der Gerät vom 0 bis auf einen Maximalwert,
+> Maximalwert kann hier ermittelt werden (in der Regel 15)   
+> paw.*.[name_device].info.audio_volume.info.music_max    
 
 
-![pic](admin/2.jpg)
+
+![pic](docs/ru/img/2.jpg)
 
 
 
-## Commands for javascript
+## Команды для javascript
 
 
 
 ```javascript
 /*
-[dev1] - is the name of the device, you can also enter IP devices.
-You can specify multiple devices separated by commas 'dev1, dev3, 192.168.1.71'
-all - send to all devices.
+dev1 - Name des Geräts, oder die IP vom Gerät eingeben.
+Sie können durch Komma getrennt werde um mehrere Geräte spezifizieren " dev1, dev3, 192.168.1.71 "
+all - an alle Geräte gesendet.
 */
 
-// send the text to the speech synthesizer.
-sendTo("paw.0",'dev1,dev3',{send:  'say', text:  'test text'});
+// Sende eine SMS an Sprachsynthesizer.
+sendTo("paw.0",'dev1,dev3',{send:  'say', text:  'testtext'});
 
-// with callback
+// ein Rückruf
 sendTo("paw.0",'all',{
     send:  'say', 
-    text:  'Check text'},function (response){
+    text:  'testtext'},function (response){
     log(JSON.stringify(response));
 });
 
-//set the screen backlight time in milliseconds. '-1' - do not quit the screen (does not work on all devices) 
+//Einstellen der Hintergrundbeleuchtung Zeit millisekunden. ‚-1‘ - löschen nicht auf den Bildschirm (nicht auf allen Geräten funktionieren)
 sendTo("paw.0",'dev1',{send:'screen_off_time',number: '5000'});
 
-//activate the screen on the device.
+// aktivieren vom Bildschirm auf dem Gerät.
 sendTo("paw.0",'all',{send:'lcd_on'});
 
-//backlight brightness level from 1-255
+//Helligkeitspegel von 1 bis 255 
 sendTo("paw.0",'dev1',{send:'brightness',number: '50'});
 
-// execute shell command (need root)
-// "input tap x y" emulates a click on the screen x - coordinates along the mountains. Y - vertical coordinates.
-// "poweroff -f" turn off devices
-// "reboot" reboot device
+// Shell-Befehl auszuführen (erfordert root)
+// „Eingangsabgriff x y“ emuliert den Bildschirm gedrückt x - Koordinaten des Horizontal. y - Koordinate Vertikal.
+// „poweroff -f“ das Gerät ausschalten
+// "reboot" neu zu starten
 sendTo("paw.0",'all',{send:'exec',text:'input tap 100 100'});
 
-// emulate pressing the HOME button
+// emulieren die HOME-Taste drücken
 sendTo("paw.0",'all',{send:'home'});
 
-// run the application, for example - Tablet Clock indicates "system name"
+// die Anwendung ausführen, zum Beispiel - Tablet Clock zeigt „Systemname“
 sendTo("paw.0",'all',{send:'app_start',value:'lcf.clock'});
 
 sendTo("paw.0",'dev1',{
@@ -184,35 +183,35 @@ sendTo("paw.0",'dev1',{
     log(JSON.stringify(response));
 });
 
-// get the list of installed applications "name": "system name"
+// die Liste der installierten Anwendungen Get „name“: „Systemname“
 sendTo("paw.0",'dev1',{
     send:  'apps'
 },function (response){
     log(JSON.stringify(response));
 });
 
-//Send message.
-sendTo("paw.0",'dev1',{send:  'sms', text:  'Any text', number: '8123456789'});
+// SMS senden.
+sendTo("paw.0",'dev1',{send:  'sms', text:  'testtext', number: '8123456789'});
 
 sendTo("paw.0",'192.168.1.71',{
     send:  'sms', 
-    text:  'Any text',
+    text:  'проверка',
     number: '8123456789'
 },function (response){
     log(JSON.stringify(response));
 });
 
 /*
-setting the volume from 0 to 15, the maximum volume is set by the system,
-also checked to ensure that it does not exceed the set values)
-mode = can be(STREAM_NOTIFICATION, STREAM_MUSIC ,STREAM_ALARM, 
-STREAM_RING, STREAM_SYSTEM, STREAM_VOICE_CALL)  
-If not specified, the default is  STREAM_MUSIC
+Einstellen der Lautstärke von 0 bis 15, wird das maximale Volumen durch das System festgelegt,
+auch geprüft, die nicht über angegebenen Werten geht)
+mode = kann (STREAM_NOTIFICATION, STREAM_MUSIC, STREAM_ALARM,
+STREAM_RING, STREAM_SYSTEM, STREAM_VOICE_CALL)
+Wenn nicht anders angegeben, ist der Standard STREAM_MUSIC
 */
 
 sendTo("paw.0",'dev1',{send:  'volume', number: '5'});
 
-// with callback
+// с callback
 sendTo("paw.0",'192.168.1.71',{
     send:  'volume', 
     number: '10',
@@ -221,10 +220,10 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//call to number
+// Wehlen
 sendTo("paw.0",'dev1',{send:  'call', number: '0611'});
 
-// with  callback
+// с callback
 sendTo("paw.0",'192.168.1.71',{
     send:  'call', 
     number: '0611'
@@ -232,10 +231,10 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//Call the number or send ussd command.
+// rufen Sie eine Nummer oder ausführen ussd Befehl.
 sendTo("paw.0",'dev1',{send:  'call', number: '*100#'});
 
-// callback
+// с callback
 sendTo("paw.0",'192.168.1.71',{
     send:  'call', 
     number: '0611'
@@ -243,7 +242,7 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//enables vibration, [number] (time in milliseconds)
+// Aktiviert die Vibrationszeit (Zeit in Millisekunden)
 sendTo("paw.0",'dev1',{send:  'vibrate', number: '1000'});
 
 sendTo("paw.0",'192.168.1.71',{
@@ -253,33 +252,33 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//Send notifications to devices
-sendTo("paw.0",'dev1',{send:  'noti', texthead: 'Attention',text: 'Any text'});
+// Benachrichtigung auf dem Gerät senden
+sendTo("paw.0",'dev1',{send:  'noti', texthead: 'Achtung',text: 'testtext'});
 
-// with callback
+// с callback
 sendTo("paw.0",'192.168.1.71',{
     send:  'noti',
-    texthead: 'Attention',
-    text: 'Any text'
+    texthead: 'Achtung',
+    text: 'testtext'
 },function (response){
     log(JSON.stringify(response));
 });
 
-//Send warning to devices.
-sendTo("paw.0",'dev1',{send:  'alert', texthead: 'Attention',text: 'Any text'});
+// eine Warnung an das Gerät senden
+sendTo("paw.0",'dev1',{send:  'alert', texthead: 'Achtung',text: 'testtext'});
 
 
 sendTo("paw.0",'192.168.1.71',{
     send:  'alert',
-    texthead: 'Attention',
-    text: 'Any text'
+    texthead: 'Achtung',
+    text: 'testtext'
 },function (response){
     log(JSON.stringify(response));
 });
 
 
-//Open the browser at the specified address
-sendTo("paw.0",'dev1',{send:  'openurl', text: 'http://iobroker.net'});
+// Browser öffnen an die angegebene Adresse
+sendTo("paw.0",'dev1',{send:  'openurl', text: 'http://192.168.1.61:8082'});
 
 
 sendTo("paw.0",'192.168.1.71',{
@@ -289,17 +288,17 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//End call
+// Anruf beenden (auflegen)
 sendTo("paw.0",'dev1',{send:  'endсall'});
 
-//send text to the clipboard  
-sendTo("paw.0",'dev1',{send:  'clipboard',text:'test or number'});
+// Text in die Zwischenablage senden
+sendTo("paw.0",'dev1',{send:  'clipboard',text:'текст'});
 
 
-//restart server paw 
+// PAW Server neu starten
 sendTo("paw.0",'dev1',{send:  'server',text:'restart'});
 
-//stop paw the server
+// PAW Server stoppen
 sendTo("paw.0",'dev1',{send:  'server',text:'kill'});
 
 

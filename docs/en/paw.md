@@ -7,10 +7,6 @@
 
 [![NPM](https://nodei.co/npm/iobroker.paw.png?downloads=true)](https://nodei.co/npm/iobroker.paw/)
 
-
-
-
-
 ## Install the program and configure the adapter.
  
 Download and install the application PAW Server for Android.
@@ -23,12 +19,12 @@ after initialization, you need to transfer it to the ..paw / html folder.
 
 files:
 
-+ settings.xhtml
+
 + call_log.xhtml 
 + get.xhtml
 + set.xhtml
 + sms_read.xhtml
-
++ settings.xhtml
 
 It's enough to download and transfer only the file "settings.xhtml" the other files are downloaded using the adapter
 
@@ -147,12 +143,12 @@ all - send to all devices.
 */
 
 // send the text to the speech synthesizer.
-sendTo("paw.0",'dev1,dev3',{send:  'say', text:  'test text'});
+sendTo("paw.0",'dev1,dev3',{send:  'say', text:  'test message'});
 
 // with callback
 sendTo("paw.0",'all',{
     send:  'say', 
-    text:  'Check text'},function (response){
+    text:  'test message'},function (response){
     log(JSON.stringify(response));
 });
 
@@ -192,11 +188,11 @@ sendTo("paw.0",'dev1',{
 });
 
 //Send message.
-sendTo("paw.0",'dev1',{send:  'sms', text:  'Any text', number: '8123456789'});
+sendTo("paw.0",'dev1',{send:  'sms', text:  'text message', number: '8123456789'});
 
 sendTo("paw.0",'192.168.1.71',{
     send:  'sms', 
-    text:  'Any text',
+    text:  'text message',
     number: '8123456789'
 },function (response){
     log(JSON.stringify(response));
@@ -254,25 +250,25 @@ sendTo("paw.0",'192.168.1.71',{
 });
 
 //Send notifications to devices
-sendTo("paw.0",'dev1',{send:  'noti', texthead: 'Attention',text: 'Any text'});
+sendTo("paw.0",'dev1',{send:  'noti', texthead: 'Attention',text: 'проверка'});
 
 // with callback
 sendTo("paw.0",'192.168.1.71',{
     send:  'noti',
     texthead: 'Attention',
-    text: 'Any text'
+    text: 'проверка'
 },function (response){
     log(JSON.stringify(response));
 });
 
 //Send warning to devices.
-sendTo("paw.0",'dev1',{send:  'alert', texthead: 'Attention',text: 'Any text'});
+sendTo("paw.0",'dev1',{send:  'alert', texthead: 'Attention',text: 'проверка'});
 
 
 sendTo("paw.0",'192.168.1.71',{
     send:  'alert',
-    texthead: 'Attention',
-    text: 'Any text'
+    texthead: 'внимание',
+    text: 'проверка'
 },function (response){
     log(JSON.stringify(response));
 });
@@ -293,7 +289,7 @@ sendTo("paw.0",'192.168.1.71',{
 sendTo("paw.0",'dev1',{send:  'endсall'});
 
 //send text to the clipboard  
-sendTo("paw.0",'dev1',{send:  'clipboard',text:'test or number'});
+sendTo("paw.0",'dev1',{send:  'clipboard',text:'текст'});
 
 
 //restart server paw 
