@@ -7,6 +7,13 @@
 
 [![NPM](https://nodei.co/npm/iobroker.paw.png?downloads=true)](https://nodei.co/npm/iobroker.paw/)
 
+## Description
+It is an adapter to control Android phones via PAW Application. 
+It can speak texts, control volume, send SMS, make calls, vibrate, and much more ...
+
+Tasker and Locale Plug-in support.
+PHP plug-in is available too for PAW app.
+
 ## Install the program and configure the adapter.
  
 Download and install the application PAW Server for Android.
@@ -304,7 +311,7 @@ sendTo("paw.0",'dev1',{send:  'server',text:'kill'});
 
 
 
-#### 0.0.4
+#### 0.0.5
 * (bondrogeen) initial release
 
 ## License

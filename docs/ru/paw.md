@@ -7,6 +7,13 @@
 
 [![NPM](https://nodei.co/npm/iobroker.paw.png?downloads=true)](https://nodei.co/npm/iobroker.paw/)
 
+## Описание
+Это адаптер для управления Android-телефонами через приложение PAW server.
+Он может проговаривать текст, управлять громкостю, отправлять SMS, совершать звонки, и многое другое ...
+
+Tasker and Locale Plug-in support.
+PHP plug-in is available too for PAW app.
+
 ## Установка программы и настройка драйвера.
  
 Скачиваем и устанавливает приложение PAW Server for Android. 
@@ -304,7 +311,7 @@ sendTo("paw.0",'dev1',{send:  'server',text:'kill'});
 
 
 
-#### 0.0.4
+#### 0.0.5
 * (bondrogeen) initial release
 
 ## License

@@ -7,6 +7,10 @@
 
 [![NPM](https://nodei.co/npm/iobroker.paw.png?downloads=true)](https://nodei.co/npm/iobroker.paw/)
 
+## Beschreibung
+Es ist ein Adapter, um Android-Handys über PAW-Anwendung zu steuern.
+Es kann Texte sprechen, Lautstärke kontrollieren, SMS senden, Anrufe tätigen, vibrieren und vieles mehr ...
+
 ## Die Installation und Einstellungen.
  
 Herunterladen und Ausführen PAW Server für Android.
@@ -304,7 +308,7 @@ sendTo("paw.0",'dev1',{send:  'server',text:'kill'});
 
 
 
-#### 0.0.4
+#### 0.0.5
 * (bondrogeen) initial release
 
 ## License
