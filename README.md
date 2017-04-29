@@ -11,6 +11,12 @@
 
 [Deutsch](https://github.com/bondrogeen/iobroker.paw/blob/master/docs/de/paw.md)
 
+## Description
+It is an adapter to control Android phones via PAW Application. 
+It can speak texts, control volume, send SMS, make calls, vibrate, and much more ...
+
+Tasker and Locale Plug-in support.
+PHP plug-in is available too for PAW app.
 
 ## Install the program and configure the adapter.
  
