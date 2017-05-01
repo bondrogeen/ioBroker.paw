@@ -1,9 +1,9 @@
 {
     "common": {
         "name":                     "paw",
-        "version":                  "0.0.5",
+        "version":                  "0.0.6",
 	    "news": {
-			"0.0.4": {
+			"0.0.6": {
 			  "en": "beta version",
 			  "de": "Betaversion",
 			  "ru": "Бета версия"

@@ -191,6 +191,16 @@ sendTo("paw.0",'dev1',{
     log(JSON.stringify(response));
 });
 
+// Holen Sie sich die Aufgabenliste aus der Tasker-Anwendung "tasks": [auto, bubble, call, clock]
+sendTo("paw.0",'dev1',{
+    send:  'tasker'
+},function (response){
+    log(JSON.stringify(response));
+});
+
+// Führen Sie die Aufgabe aus der Tasker-Anwendung aus. (need root)
+sendTo("paw.0",'dev1',{send:'task',text:'auto'});
+
 // SMS senden.
 sendTo("paw.0",'dev1',{send:  'sms', text:  'testtext', number: '8123456789'});
 
@@ -302,11 +312,34 @@ sendTo("paw.0",'dev1',{send:  'server',text:'restart'});
 // PAW Server stoppen
 sendTo("paw.0",'dev1',{send:  'server',text:'kill'});
 
+// erhalten das Anrufprotokoll 
+// [send]  einen erforderlichen Parameter.
+// "now" für heute
+// "all" werden alle Anrufe
+// "incoming" eingehende Anrufe
+// "missed" verpasste Anrufe
+// "outgoing" abgehende Gespräche
+// "info" nur über die Anzahl der Anrufe
+// [Date] - ein optionaler Parameter.
+// kann nur das Anforderungsformat nach diesem Datum wird 01-05-2017
+// Sie können auch auf die Adresse gehen Sie einfach http://IP:8080/call.xhtml für eine Liste als HTML-Seiten
+sendTo("paw.0",'dev1',{
+    html:'call',
+    send:  'incoming',
+    date:'01-05-2017'
+},function (response){
+    log(JSON.stringify(response[0]));
+});
+
 
 
 ```
 
 
+
+### 0.0.6 (2017-05-01)
+
+* (bondrogeen) wobei ein Anrufprotokoll empfängt
 
 #### 0.0.5
 * (bondrogeen) initial release

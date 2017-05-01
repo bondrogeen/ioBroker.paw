@@ -74,7 +74,7 @@ marquee{
 <bsh>
 
 if(file.exists()){
-print("<marquee height=\"90%\" width=\"90%\" scrollamount=\""+jsonVar.getString("speed")+"\" direction=\""+jsonVar.getString("direction")+"\" >"+jsonVar.getString("text")+"</marquee>");
+print("<marquee height=\"100%\" width=\"100%\" scrollamount=\""+jsonVar.getString("speed")+"\" direction=\""+jsonVar.getString("direction")+"\" >"+jsonVar.getString("text")+"</marquee>");
 
 }else{
 	print("<marquee>"+jsonVar.getString("text")+"</marquee>");

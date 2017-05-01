@@ -31,7 +31,7 @@ after initialization, you need to transfer it to the ..paw / html folder.
 files:
 
 + settings.xhtml
-+ call_log.xhtml 
++ call.xhtml 
 + get.xhtml
 + set.xhtml
 + sms_read.xhtml
@@ -198,6 +198,16 @@ sendTo("paw.0",'dev1',{
     log(JSON.stringify(response));
 });
 
+// Get the task list from the Tasker application "tasks": [auto, bubble, call, clock]
+sendTo("paw.0",'dev1',{
+    send:  'tasker'
+},function (response){
+    log(JSON.stringify(response));
+});
+
+// Run the task from the Tasker application. (need root)
+sendTo("paw.0",'dev1',{send:'task',text:'auto'});
+
 // send message.
 sendTo("paw.0",'dev1',{send:  'sms', text:  'Any text', number: '8123456789'});
 
@@ -309,11 +319,34 @@ sendTo("paw.0",'dev1',{send:  'server',text:'restart'});
 // stop paw the server
 sendTo("paw.0",'dev1',{send:  'server',text:'kill'});
 
+// get call log
+// [send] Required.
+// "now" for today
+// "all" all calls,
+// "incoming" incoming calls
+// "missed" missed calls
+// "outgoing" outgoing calls
+// "info" only information about the number of calls
+// [date] is not a required parameter.
+// you can get only for the specified date the request format "01-05-2017"
+// You can also just go to the address http://IP:8080/call.xhtml to get the list as a html page
+sendTo("paw.0",'dev1',{
+    html:'call',
+    send:  'incoming',
+    date:'01-05-2017'
+},function (response){
+    log(JSON.stringify(response[0]));
+});
+
 
 
 ```
 
 
+
+### 0.0.6 (2017-05-01)
+
+* (bondrogeen) Added call logging
 
 #### 0.0.5
 * (bondrogeen) initial release

@@ -461,6 +461,54 @@ switch (send) {
 				else{jsonVar.put("sms", "false");}
 				break;
 				
+			case "tasker":	
+				import java.util.ArrayList;
+				import de.fun2code.android.pawserver.AndroidInterface;
+				import android.net.Uri;
+				service = server.props.get("serviceContext");
+				i = new ArrayList<Integer>();
+				c = service.getContentResolver().query( Uri.parse( "content://net.dinglisch.android.tasker/tasks" ), null, null, null, null );
+				if ( c != null ) {
+					int nameCol = c.getColumnIndex( "name" );
+					int projNameCol = c.getColumnIndex( "project_name" );
+					while ( c.moveToNext() ) i.add(c.getString(nameCol));
+					c.close();
+					jsonVar.put("tasker", "true");
+					jsonVar.put("tasks", i);
+					}else{
+						sonVar.put("tasker", "no_task");
+					}
+				break;
+				
+			case "task":
+				
+				if (text != null) {
+					
+				execRootShell(String[] commands , boolean silent) {
+					shellCmd = "su -c sh";
+					sh = Runtime.getRuntime().exec(shellCmd);
+					os = sh.getOutputStream();
+					for(cmd : commands) {
+						os.write((cmd + "\n").getBytes());
+						}
+						os.write(("exit\n").getBytes());
+						os.flush(); 
+						sh.waitFor();
+				}
+					try {
+						execRootShell(new String[]{"am broadcast -a net.dinglisch.android.tasker.ACTION_TASK -e task_name "+ text}, false);
+						jsonVar.put("task", "true");
+						
+					} catch (e) {
+							jsonVar.put("task", "false");
+							jsonVar.put("error", e);
+						}
+				}else{
+					jsonVar.put("task", "no_text");
+				}
+						
+				break;			
+				
             case "app_start":
 			    if (value != null) {
 					import android.app.Service;

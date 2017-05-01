@@ -8,7 +8,7 @@
 [![NPM](https://nodei.co/npm/iobroker.paw.png?downloads=true)](https://nodei.co/npm/iobroker.paw/)
 
 ## Описание
-Это адаптер для управления Android-телефонами через приложение PAW server.
+Это драйвер для управления Android-телефонами через приложение PAW server.
 Он может проговаривать текст, управлять громкостю, отправлять SMS, совершать звонки, и многое другое ...
 
 Tasker and Locale Plug-in support.
@@ -194,6 +194,16 @@ sendTo("paw.0",'dev1',{
     log(JSON.stringify(response));
 });
 
+// Получить список задач из приложения Tasker "tasks": [auto, bubble, call, clock]
+sendTo("paw.0",'dev1',{
+    send:  'tasker'
+},function (response){
+    log(JSON.stringify(response));
+});
+
+// Запустите задачу из приложения Tasker. (need root)
+sendTo("paw.0",'dev1',{send:'task',text:'auto'});
+
 //Отправка смс.
 sendTo("paw.0",'dev1',{send:  'sms', text:  'проверка', number: '8123456789'});
 
@@ -256,7 +266,7 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//Отправит уведомления на устройства
+// Отправит уведомления на устройства
 sendTo("paw.0",'dev1',{send:  'noti', texthead: 'Внимание',text: 'проверка'});
 
 // с callback
@@ -295,20 +305,43 @@ sendTo("paw.0",'192.168.1.71',{
 //Завершить звонок (положить трубку)
 sendTo("paw.0",'dev1',{send:  'endсall'});
 
-//Отправить  текст в буфер обмена  
+// Отправить  текст в буфер обмена  
 sendTo("paw.0",'dev1',{send:  'clipboard',text:'текст'});
 
 
-//Перезагрузка paw сервера 
+// Перезагрузка paw сервера 
 sendTo("paw.0",'dev1',{send:  'server',text:'restart'});
 
-//Остановка paw сервера
+// Остановка paw сервера
 sendTo("paw.0",'dev1',{send:  'server',text:'kill'});
+
+
+// получить журнал вызовов 
+// [send] обязательный параметр.
+// "now" за сегодняшний день
+// "all" все вызовы, 
+// "incoming" входящие вызовы
+// "missed" пропущенные вызовы
+// "outgoing" исходящие вызовы  
+// "info" только информация о количеству вызовов 
+// [date] - не обязательный параметр.
+// можно получить только за указанный день формат запроса " 01-05-2017 "
+// также можно просто перейти по адресу http://IP:8080/call.xhtml для получения списка виде html страницы
+sendTo("paw.0",'dev1',{
+    html:'call',
+    send:  'incoming',
+    date:'01-05-2017'
+},function (response){
+    log(JSON.stringify(response[0]));
+});
 
 
 
 ```
 
+### 0.0.6 (2017-05-01)
+
+* (bondrogeen) добавил получение журнала вызовов
 
 
 #### 0.0.5

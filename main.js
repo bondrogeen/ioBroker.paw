@@ -262,7 +262,16 @@ adapter.on('message', function (obj) {
                     var port = adapter.config.devices[i].port
                     if(name!=''&&ip!=''&&port!='') {
                         if(arr=='all'||find(arr, name)!==-1||find(arr, ip)!==-1){ //поиск по имени и ip
-                            getdata(name, ip, port, '/set.xhtml', obj.message, function (response,ip){
+
+                            //adapter.log.info("obj.message.html = " + obj.message.html);
+                            var set_html = "";
+                            if(typeof obj.message.html == "undefined"||obj.message.html == "set"){
+                                set_html = "/set.xhtml";
+                            }else if(obj.message.html=="call"){
+                                set_html = "/call.xhtml";
+                            }
+
+                            getdata(name, ip, port, set_html, obj.message, function (response,ip){
                                 adapter.log.info(response);
                                 try {
                                     response = JSON.parse(response);
@@ -279,6 +288,7 @@ adapter.on('message', function (obj) {
                                     },2000);
                                 }
                             });
+
                         }
                     }
                 }
@@ -440,7 +450,7 @@ function time_reset_ignore(){
     }
 }
 
-var  upload_file = "set.xhtml,get.xhtml,infosetting.xhtml,info.xhtml"//файлы которые нужно загрузить с папки 'www' на устройства
+var  upload_file = "call.xhtml,set.xhtml,get.xhtml,infosetting.xhtml,info.xhtml"//файлы которые нужно загрузить с папки 'www' на устройства
 
 function init(){
 

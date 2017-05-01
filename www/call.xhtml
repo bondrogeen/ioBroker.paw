@@ -1,0 +1,273 @@
+
+<html>
+<head>
+<bsh>source(server.props.get("serviceContext").pawHome + "/html/app/bsh/i18n.bsh");</bsh>
+<title><bsh>translate("call_log.title");</bsh></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" href="app/css/default.css">
+<style>
+   td {
+    text-align: center; 
+   }
+   th {
+    text-align: center; 
+   }
+</style>
+
+</head>
+<body>
+
+<div style='overflow: auto; height: 100%; width: 100%;'>
+<table border='0' cellpadding='4' cellspacing='0' style='width: 100%; font-size: 14px; border: 1px solid black;'>
+<tr><th>№</th><th>Имя</th><th>Номера</th><th>Дата</th><th>Время</th><th>Длительность</th></tr>
+
+
+<bsh>
+
+import org.json.*;
+import de.fun2code.android.pawserver.AndroidInterface;
+import android.app.Service;
+import android.database.Cursor;
+import android.net.Uri;
+import java.text.DateFormat;
+import android.provider.CallLog;
+import java.util.ArrayList;
+import java.util.*;
+import java.text.SimpleDateFormat;
+c = Calendar.getInstance();
+
+d = new SimpleDateFormat("dd-MM-yyyy");
+t = new SimpleDateFormat("HH:mm:ss");
+date_now = d.format(c.getTime());
+time_now = t.format(c.getTime());
+
+arr = new ArrayList<Integer>();
+
+total = new JSONObject();
+temp = new JSONObject();
+
+service = (Service) server.props.get("serviceContext");
+
+send = parameters.get("send");
+text = parameters.get("date");
+
+SORT_ORDER = CallLog.Calls.DATE + " DESC";
+
+callTypeLabelold = "1";
+incoming=0;
+outgoing=0;
+missed = 0;
+new_call=0;
+
+
+cursor = service.getContentResolver().query(
+  CallLog.Calls.CONTENT_URI,
+  new String[] { CallLog.Calls.NUMBER, CallLog.Calls.CACHED_NAME,
+                CallLog.Calls.DATE,
+                CallLog.Calls.DURATION, CallLog.Calls.TYPE, CallLog.Calls.NEW},
+  null,
+  null,
+  SORT_ORDER);
+  
+  
+  
+if (cursor != null) {
+  try {
+	  colour = "#eaeaea";
+    count = cursor.getCount();
+    if (cursor.moveToFirst()) {
+      do {
+       colour = colour.equals("#eaeaea") ? "white" : "#eaeaea";
+		position = cursor.getPosition();
+		
+        callNumber = cursor.getString(0);
+        callName = cursor.getString(1);
+        callDate = cursor.getLong(2);
+        callDuration = cursor.getLong(3);
+        callType = cursor.getLong(4);
+		call_new = cursor.getLong(5);
+        callTypeLabel = "";
+		
+		
+		date = d.format(new Date(callDate));
+		time = t.format(new Date(callDate));
+        //date = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(callDate));
+	
+		if (callName == null){
+		callName = "null";
+		cname = callNumber;
+		}else{
+		cname = callName;
+		}
+		
+		switch(callType) {
+			
+          case CallLog.Calls.INCOMING_TYPE:
+            callTypeLabel = "incoming";
+			incoming = incoming + 1;
+            break;
+          case CallLog.Calls.OUTGOING_TYPE:
+            callTypeLabel = "outgoing";
+			outgoing = outgoing + 1; 
+            break;
+          case CallLog.Calls.MISSED_TYPE:
+            callTypeLabel = "missed";
+			missed = missed + 1;
+			if(call_new==1){
+				new_call=new_call+1;
+				}
+			temp.put("unread", call_new);	
+          break;
+        }
+		
+		temp.put("type", callTypeLabel);
+        temp.put("number", callNumber);
+	    temp.put("name", callName);
+        temp.put("unixtime", callDate);
+        temp.put("date", date);
+		temp.put("time", time);
+        temp.put("duration", callDuration);
+		
+		if(send!=null){
+			switch(send) {
+				case "now":
+				if(text!=null){
+				    if(date_now.equals(date)){
+						arr.add(temp);
+					}
+				}
+				break;
+				case "all":
+				    if(text!=null){
+						if(text.equals(date)){
+						arr.add(temp);
+					}
+					}else{
+						arr.add(temp);
+					}				    
+				break;
+				case "incoming":
+				    if(callTypeLabel=="incoming"){
+						if(text!=null){
+							if(text.equals(date)){
+								arr.add(temp);
+							}
+						}else{
+							arr.add(temp);
+						}
+						
+					}			    
+				break;
+				case "outgoing":
+				    if(callTypeLabel=="outgoing"){
+						if(text!=null){
+							if(text.equals(date)){
+								arr.add(temp);
+							}
+						}else{
+							arr.add(temp);
+						}
+						
+					}			    
+				break;
+				case "missed":
+				    if(callTypeLabel=="missed"){
+						if(text!=null){
+							if(text.equals(date)){
+								arr.add(temp);
+							}
+						}else{
+							arr.add(temp);
+						}
+						
+					}			    
+				break;
+				
+				
+				
+        }
+
+		
+		}else{
+			
+			callImage = "";
+				callTypeLabel = "";
+
+				switch(callType) {
+					case CallLog.Calls.INCOMING_TYPE:
+						callImage = "app/images/call_incoming.png";
+						callTypeLabel = translateRaw("tooltip.phone_incoming");
+						break;
+					case CallLog.Calls.OUTGOING_TYPE:
+						callImage = "app/images/call_outgoing.png";
+						callTypeLabel = translateRaw("tooltip.phone_outgoing");
+						break;
+					case CallLog.Calls.MISSED_TYPE:
+						callImage = "app/images/call_missed.png";
+						callTypeLabel = translateRaw("tooltip.phone_missed");
+						break;
+				}
+			
+			
+			if(!callNumber.equals("-1")) {
+					phoneLink = "<a href='app/dial.xhtml?number=" + URLEncoder.encode(callNumber) + "' style='color: black;' class='link'>" + (callName != "null" ? callName : callNumber)  + "</a>";
+				//phoneLink = "Unknown";
+				}
+				else {
+					phoneLink = "Unknown";
+				}
+
+				print("<tr style='background:"+colour+";'><td style='width: 50px; text-align:right;'>"+ ++position+"&nbsp;<img src='" + callImage + "'style='width: 16px;'  xalign='middle' title='" + callTypeLabel + "'></td><td style='width: 20%;'>" + phoneLink  + "</td><td style='width: 20%; color: black;'>"+callNumber+"</td><td style='color: black;'>"+date+"</td><td style='color: black;'>"+time+"</td><td style='color: black; width: 5%;'>" + callDuration + "</td></tr>");
+
+			
+		}
+
+	    temp = "";
+	    temp = new JSONObject();
+
+      } while(cursor.moveToNext());
+  
+    }
+  }
+  
+
+  
+  finally {
+  
+    cursor.close();
+	
+
+  }
+  
+
+}
+
+
+total.put("all", count);
+total.put("missed", missed);
+total.put("outgoing", outgoing);
+total.put("incoming", incoming);
+total.put("unread", new_call);
+
+if(send.equals("info")){
+sand_date=total;	
+}else{
+sand_date=arr;
+}
+
+
+
+if(send!=null){
+request.sendResponse(sand_date.toString().getBytes(), "text/plain; charset=UTF-8");
+request.out.flush();
+request.out.close();	
+	
+}else{
+	print("</table></div>");
+}
+
+
+
+</bsh>
+</body>
+</html>
