@@ -82,8 +82,6 @@ jsonVar.put("sensors", sens);
 
 
 // Get BATTERY info
-
-
 intent = IntentUtil.getIntentResultFromBroadcast(service, Intent.ACTION_BATTERY_CHANGED);
 
 level = intent.getIntExtra("level", -1);
@@ -107,12 +105,9 @@ jsonVar.put("battery", battery);
 
 // Get memory info
 
-
-
 activityManager = (ActivityManager) service.getSystemService(Context.ACTIVITY_SERVICE);
 memInfo = new ActivityManager.MemoryInfo();
 activityManager.getMemoryInfo(memInfo);
-
 free = memInfo.availMem / 1024 /1024;
 total = memInfo.totalMem / 1024 /1024;
 
@@ -197,16 +192,9 @@ wifi.put("mac", mac);
 jsonVar.put("wifi", wifi);
 
 
-
-	
-	
-	
-	
 	
 // Get info
 
-
-	
 import android.content.Context;
 import android.os.PowerManager;
 import android.provider.Settings;       
@@ -214,13 +202,10 @@ service = server.props.get("serviceContext");
 
 pm = service.getSystemService(Context.POWER_SERVICE);
 x = pm.isScreenOn();
-
 info.put("lcd", x);	
-
 Brightness = Settings.System.getInt(service .getContentResolver(),Settings.System.SCREEN_BRIGHTNESS,0);
 
 info.put("brightness", Brightness);	
-
 
 BOARD = android.os.Build.BOARD;
 BRAND = android.os.Build.BRAND;
@@ -253,6 +238,39 @@ clipboard = readFromClipboard();
 }
 
 info.put("clipboard", clipboard);
+
+
+import de.fun2code.android.pawserver.AndroidInterface;
+import android.app.Service;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.CallLog;
+
+service = (Service) server.props.get("serviceContext");
+SORT_ORDER = CallLog.Calls.DATE + " DESC";
+new_call=0;
+cursor = service.getContentResolver().query(
+  CallLog.Calls.CONTENT_URI,
+  new String[] { CallLog.Calls.NUMBER, CallLog.Calls.CACHED_NAME,CallLog.Calls.DATE,CallLog.Calls.DURATION, CallLog.Calls.TYPE, CallLog.Calls.NEW},null,null,SORT_ORDER);
+if (cursor != null) {
+  try {
+    count = cursor.getCount();
+    if (cursor.moveToFirst()) {
+      do {
+    position = cursor.getPosition();
+    call_new = cursor.getLong(5);
+      if(call_new==1){
+        new_call=new_call+1;
+        }
+      } while(cursor.moveToNext());
+    }
+  }
+  finally {
+    cursor.close();
+  }
+}
+
+info.put("call_missed", new_call);
 
 jsonVar.put("info", info);
 
