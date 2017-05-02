@@ -24,10 +24,10 @@ Starten PAW Server und wieder stoppen.  Sie müssen nach ..paw/html ordner
 folgende Dateien verschieben:
 
 
-+ call_log.xhtml 
++ call.xhtml 
 + get.xhtml
 + set.xhtml
-+ sms_read.xhtml
++ sms.xhtml
 + settings.xhtml
 
 Eigentlich sollte nur "settings.xhtml" reichen, da die andere    

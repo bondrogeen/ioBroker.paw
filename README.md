@@ -34,7 +34,7 @@ files:
 + call.xhtml 
 + get.xhtml
 + set.xhtml
-+ sms_read.xhtml
++ sms.xhtml
 
 
 It's enough to download and transfer only the file "settings.xhtml" the other files are downloaded using the adapter

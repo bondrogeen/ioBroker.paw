@@ -8,7 +8,7 @@
 [![NPM](https://nodei.co/npm/iobroker.paw.png?downloads=true)](https://nodei.co/npm/iobroker.paw/)
 
 ## Описание
-Это драйвер для управления Android-телефонами через приложение PAW server.
+Это драйвер для управления Android- устройством через приложение PAW server.
 Он может проговаривать текст, управлять громкостю, отправлять SMS, совершать звонки, и многое другое ...
 
 Tasker and Locale Plug-in support.
@@ -27,10 +27,10 @@ https://play.google.com/store/apps/details?id=de.fun2code.android.pawserver
 файлы:
 
 
-+ call_log.xhtml 
++ call.xhtml 
 + get.xhtml
 + set.xhtml
-+ sms_read.xhtml
++ sms.xhtml
 + settings.xhtml
 
 Достаточно скачать и перенести только фаил " settings.xhtml "  остальные файлы с качаются через драйвер 

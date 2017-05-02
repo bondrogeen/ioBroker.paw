@@ -1,4 +1,4 @@
-![Logo](https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/admin/paw_big.png)
+![Logo](admin/paw_big.png)
 # ioBroker.paw
 =================
 
@@ -6,6 +6,10 @@
 [![Downloads](https://img.shields.io/npm/dm/iobroker.paw.svg)](https://www.npmjs.com/package/iobroker.paw)
 
 [![NPM](https://nodei.co/npm/iobroker.paw.png?downloads=true)](https://nodei.co/npm/iobroker.paw/)
+
+[Русский](https://github.com/bondrogeen/iobroker.paw/blob/master/docs/ru/paw.md)
+
+[Deutsch](https://github.com/bondrogeen/iobroker.paw/blob/master/docs/de/paw.md)
 
 ## Description
 It is an adapter to control Android phones via PAW Application. 
@@ -26,12 +30,12 @@ after initialization, you need to transfer it to the ..paw / html folder.
 
 files:
 
-
-+ call_log.xhtml 
++ settings.xhtml
++ call.xhtml 
 + get.xhtml
 + set.xhtml
-+ sms_read.xhtml
-+ settings.xhtml
++ sms.xhtml
+
 
 It's enough to download and transfer only the file "settings.xhtml" the other files are downloaded using the adapter
 
@@ -45,7 +49,7 @@ Install the driver iobroke.paw with GitHub.
 
 https://github.com/bondrogeen/iobroker.paw
 
-![pic](https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/admin/1.jpg)
+![pic](admin/1.jpg)
 
 
 To control via vis, you can control the device [name_device] by changing the variable
@@ -134,7 +138,7 @@ require a second parameter, which is entered through a comma.
 
 
 
-![pic](https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/admin/2.jpg)
+![pic](admin/2.jpg)
 
 
 
@@ -150,22 +154,22 @@ all - send to all devices.
 */
 
 // send the text to the speech synthesizer.
-sendTo("paw.0",'dev1,dev3',{send:  'say', text:  'test message'});
+sendTo("paw.0",'dev1,dev3',{send:  'say', text:  'test text'});
 
 // with callback
 sendTo("paw.0",'all',{
     send:  'say', 
-    text:  'test message'},function (response){
+    text:  'Check text'},function (response){
     log(JSON.stringify(response));
 });
 
-//set the screen backlight time in milliseconds. '-1' - do not quit the screen (does not work on all devices) 
+// set the screen backlight time in milliseconds. '-1' - do not quit the screen (does not work on all devices) 
 sendTo("paw.0",'dev1',{send:'screen_off_time',number: '5000'});
 
-//activate the screen on the device.
+// activate the screen on the device.
 sendTo("paw.0",'all',{send:'lcd_on'});
 
-//backlight brightness level from 1-255
+// backlight brightness level from 1-255
 sendTo("paw.0",'dev1',{send:'brightness',number: '50'});
 
 // execute shell command (need root)
@@ -194,12 +198,22 @@ sendTo("paw.0",'dev1',{
     log(JSON.stringify(response));
 });
 
-//Send message.
-sendTo("paw.0",'dev1',{send:  'sms', text:  'text message', number: '8123456789'});
+// Get the task list from the Tasker application "tasks": [auto, bubble, call, clock]
+sendTo("paw.0",'dev1',{
+    send:  'tasker'
+},function (response){
+    log(JSON.stringify(response));
+});
+
+// Run the task from the Tasker application. (need root)
+sendTo("paw.0",'dev1',{send:'task',text:'auto'});
+
+// send message.
+sendTo("paw.0",'dev1',{send:  'sms', text:  'Any text', number: '8123456789'});
 
 sendTo("paw.0",'192.168.1.71',{
     send:  'sms', 
-    text:  'text message',
+    text:  'Any text',
     number: '8123456789'
 },function (response){
     log(JSON.stringify(response));
@@ -224,7 +238,7 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//call to number
+// call to number
 sendTo("paw.0",'dev1',{send:  'call', number: '0611'});
 
 // with  callback
@@ -235,7 +249,7 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//Call the number or send ussd command.
+// call the number or send ussd command.
 sendTo("paw.0",'dev1',{send:  'call', number: '*100#'});
 
 // callback
@@ -246,7 +260,7 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//enables vibration, [number] (time in milliseconds)
+// enables vibration, [number] (time in milliseconds)
 sendTo("paw.0",'dev1',{send:  'vibrate', number: '1000'});
 
 sendTo("paw.0",'192.168.1.71',{
@@ -256,32 +270,32 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//Send notifications to devices
-sendTo("paw.0",'dev1',{send:  'noti', texthead: 'Attention',text: 'проверка'});
+// send notifications to devices
+sendTo("paw.0",'dev1',{send:  'noti', texthead: 'Attention',text: 'Any text'});
 
 // with callback
 sendTo("paw.0",'192.168.1.71',{
     send:  'noti',
     texthead: 'Attention',
-    text: 'проверка'
+    text: 'Any text'
 },function (response){
     log(JSON.stringify(response));
 });
 
-//Send warning to devices.
-sendTo("paw.0",'dev1',{send:  'alert', texthead: 'Attention',text: 'проверка'});
+// send warning to devices.
+sendTo("paw.0",'dev1',{send:  'alert', texthead: 'Attention',text: 'Any text'});
 
 
 sendTo("paw.0",'192.168.1.71',{
     send:  'alert',
-    texthead: 'внимание',
-    text: 'проверка'
+    texthead: 'Attention',
+    text: 'Any text'
 },function (response){
     log(JSON.stringify(response));
 });
 
 
-//Open the browser at the specified address
+// open the browser at the specified address
 sendTo("paw.0",'dev1',{send:  'openurl', text: 'http://iobroker.net'});
 
 
@@ -292,24 +306,47 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
-//End call
+// end call
 sendTo("paw.0",'dev1',{send:  'endсall'});
 
-//send text to the clipboard  
-sendTo("paw.0",'dev1',{send:  'clipboard',text:'текст'});
+// send text to the clipboard  
+sendTo("paw.0",'dev1',{send:  'clipboard',text:'test or number'});
 
 
-//restart server paw 
+// restart server paw 
 sendTo("paw.0",'dev1',{send:  'server',text:'restart'});
 
-//stop paw the server
+// stop paw the server
 sendTo("paw.0",'dev1',{send:  'server',text:'kill'});
+
+// get call log
+// [send] Required.
+// "now" for today
+// "all" all calls,
+// "incoming" incoming calls
+// "missed" missed calls
+// "outgoing" outgoing calls
+// "info" only information about the number of calls
+// [date] is not a required parameter.
+// you can get only for the specified date the request format "01-05-2017"
+// You can also just go to the address http://IP:8080/call.xhtml to get the list as a html page
+sendTo("paw.0",'dev1',{
+    html:'call',
+    send:  'incoming',
+    date:'01-05-2017'
+},function (response){
+    log(JSON.stringify(response[0]));
+});
 
 
 
 ```
 
 
+
+### 0.0.6 (2017-05-01)
+
+* (bondrogeen) Added call logging
 
 #### 0.0.5
 * (bondrogeen) initial release
