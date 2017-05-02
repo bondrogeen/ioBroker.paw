@@ -15,6 +15,7 @@
 
 <bsh>
 
+
 import java.io.*;
 import org.json.*;
 import de.fun2code.android.pawserver.AndroidInterface;
@@ -22,6 +23,26 @@ pawHome = server.props.get("serviceContext").pawHome;
 file = new File(pawHome +"/html/infosetting.json");
 
 jsonVar = new JSONObject();
+
+text = "{'ru_RU':{'Settings':'Настройки','Save':'Сохранить','Background color':'Цвет фона','Text color':'Цвет текста','Text Size':'Размер текста','Speed ​​of text':'Скорость текста','Text':'Tекста','Direction':'Направление'},"; 
+text = text + "'de_DE':{'Settings':'Einstellungen','Save':'Speichern','Background color':'Hintergrundfarbe','Text color':'Textfarbe','Text Size':'Schriftgröße','Speed ​​of text':'Geschwindigkeit','Text':'Text','Direction':'Textrichtung'}}";
+
+
+
+json = new JSONObject(text);
+translete(text){
+  try {
+      Loc = json.get(Locale.getDefault().toString());
+	  //Loc = json.get("de_CH");
+      i = Loc.getString(text);
+      return i;
+     } catch (JSONException e) {
+         return text;
+     }
+  
+  
+}
+
 
 
 if(file.exists()){		// чтение json из фаил /html/infosetting.json.
@@ -54,19 +75,19 @@ if(file.exists()){		// чтение json из фаил /html/infosetting.json.
 
 if(parameters.size()==0){ 
 		
-	print("<h1>Настройки страницы.</h1>");
+	print("<h1>"+translete("Settings")+"</h1>");
 	print("<form action=\"infosetting.xhtml\"><p>");
-	print("Укажите цвет фона:<br>");
+	print(translete("Background color")+":<br>");
 	print("<input type=\"color\" name=\"bgcolor\" value=\""+jsonVar.getString("bgcolor")+"\"><br>");
-	print("Укажите цвет текста:<br>");
+	print(translete("Text color")+":<br>");
 	print("<input type=\"color\" name=\"color\" value=\""+jsonVar.getString("color")+"\"><br>");
-	print("Размер текста:<br>");
+	print(translete("Text Size")+":<br>");
 	print("<input type=\"input\" name=\"fontsize\" size=\"1\" value=\""+jsonVar.getString("fontsize")+"\"><br>");
-	print("Скорость текста:<br>");
+	print(translete("Speed ​​of text")+":<br>");
 	print("<input type=\"input\" name=\"speed\" size=\"1\" value=\""+jsonVar.getString("speed")+"\"><br>");
-	print("Текст:<br>");
+	print(translete("Text")+":<br>");
 	print("<input type=\"input\" name=\"text\" size=\"100\" value=\""+jsonVar.getString("text")+"\"><br>");
-	print("Направление текста:<br>");
+	print(translete("Direction")+":<br>");
 	print("<select name=\"direction\">");
 	print("<option "); 
 	if(jsonVar.getString("direction").equals("left")) print("selected");
@@ -83,7 +104,7 @@ if(parameters.size()==0){
     print("</select>");
 	
 	print("<br>");
-	print("<br><input type=\"submit\" value=\"Сохранить\"></p>");
+	print("<br><input type=\"submit\" value=\""+translete("Save")+"\"></p>");
 	print("</form>");
 
 }else{	//  если есть get и post данных  обрабатываем их.
