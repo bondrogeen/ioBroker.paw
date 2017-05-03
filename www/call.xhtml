@@ -131,11 +131,11 @@ if (cursor != null) {
 		if(send!=null){
 			switch(send) {
 				case "now":
-				if(text!=null){
+				
 				    if(date_now.equals(date)){
 						arr.add(temp);
 					}
-				}
+				
 				break;
 				case "all":
 				    if(text!=null){
@@ -147,7 +147,7 @@ if (cursor != null) {
 					}				    
 				break;
 				case "incoming":
-				    if(callTypeLabel=="incoming"){
+				    if(callTypeLabel.equals("incoming")){
 						if(text!=null){
 							if(text.equals(date)){
 								arr.add(temp);
@@ -159,7 +159,7 @@ if (cursor != null) {
 					}			    
 				break;
 				case "outgoing":
-				    if(callTypeLabel=="outgoing"){
+				    if(callTypeLabel.equals("outgoing")){
 						if(text!=null){
 							if(text.equals(date)){
 								arr.add(temp);
@@ -171,7 +171,7 @@ if (cursor != null) {
 					}			    
 				break;
 				case "missed":
-				    if(callTypeLabel=="missed"){
+				    if(callTypeLabel.equals("missed")){
 						if(text!=null){
 							if(text.equals(date)){
 								arr.add(temp);

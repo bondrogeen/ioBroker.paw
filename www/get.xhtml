@@ -139,7 +139,6 @@ jsonVar.put("memory", memory);
 // Get cpu info
 
 
-
 source(server.props.get("serviceContext").pawHome + "/html/app/bsh/systemLoad.bsh");
 cpus = getCpus();
 load = getSystemLoad().get("load");	
@@ -272,9 +271,21 @@ if (cursor != null) {
 
 info.put("call_missed", new_call);
 
+service =  server.props.get("serviceContext");
+SMS_CONTENT_URI = Uri.parse("content://sms");
+cursor = service.getContentResolver().query(
+  SMS_CONTENT_URI, new String[] { "_id", "thread_id", "address", "person", "date", "body", "status"},"read = 0", null,"date DESC");
+if (cursor != null) {
+  try {
+    count = cursor.getCount();   
+  }
+  finally {
+    cursor.close();
+  }
+}
+info.put("new_message", count);
+
 jsonVar.put("info", info);
-
-
 	
 // Get audio info	
 

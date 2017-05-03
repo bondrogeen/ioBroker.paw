@@ -269,6 +269,8 @@ adapter.on('message', function (obj) {
                                 set_html = "/set.xhtml";
                             }else if(obj.message.html=="call"){
                                 set_html = "/call.xhtml";
+                            }else if(obj.message.html=="sms"){
+                                set_html = "/sms.xhtml";
                             }
 
                             getdata(name, ip, port, set_html, obj.message, function (response,ip){
