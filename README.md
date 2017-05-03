@@ -338,11 +338,31 @@ sendTo("paw.0",'dev1',{
     log(JSON.stringify(response[0]));
 });
 
+// get messages
+// [send] Required.
+// "now" for today
+// "all" all messages,
+// "incoming" incoming messages
+// "outgoing" outgoing messages
+// "info" only information about the number of all messages
+// [date] is not a required parameter.
+// you can get only for the specified date the request format "01-05-2017"
+// you can also just go to http: // IP: 8080 / sms.xhtml to get the list as a html page
+sendTo("paw.0",'dev1',{
+    html:'sms',
+    send:  'incoming',
+    date:'03-05-2017'
+},function (response){
+    log(JSON.stringify(response[0]));
+});
 
 
 ```
 
 
+### 0.0.7 (2017-05-03)
+
+* (bondrogeen) Added read sms
 
 ### 0.0.6 (2017-05-01)
 
