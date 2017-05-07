@@ -38,7 +38,7 @@ adapter.on('stateChange', function (id, state) {
     //adapter.log.info(JSON.stringify(arr_id))
     //adapter.log.info(id);
     adapter.log.info(adapter.namespace+'.'+arr_id[2]+'.command.command');
-    adapter.log.info(arr_id[4]+"  "+adapter.namespace+'.'+arr_id[2]+'.command.'+find_command(command, arr_id[4]));
+    adapter.log.info(arr_id[4]+"  "+adapter.namespace+'.'+arr_id[2]+'.command.'+find(command, arr_id[4]));
 
     if(id===adapter.namespace+'.'+arr_id[2]+'.tts.response'){
 
@@ -72,7 +72,7 @@ adapter.on('stateChange', function (id, state) {
 
             }
         }
-    }else if (id===adapter.namespace+'.all_device.brightness'||find(subscribe, id)!==-1){
+    }else if (id===adapter.namespace+'.all_device.brightness'||find(subscribe, id)){
         adapter.log.info(id);
         adapter.log.info(JSON.stringify(state));
         for (var i = 0; i < adapter.config.devices.length; i++) {
@@ -88,7 +88,7 @@ adapter.on('stateChange', function (id, state) {
             }
         }
 
-    }else if (id===adapter.namespace+'.all_device.tts_response'||find(subscribe, id)!==-1){
+    }else if (id===adapter.namespace+'.all_device.tts_response'||find(subscribe, id)){
         adapter.log.info(id);
         adapter.log.info(JSON.stringify(state));
         for (var i = 0; i < adapter.config.devices.length; i++) {
@@ -152,7 +152,7 @@ adapter.on('stateChange', function (id, state) {
             }
         }
 
-    }else if(arr_id[4]&&id===adapter.namespace+'.'+arr_id[2]+'.command.'+find_command(command, arr_id[4])) {
+    }else if(arr_id[4]&&id===adapter.namespace+'.'+arr_id[2]+'.command.'+find(command, arr_id[4])) {
 
         for (var i = 0; i < adapter.config.devices.length; i++) {
             var name = adapter.config.devices[i].name;
@@ -204,14 +204,6 @@ adapter.on('stateChange', function (id, state) {
 var command = ["alertinput","volume","openurl","vibrate","alert","noti","rec","brightness","app_start","dial","send_sms","call","clipboard"];
 
 
-function find_command(array, value) {
-
-    for (var i = 0; i < array.length; i++) {
-        if (array[i] == value) return value;
-    }
-    return false;
-}
-
 var bufer={};
 
 function say_bufer(name){
@@ -234,7 +226,7 @@ function say_bufer(name){
         var char = bufer[name].text[0].toString();
         var num= char.length-char.replace(/\d/gm,'').length;
         var str = char.length-num;
-        setTimeout(say_bufer, num*700+str*70+1000,name);
+        setTimeout(say_bufer, num*700+str*70+1000,name);  //подсчет времени для отправки следующего запроса на ttl
         bufer[name].text.shift();
     }else{
         bufer[name].start = true;
@@ -261,7 +253,7 @@ adapter.on('message', function (obj) {
                     var ip = adapter.config.devices[i].ip
                     var port = adapter.config.devices[i].port
                     if(name!=''&&ip!=''&&port!='') {
-                        if(arr=='all'||find(arr, name)!==-1||find(arr, ip)!==-1){ //поиск по имени и ip
+                        if(arr=='all'||find(arr, name)||find(arr, ip)){ //поиск по имени и ip
 
                             //adapter.log.info("obj.message.html = " + obj.message.html);
                             var set_html = "";
@@ -407,10 +399,13 @@ function getdata(name,ip,port,path,setdata,callback) {
     });
 
     req.on('error', (e) => {
-        adapter.log.warn(`problem with request: ${e.message}`);
+
+        adapter.log.warn(`Device is not responding : ${e.message}`);
+
         if(path=='/get.xhtml'){
-            find(ignorelist, ip)
-            if(find(ignorelist, ip)===-1){
+
+            //find(ignorelist, ip)
+            if(!find(ignorelist, ip)){
                 adapter.log.warn('ignorelist:'+ip);
                 ignorelist[ignorelist.length] = ip;
             }
@@ -420,6 +415,7 @@ function getdata(name,ip,port,path,setdata,callback) {
 
 
     });
+
 
     req.write(setdata);
     req.end();
@@ -431,25 +427,9 @@ var subscribe = [];
 function find(array, value) {
 
     for (var i = 0; i < array.length; i++) {
-        if (array[i] == value) return i;
+        if (array[i] == value) return value;
     }
-    return -1;
-}
-
-function time_reset_ignore(){
-
-    //adapter.log.warn('ignorelist reset:');
-    ignorelist = [];
-    for (var i = 0; i < adapter.config.devices.length; i++) {
-        var ip = adapter.config.devices[i].ip
-        var ign = adapter.config.devices[i].ign
-        if(ign===true||ign==="true"){
-            if(find(ignorelist, ip)===-1){
-                adapter.log.warn('ignorelist:'+ip);
-                ignorelist[ignorelist.length] = ip;
-            }
-        }
-    }
+    return false;
 }
 
 var  upload_file = "sms.xhtml,call.xhtml,set.xhtml,get.xhtml,infosetting.xhtml,info.xhtml"//файлы которые нужно загрузить с папки 'www' на устройства
@@ -519,18 +499,36 @@ function time_paw() {
     //adapter.log.info('start: ');
 
     for (var i = 0; i < adapter.config.devices.length; i++) {
-        var name = adapter.config.devices[i].name
-        var ip = adapter.config.devices[i].ip
-        var port = adapter.config.devices[i].port
+        var name = adapter.config.devices[i].name;
+        var ip = adapter.config.devices[i].ip;
+        var port = adapter.config.devices[i].port;
 
         if(name!=''&&ip!=''&&port!=''){
 
-            if(find(ignorelist, ip)===-1){
+            if(!find(ignorelist, ip)){
                 getdata(name,ip,port,'/get.xhtml','')
             }
         }
     }
 }
+
+function time_reset_ignore(){
+
+    //adapter.log.warn('ignorelist reset:');
+    ignorelist = [];
+    for (var i = 0; i < adapter.config.devices.length; i++) {
+        var ip = adapter.config.devices[i].ip;
+        var ign = adapter.config.devices[i].ign;
+
+        if(ign===true||ign==="true"){
+
+            adapter.log.info('ignorelist:'+ip);
+            ignorelist[ignorelist.length] = ip;
+
+        }
+    }
+}
+
 
 function restApi(req, res) {
     if (req.method == 'POST') {
@@ -609,7 +607,7 @@ function main() {
 
     if (adapter.config.interval < 5000) adapter.config.interval = 5000;
     setInterval(time_paw, Number(adapter.config.interval));  // интервал обновления данных от уст.
-    setInterval(time_reset_ignore, 600000);
+    setInterval(time_reset_ignore, 3600000);
 
     adapter.log.info('devices: ' + JSON.stringify(adapter.config.devices));
     adapter.log.info('interval: ' + adapter.config.interval);
