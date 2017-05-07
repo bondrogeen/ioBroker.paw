@@ -51,6 +51,30 @@ https://github.com/bondrogeen/iobroker.paw
 
 ![pic](admin/1.jpg)
 
+start and end - this is the working time of the notification via the speech synthesizer.
+               
+For example, all messages from 7h to 23h that will be sent to
+               
+Speech synthesizer (ttl), and the rest of the time will be ignored.
+               
+This rule applies only to changes in these variables 
+
+***paw.0.[name_device].tts.response*** (one device)   
+
+or 
+  
+***paw.0.all_device.tts_response*** (all device)   
+
+When sending through javascript this rule does not work.
+
+Also provided for the ttl buffer, all messages arriving at the synthesizer will be told.
+   
+That is, if you have 10-00 sending to ttl an alert (time or weather) and at this
+    
+Time comes a message (at least 10pcs), then all messages will be told.
+
+Ignore - if you do not need to receive basic information from the device.
+
 
 To control via vis, you can control the device [name_device] by changing the variable
 
