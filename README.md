@@ -384,6 +384,12 @@ sendTo("paw.0",'dev1',{
 ```
 
 
+
+
+### 0.0.8 (2017-05-07)
+
+* (bondrogeen) fix
+
 ### 0.0.7 (2017-05-03)
 
 * (bondrogeen) Added read sms
