@@ -465,6 +465,9 @@ function init(){
             set_id (name+'.request','alertinput',''  );
             set_id (name+'.request','speech',''  );
             set_id (name+'.request','scan',''  );
+            set_id (name+'.request.call','type',''  );
+            set_id (name+'.request.call','status',''  );
+            set_id (name+'.request.call','number',''  );
 
             set_id (name+'.command','command','[speech] or [lcd_on]'  );
             set_id (name+'.command','send_sms','[number],[text]'  );
@@ -539,18 +542,30 @@ function restApi(req, res) {
         req.on('end', function () {
             body = decodeURI(body);
             body = querystring.parse(body);
-            //adapter.log.info("POST "+JSON.stringify(body));
+            adapter.log.info("POST "+JSON.stringify(body));
             //adapter.log.info(body.namespace+'.'+body.device+'.request.'+body.send);
             //adapter.log.info(adapter.namespace+' '+body.namespace);
+            if (body.send=="alertinput"&&body.send=="scan"&&body.send=="speech"){
+                adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send, body.res,true );
+            }else if (body.send=="call"){
+                adapter.log.info("body.send "+body.type);
+                adapter.log.info("body: "+body.namespace+'.'+body.device+'.request.'+body.send+".type");
+                adapter.log.info("body: "+body.namespace+'.'+body.device+'.request.'+body.send+".number");
+                adapter.log.info("body: "+body.namespace+'.'+body.device+'.request.'+body.send+".status");
 
-            adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send, body.res,true );
+                adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".type", body.type,true );
+                adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".number", body.number,true );
+                adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".status", body.status,true );
+            }
+
+
 
         });
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.end('post received');
     } else {
         var srvUrl = url.parse(decodeURI(req.url));
-        //adapter.log.info(req.url);
+        adapter.log.info(req.url);
         //adapter.log.info(srvUrl.pathname);
         if(srvUrl.pathname == "/")srvUrl.pathname="/index.html";
         //adapter.log.info(srvUrl.pathname);
@@ -597,7 +612,7 @@ function main() {
                     adapter.log.warn('port ' + adapter.config.port + ' already in use');
                 } else {
                     server.listen(port);
-                    adapter.log.info('http server listening on port ' + port);
+                    adapter.log.info('http server listening on port : ' + port);
                 }
             });
         } else {

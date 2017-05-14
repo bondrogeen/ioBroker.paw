@@ -5,41 +5,41 @@
 import java.io.*;
 import org.json.*;
 import de.fun2code.android.pawserver.AndroidInterface;
-
-jsonVar = new JSONObject();
-ip = parameters.get("server");
-device = parameters.get("device");
-namespace = parameters.get("namespace");
-port = parameters.get("port");
-file = parameters.get("file");
-
 pawHome = server.props.get("serviceContext").pawHome;
+file = new File(pawHome +"/html/setting.json");
 
-void write(ip, device, namespace,port) {
-	
-text = "server_ip=\""+ip+"\";\ndevice=\""+device+"\";\nnamespace=\""+namespace+"\";\nport=\""+port+"\";";
-fileName = pawHome +"/html/settings.bsh";
-	
-    File file = new File(fileName);
-     try {
-        if(!file.exists()){
-            file.createNewFile();
-        }
-        PrintWriter out = new PrintWriter(file.getAbsoluteFile());
-        try {
-            out.print(text);
-        } finally {
-            out.close();
-        }
-    } catch(IOException e) {
-        throw new RuntimeException(e);
-    }
-}
+json = new JSONObject();
 
-
-void upload(ip,file,port){
-url = "http://"+ip+":"+port+"/"+file;
-filedir = pawHome +"/html/"+file;
+    // разбиваем get-запрос и преобразуем в json
+    set = parameters.entrySet(); 
+	for (me : set) {
+		try {
+			json.put(me.getKey(), me.getValue());
+		} catch(e) {
+			json.put("error", e);
+			}
+	}	
+		
+	// запись json в фаил /html/setting.json.
+	void write(json) { 
+		try {
+			if(!file.exists()){
+				file.createNewFile();
+				}
+			PrintWriter out = new PrintWriter(file.getAbsoluteFile());
+			try {
+				out.print(json);
+			} finally {
+				out.close();
+				}
+		} catch(IOException e) {
+			throw new RuntimeException(e);
+		    }
+	}
+	//загрузка файлов на устройства
+	void upload(ip,file,port){
+		url = "http://"+ip+":"+port+"/"+file;
+		filedir = pawHome +"/html/"+file;
         URL url = new URL(url );
         BufferedInputStream bis = new BufferedInputStream(url.openStream());
         FileOutputStream fis = new FileOutputStream(filedir );
@@ -54,50 +54,28 @@ filedir = pawHome +"/html/"+file;
 }
 
 
-if (namespace!= null&&device!= null&&ip!= null&&port!= null){
-
-write(ip, device, namespace,port);	
+	if(json.has("server")&&json.has("file")&&json.has("port")){
+		ip = json.get("server");
+		port = json.get("port");
+		file = json.get("file");
+		parts = file.split(",");
+		for (int i = 0; i < parts.length; i++) {
+			try {
+				upload(ip,parts[i], port);
+				json.put(parts[i].toString(), "true");
+				} catch (e) { 
+				json.put(parts[i].toString(), "error");
+				json.put("response", "error");
+			} 
+		}
+		
+	}
 	
-jsonVar.put("server", ip);	
-jsonVar.put("device", device);
-jsonVar.put("namespace", namespace);
-jsonVar.put("port", port);
-
-
-}else if(ip!= null&&file!= null&&port!= null){
-
-
-parts = file.split(",");
-
-for (int i = 0; i < parts.length; i++) {
+	if(!json.has("file")&&parameters.size()!=0){
+		write(json);
+	}	
 	
-try { 
-upload(ip,parts[i], port);
-jsonVar.put(parts[i].toString(), "true");
-} catch (e) { 
-jsonVar.put(parts[i].toString(), "error");
-jsonVar.put("response", "error");
-} 
-
-}
-
-jsonVar.put("server", ip);	
-jsonVar.put("port", port);
-jsonVar.put("file", file);
-	
-}else{
-
-jsonVar.put("response", "error");
-
-}
-
-jsonVar.put("server", ip);	
-jsonVar.put("device", device);
-jsonVar.put("namespace", namespace);
-jsonVar.put("port", port);
-jsonVar.put("file", file);
-
-request.sendResponse(jsonVar.toString().getBytes(), "text/plain; charset=UTF-8");	
+request.sendResponse(json.toString().getBytes(), "text/plain; charset=UTF-8");	
 request.out.flush();
 request.out.close();		
 
