@@ -554,7 +554,7 @@ function restApi(req, res) {
                 adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".number", body.number,true );
                 adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".status", body.status,true );
             }else if (body.send=="sms"){
-                adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".type", body.smsbody,true );
+                adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".body", body.smsbody,true );
                 adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".number", body.number,true );
             }
 
