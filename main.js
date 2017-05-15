@@ -468,6 +468,8 @@ function init(){
             set_id (name+'.request.call','type',''  );
             set_id (name+'.request.call','status',''  );
             set_id (name+'.request.call','number',''  );
+            set_id (name+'.request.sms','body',''  );
+            set_id (name+'.request.sms','number',''  );
 
             set_id (name+'.command','command','[speech] or [lcd_on]'  );
             set_id (name+'.command','send_sms','[number],[text]'  );
@@ -548,14 +550,12 @@ function restApi(req, res) {
             if (body.send=="alertinput"&&body.send=="scan"&&body.send=="speech"){
                 adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send, body.res,true );
             }else if (body.send=="call"){
-                adapter.log.info("body.send "+body.type);
-                adapter.log.info("body: "+body.namespace+'.'+body.device+'.request.'+body.send+".type");
-                adapter.log.info("body: "+body.namespace+'.'+body.device+'.request.'+body.send+".number");
-                adapter.log.info("body: "+body.namespace+'.'+body.device+'.request.'+body.send+".status");
-
                 adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".type", body.type,true );
                 adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".number", body.number,true );
                 adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".status", body.status,true );
+            }else if (body.send=="sms"){
+                adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".type", body.smsbody,true );
+                adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".number", body.number,true );
             }
 
 
