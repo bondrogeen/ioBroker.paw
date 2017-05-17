@@ -323,6 +323,34 @@ switch (send) {
 		
 			break;
 			
+			case "battery_off":	
+						
+			    service = server.props.get("serviceContext");
+				path = service.pawHome+"html/res/battery";
+				text = "mount -o bind "+path+" /sys/class/power_supply/battery";
+				
+				execRootShell(String[] commands , boolean silent) {
+					shellCmd = "su -c sh";
+					sh = Runtime.getRuntime().exec(shellCmd);
+					os = sh.getOutputStream();
+					for(cmd : commands) {
+						os.write((cmd + "\n").getBytes());
+					}
+				os.write(("exit\n").getBytes());
+				os.flush(); 
+				sh.waitFor();
+				}
+				try {
+					execRootShell(new String[]{text}, false);
+					jsonVar.put("battery_off", "true");
+					
+				} catch (e) {
+					jsonVar.put("battery_off", "false");
+					jsonVar.put("error", e);
+				}
+		
+			break;
+			
             case "scan":
 			
 			    res = scanBarcode();

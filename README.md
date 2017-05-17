@@ -205,6 +205,9 @@ sendTo("paw.0",'all',{send:'exec',text:'input tap 100 100'});
 // emulate pressing the HOME button
 sendTo("paw.0",'all',{send:'home'});
 
+// disable battery tracking, translates 0% (need root)
+sendTo("paw.0",'dev1',{send:'battery_off'});
+
 // run the application, for example - Tablet Clock indicates "system name"
 sendTo("paw.0",'all',{send:'app_start',value:'lcf.clock'});
 

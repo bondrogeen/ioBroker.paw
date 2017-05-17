@@ -201,6 +201,9 @@ sendTo("paw.0",'all',{send:'exec',text:'input tap 100 100'});
 //эмулировать нажатие на кнопку HOME
 sendTo("paw.0",'all',{send:'home'});
 
+//отключить отслеживание батареи, переводит 0% (нужен root)
+sendTo("paw.0",'dev1',{send:'battery_off'});
+
 //запустить приложение, для примера - Tablet Clock указывается "системное название"
 sendTo("paw.0",'all',{send:'app_start',value:'lcf.clock'});
 

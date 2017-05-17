@@ -205,6 +205,9 @@ sendTo("paw.0",'dev1',{
     log(JSON.stringify(response));
 });
 
+// disable battery tracking, translates 0% (need root)
+sendTo("paw.0",'dev1',{send:'battery_off'});
+
 // Run the task from the Tasker application. (need root)
 sendTo("paw.0",'dev1',{send:'task',text:'auto'});
 

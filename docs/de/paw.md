@@ -212,6 +212,9 @@ sendTo("paw.0",'192.168.1.71',{
     log(JSON.stringify(response));
 });
 
+// disable Batterieüberwachung, 0% Transfer (erfordert root)
+sendTo("paw.0",'dev1',{send:'battery_off'});
+
 /*
 Einstellen der Lautstärke von 0 bis 15, wird das maximale Volumen durch das System festgelegt,
 auch geprüft, die nicht über angegebenen Werten geht)
