@@ -403,6 +403,10 @@ switch (send) {
 				
 	        case "openurl":
 			    if (text != null) {
+					if (!text.contains("http://")){
+						text = "http://" + text;
+					}
+					
 				openUri(text);
 			    jsonVar.put("openurl", "true");
 				} else {jsonVar.put("openurl", "false");}
@@ -511,26 +515,22 @@ switch (send) {
 			case "task":
 				
 				if (text != null) {
+					import de.fun2code.android.pawserver.TaskerIntent;
+					service = server.props.get("serviceContext");
 					
-				execRootShell(String[] commands , boolean silent) {
-					shellCmd = "su -c sh";
-					sh = Runtime.getRuntime().exec(shellCmd);
-					os = sh.getOutputStream();
-					for(cmd : commands) {
-						os.write((cmd + "\n").getBytes());
-						}
-						os.write(("exit\n").getBytes());
-						os.flush(); 
-						sh.waitFor();
-				}
-					try {
-						execRootShell(new String[]{"am broadcast -a net.dinglisch.android.tasker.ACTION_TASK -e task_name "+ text}, false);
+					if ( TaskerIntent.testStatus(service).equals( TaskerIntent.Status.OK ) ) {
+						TaskerIntent i = new TaskerIntent(text);
+						if(value != null){
+							s = value.split(",,");
+							for (int j = 0; j < s.length; j++) {
+								i.addParameter(s[j]);
+						    }
+						} 
+						service.sendBroadcast(i);	
 						jsonVar.put("task", "true");
 						
-					} catch (e) {
-							jsonVar.put("task", "false");
-							jsonVar.put("error", e);
-						}
+					}
+					jsonVar.put("Status", TaskerIntent.testStatus(service));					
 				}else{
 					jsonVar.put("task", "no_text");
 				}

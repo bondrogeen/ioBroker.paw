@@ -33,6 +33,8 @@ http://IP:8080/set.xhtml?send=endсall  положить трубку
 
 http://IP:8080/set.xhtml?send=screen_off_time&number=5000   установка времени подсветки экрана в милисек. -1 - не гасить экран (работает не на всех уст.) 
 
+http://IP:8080/set.xhtml?send=task&text=test&value=1111,,1212    запустить задачу [test] таскер и передать параметры %par1 = 1111 %par2 = 1212 и т.д  (,,) разделение
+
 http://IP:8080/set.xhtml?send=lcd_on  активировать  экран на устройстве
 
 http://IP:8080/set.xhtml?send=gong  Проигрывает файл ..paw/html/gong.mp3

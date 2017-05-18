@@ -228,8 +228,26 @@ sendTo("paw.0",'dev1',{
     log(JSON.stringify(response));
 });
 
-// Запустите задачу из приложения Tasker. (need root)
-sendTo("paw.0",'dev1',{send:'task',text:'auto'});
+// Запустите задачу из приложения Tasker.
+// [text] = имя задачи
+// [value] (не обязательно) = параметр передастся переменной %par1 
+// можно передавать несколько значений разделяя ",,"
+// например  value: ' test1 ,, test2 ,, test[n] ' будут переданы  %par1, %par2 %par[n]  и т.д.
+sendTo("paw.0",'dev2',{
+    send:  'task',
+    text:'test',
+    value:'value_test'
+},function (response){
+    log(JSON.stringify(response[0]));
+});
+
+Error status:
+NotInstalled: no Tasker package could be found on the device
+NoPermission: calling app does not have the needed Android permission (see above)
+NotEnabled: Tasker is disabled by the user.
+AccessBlocked: external access is blocked in the user preferences. You can show the user the relevant preference with e.g. startActivity( TaskerIntent.getExternalAccessPrefsIntent() )
+NoReceiver: nothing is listening for TaskerIntents. Probably a Tasker bug.
+
 
 //Отправка смс.
 sendTo("paw.0",'dev1',{send:  'sms', text:  'проверка', number: '8123456789'});
@@ -262,11 +280,11 @@ sendTo("paw.0",'192.168.1.71',{
 });
 
 //Набрать номер.
-sendTo("paw.0",'dev1',{send:  'call', number: '0611'});
+sendTo("paw.0",'dev1',{send:  'dial', number: '0611'});
 
 // с callback
 sendTo("paw.0",'192.168.1.71',{
-    send:  'call', 
+    send:  'dial', 
     number: '0611'
 },function (response){
     log(JSON.stringify(response));

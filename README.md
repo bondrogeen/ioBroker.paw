@@ -266,11 +266,11 @@ sendTo("paw.0",'192.168.1.71',{
 });
 
 // call to number
-sendTo("paw.0",'dev1',{send:  'call', number: '0611'});
+sendTo("paw.0",'dev1',{send:  'dial', number: '0611'});
 
 // with  callback
 sendTo("paw.0",'192.168.1.71',{
-    send:  'call', 
+    send:  'dial', 
     number: '0611'
 },function (response){
     log(JSON.stringify(response));
