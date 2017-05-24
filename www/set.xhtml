@@ -28,34 +28,44 @@ colour = parameters.get("colour");
 font = parameters.get("font");
 date = parameters.get("date");
 
-File file = new File(server.props.get("serviceContext").pawHome + "/html/settings.bsh");
+pawHome = server.props.get("serviceContext").pawHome;
+file = new File(pawHome +"/html/setting.json");
 
 if(file.exists()){
-	source(server.props.get("serviceContext").pawHome + "/html/settings.bsh");
-}
+	fin = new FileInputStream(file);
+	bin = new BufferedInputStream(fin);
+	byte[] contents = new byte[1024];
+	int bytesRead = 0;
+	String strFileContents;
+	while ((bytesRead = bin.read(contents)) != -1) {
+	strFileContents = new String(contents, 0, bytesRead);
+	}
+	bin.close();
 
+	jsonServer = new JSONObject(strFileContents);
+	}
 
-service = server.props.get("serviceContext"); 
+service = server.props.get("serviceContext");
 
 void send_res(res,texthead,text){
-    url = "http://"+server_ip+":"+port+"/";
-    client = new DefaultHttpClient();
-    HttpPost post = new HttpPost(url);
-    post.setHeader("User-Agent", "Mozilla/5.0");
-    urlParameters = new ArrayList<NameValuePair>();
-    urlParameters.add(new BasicNameValuePair("device", device));
-    urlParameters.add(new BasicNameValuePair("namespace", namespace));
+	url = "http://"+jsonServer.get("server")+":"+jsonServer.get("port")+"/";
+	client = new DefaultHttpClient();
+	HttpPost post = new HttpPost(url);
+	post.setHeader("User-Agent", "Mozilla/5.0");
+	urlParameters = new ArrayList<NameValuePair>();
+	urlParameters.add(new BasicNameValuePair("device", jsonServer.get("device")));
+	urlParameters.add(new BasicNameValuePair("namespace", jsonServer.get("namespace")));
 	urlParameters.add(new BasicNameValuePair("res", res));
 	urlParameters.add(new BasicNameValuePair("send", send));
 	if(texthead!=null){
-		urlParameters.add(new BasicNameValuePair("texthead", texthead));	
+	urlParameters.add(new BasicNameValuePair("texthead", texthead));
 	}
 	if(text!=null){
-		urlParameters.add(new BasicNameValuePair("textX", text));	
+	urlParameters.add(new BasicNameValuePair("textX", text));
 	}
 	post.setEntity(new UrlEncodedFormEntity(urlParameters,"UTF-8"));
-    HttpResponse response = client.execute(post);
-}
+	HttpResponse response = client.execute(post);
+	}
 
 
 if (send != null){
@@ -82,7 +92,7 @@ switch (send) {
 			    jsonVar.put("server", "false");
 			    }
       		break;
-			
+
 			case "mark_all_read":
 			    import android.net.Uri;
                 service = server.props.get("serviceContext");
@@ -96,20 +106,20 @@ switch (send) {
 			    } else {
 			    jsonVar.put("mark_all_read", "false");
 			    }
-				
+
       		break;
-			
+
 
 			case "rec":
 				import java.util.*;
 				import java.text.SimpleDateFormat;
 				import android.media.MediaRecorder;
 				pawHome = server.props.get("serviceContext").pawHome;
-				curTime = new Date(); 
+				curTime = new Date();
 				format1 = new SimpleDateFormat("dd.MM.yyyy hh:mm");
 				outputFile = pawHome+"/voice/"+format1.format(curTime )+".3gp";
 				File folder = new File(pawHome+"/voice" );
-				
+
 				if (!folder.exists()) {
 					folder.mkdir();
 				}
@@ -120,7 +130,7 @@ switch (send) {
 				recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 				recorder.setOutputFile(outputFile );
 				recorder.prepare();
-				recorder.start();  
+				recorder.start();
 				Thread.sleep(new Integer(number));
 				recorder.stop();
 				jsonVar.put("rec", "true");
@@ -128,10 +138,10 @@ switch (send) {
 				} else {
 			    jsonVar.put("rec", "false");
 			    }
-				
-			break;	
-			
-				
+
+			break;
+
+
 			case "lcd_on":
 			    import android.content.Context;
 				import android.os.PowerManager;
@@ -143,7 +153,7 @@ switch (send) {
 				wakeLock.acquire();
 				jsonVar.put("lcd_on", "true");
 			break;
-			
+
 			case "gong":
 				import java.io.File;
 			    import android.media.AudioManager;
@@ -151,7 +161,7 @@ switch (send) {
 				import android.content.Intent;
 				fileName = service.pawHome +"/html/gong.mp3";
 				file = new File(fileName);
-				
+
 				if(file.exists()){
 					mediaPlayer=new MediaPlayer();
 					mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -167,7 +177,7 @@ switch (send) {
 				}
 
 			break;
-			
+
 			case "sound_noti":
 				import android.media.RingtoneManager;
 				service = server.props.get("serviceContext");
@@ -179,7 +189,7 @@ switch (send) {
 				r.stop();
 				jsonVar.put("sound_noti", "true");
 			break;
-			
+
 			case "apps":
 			    import android.app.Service;
 				import android.content.pm.PackageManager;
@@ -188,14 +198,14 @@ switch (send) {
 				pkgManager = service.getPackageManager();
 				apps = pkgManager.getInstalledApplications(PackageManager.GET_META_DATA);
 				for (int i=0;i<apps.size();i++) {
-					if((apps.get(i).flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) { continue; } 
+					if((apps.get(i).flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) { continue; }
 					//print("Имя "+apps.get(i).loadLabel(pkgManager)+" " + "процесс "+apps.get(i).processName);
 					jsonVar.put(apps.get(i).loadLabel(pkgManager), apps.get(i).processName);
 					}
 				jsonVar.put("apps", "true");
 			break;
-			
-			
+
+
 			case "sound_ring":
 				import android.media.RingtoneManager;
 				service = server.props.get("serviceContext");
@@ -207,7 +217,7 @@ switch (send) {
 				r.stop();
 				jsonVar.put("sound_ring", "true");
 			break;
-			
+
 			case "home":
 			    import android.os.*;
 				import android.content.*;
@@ -220,56 +230,56 @@ switch (send) {
 				AndroidInterface.sendResultIntent(i);
 				jsonVar.put("home", "true");
 			break;
-			
+
 			case "brightness":
 			    import android.content.Context;
 				import android.provider.Settings;
 				service = server.props.get("serviceContext");
-			
+
 				if (number != null) {
 					try {
 						number = new Integer(number);
 						Settings.System.putInt(service.getContentResolver(),Settings.System.SCREEN_BRIGHTNESS_MODE,Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
 						Settings.System.putInt(service.getContentResolver(),Settings.System.SCREEN_BRIGHTNESS,number );
-						
+
 						jsonVar.put("brightness", "true");
 						Brightness = Settings.System.getInt(service .getContentResolver(),Settings.System.SCREEN_BRIGHTNESS,0);
 						} catch (NumberFormatException e) {
-						jsonVar.put("brightness", "false");	
+						jsonVar.put("brightness", "false");
 						jsonVar.put("error", e);
 						}
 					}else{
 					jsonVar.put("brightness", "false");
 					jsonVar.put("number", "null");
 				}
-				
-			break;	
-			
-			
+
+			break;
+
+
 			case "screen_off_time":
-			    
+
 				import android.provider.Settings;
 				service = server.props.get("serviceContext");
-			
+
 				if (number != null) {
 					try {
 						number = new Integer(number);
 						Settings.System.putInt(service.getContentResolver(),Settings.System.SCREEN_OFF_TIMEOUT,number);
 						jsonVar.put("screen_off_time", "true");
-						
+
 						} catch (NumberFormatException e) {
-							
-						jsonVar.put("screen_off_time", "false");	
+
+						jsonVar.put("screen_off_time", "false");
 						jsonVar.put("error", e);
 						}
 					}else{
 					jsonVar.put("screen_off_time", "false");
 					jsonVar.put("number", "null");
 				}
-				
-			break;	
-	
-			
+
+			break;
+
+
             case "delete_sms_thread":
 			    import android.net.Uri;
                 service = server.props.get("serviceContext");
@@ -282,8 +292,8 @@ switch (send) {
 			    jsonVar.put("delete_sms_thread", "false");
 			    }
       		break;
-			
-			
+
+
             case "delete_sms_id":
 			    import android.net.Uri;
                 service = server.props.get("serviceContext");
@@ -296,8 +306,8 @@ switch (send) {
 			    jsonVar.put("delete_sms_id", "false");
 			    }
       		break;
-			
-			case "exec":			
+
+			case "exec":
 			    execRootShell(String[] commands , boolean silent) {
 					shellCmd = "su -c sh";
 					sh = Runtime.getRuntime().exec(shellCmd);
@@ -306,29 +316,29 @@ switch (send) {
 						os.write((cmd + "\n").getBytes());
 					}
 				os.write(("exit\n").getBytes());
-				os.flush(); 
+				os.flush();
 				sh.waitFor();
 				}
 				if (text != null) {
 					try {
 						execRootShell(new String[]{text}, false);
 						jsonVar.put("exec", "true");
-						
+
 						} catch (e) {
 							jsonVar.put("exec", "false");
 							jsonVar.put("error", e);
 							}
-				
+
 				} else {jsonVar.put("exec", "false");}
-		
+
 			break;
-			
-			case "battery_off":	
-						
+
+			case "battery_off":
+
 			    service = server.props.get("serviceContext");
 				path = service.pawHome+"html/res/battery";
 				text = "mount -o bind "+path+" /sys/class/power_supply/battery";
-				
+
 				execRootShell(String[] commands , boolean silent) {
 					shellCmd = "su -c sh";
 					sh = Runtime.getRuntime().exec(shellCmd);
@@ -337,22 +347,22 @@ switch (send) {
 						os.write((cmd + "\n").getBytes());
 					}
 				os.write(("exit\n").getBytes());
-				os.flush(); 
+				os.flush();
 				sh.waitFor();
 				}
 				try {
 					execRootShell(new String[]{text}, false);
 					jsonVar.put("battery_off", "true");
-					
+
 				} catch (e) {
 					jsonVar.put("battery_off", "false");
 					jsonVar.put("error", e);
 				}
-		
+
 			break;
-			
+
             case "scan":
-			
+
 			    res = scanBarcode();
 				if (res !=null){
 					try {
@@ -364,9 +374,9 @@ switch (send) {
                 jsonVar.put("return", res);
 				}else {
 					jsonVar.put("scan", "no_install");
-				}				
-			break;	
-			
+				}
+			break;
+
 
             case "clipboard":
 			    if(text != null) {
@@ -377,7 +387,7 @@ switch (send) {
 			    jsonVar.put("clipboard", "false");
 			    }
       		break;
-			
+
             case "speech":
 			    if(texthead == null) texthead = "Говорите";
 			    import android.speech.RecognizerIntent;
@@ -395,23 +405,23 @@ switch (send) {
                 }
                 jsonVar.put("return", res);
 			break;
-				
+
 			case "endсall":
 			    endCall();
 			    jsonVar.put("endCall", "true");
-				break;	
-				
+				break;
+
 	        case "openurl":
 			    if (text != null) {
 					if (!text.contains("http://")){
 						text = "http://" + text;
 					}
-					
+
 				openUri(text);
 			    jsonVar.put("openurl", "true");
 				} else {jsonVar.put("openurl", "false");}
-                break;	
-				
+                break;
+
 	        case "alertinput":
 			    if (texthead != null && text != null) {
 					res=showInputAlert(texthead, text);
@@ -424,30 +434,30 @@ switch (send) {
 				jsonVar.put("return", res);
 
 				} else {jsonVar.put("alertinput", "false");}
-                break;	
-				
+                break;
+
 	        case "alert":
 			    if (texthead != null && text != null) {
 				showAlert(texthead, text);
 			    jsonVar.put("Alert", "true");
 				} else {jsonVar.put("Alert", "false");}
                 break;
-				
+
 	        case "noti":
 			    if (texthead != null && text != null) {
-				showNotification(texthead, texthead, text);	
+				showNotification(texthead, texthead, text);
 			    jsonVar.put("noti", "true");
 				} else {jsonVar.put("noti", "false");}
                 break;
-				
+
 	        case "vibrate":
 			    if (number != null) {
-				number = new Integer(number);	
+				number = new Integer(number);
 			    vibrate(number);
 			   	jsonVar.put("vibrate", "true");
 				} else {jsonVar.put("vibrate", "false");}
-                break;	
-				
+                break;
+
             case "volume":
 			    if (number != null) {
 				if (mode == null) {mode = "STREAM_MUSIC";}
@@ -457,34 +467,34 @@ switch (send) {
 				audioMgr = service.getSystemService(Context.AUDIO_SERVICE);
 				number = new Integer(number);
 				if (number < 0) {number = 0;}
-				max = audioMgr.getStreamMaxVolume(eval("AudioManager." + mode)); 
+				max = audioMgr.getStreamMaxVolume(eval("AudioManager." + mode));
 				if (number > max){number = max;}
 				audioMgr.setStreamVolume(eval("AudioManager." + mode), number, 0);
 			   	jsonVar.put("volume", "true");
 				} else {jsonVar.put("volume", "false");}
                 break;
-				
+
 	        case "dial":
 			    if (number != null) {
 			    dial(number);
 			   	jsonVar.put("dial", "true");
 				} else {jsonVar.put("dial", "false");}
                 break;
-				
+
 	        case "call":
 			    if (number != null) {
 			    call(number);
 			   	jsonVar.put("call", "true");
 				} else {jsonVar.put("call", "false");}
                 break;
-				
+
             case "say":
 			    if (text != null) {
 			    speak(text, Locale.getDefault());
 			   	jsonVar.put("say", "true");
 				} else {jsonVar.put("say", "false");}
                 break;
-				
+
 			case "sms":
 			    if (text != null && number != null ) {
 			    sendSMS(number, text);
@@ -492,8 +502,8 @@ switch (send) {
 				}
 				else{jsonVar.put("sms", "false");}
 				break;
-				
-			case "tasker":	
+
+			case "tasker":
 				import java.util.ArrayList;
 				import de.fun2code.android.pawserver.AndroidInterface;
 				import android.net.Uri;
@@ -511,13 +521,13 @@ switch (send) {
 						sonVar.put("tasker", "no_task");
 					}
 				break;
-				
+
 			case "task":
-				
+
 				if (text != null) {
 					import de.fun2code.android.pawserver.TaskerIntent;
 					service = server.props.get("serviceContext");
-					
+
 					if ( TaskerIntent.testStatus(service).equals( TaskerIntent.Status.OK ) ) {
 						TaskerIntent i = new TaskerIntent(text);
 						if(value != null){
@@ -525,18 +535,18 @@ switch (send) {
 							for (int j = 0; j < s.length; j++) {
 								i.addParameter(s[j]);
 						    }
-						} 
-						service.sendBroadcast(i);	
+						}
+						service.sendBroadcast(i);
 						jsonVar.put("task", "true");
-						
+
 					}
-					jsonVar.put("Status", TaskerIntent.testStatus(service));					
+					jsonVar.put("Status", TaskerIntent.testStatus(service));
 				}else{
 					jsonVar.put("task", "no_text");
 				}
-						
-				break;			
-				
+
+				break;
+
             case "app_start":
 			    if (value != null) {
 					import android.app.Service;
@@ -547,17 +557,17 @@ switch (send) {
 	                Intent intent = pkgManager.getLaunchIntentForPackage(value);
 					try {
 						service.startActivity(intent);
-						jsonVar.put("app_start", "true");	
+						jsonVar.put("app_start", "true");
 						} catch (e) {
 							jsonVar.put("app", "no_install");
 							jsonVar.put("app_start", "false");
 					}
                 }
 				else{jsonVar.put("app_start", "false");}
-				break;	
-				
+				break;
+
             default:
-                
+
         }
 
 jsonVar.put("text", text);
@@ -569,20 +579,20 @@ jsonVar.put("textcolour", textcolour);
 jsonVar.put("value", value);
 jsonVar.put("colour", colour);
 jsonVar.put("font", font);
-jsonVar.put("date", date);		
+jsonVar.put("date", date);
 
 
 request.sendResponse(jsonVar.toString().getBytes(), "text/plain; charset=UTF-8");
 request.out.flush();
-request.out.close();		
-		
-		
+request.out.close();
+
+
 } else {
 
 print("<p><a href=\"get_info.txt\">info</a></p>");
 
 }
-		
+
 
 </bsh>
 </body>

@@ -547,7 +547,8 @@ function restApi(req, res) {
             adapter.log.info("POST "+JSON.stringify(body));
             //adapter.log.info(body.namespace+'.'+body.device+'.request.'+body.send);
             //adapter.log.info(adapter.namespace+' '+body.namespace);
-            if (body.send=="alertinput"&&body.send=="scan"&&body.send=="speech"){
+            if (body.send=="alertinput"||body.send=="scan"||body.send=="speech"){
+                adapter.log.info("POST "+body.namespace+'.'+body.device+'.request.'+body.send+':'+body.res);
                 adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send, body.res,true );
             }else if (body.send=="call"){
                 adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".type", body.type,true );
