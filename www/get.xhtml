@@ -1,4 +1,4 @@
-﻿<html>
+<html>
 <body>
 <bsh>
 
@@ -101,53 +101,18 @@ battery.put("temperature", temperature);
 
 jsonVar.put("battery", battery);
 
-
-
-// Get memory info
-
-activityManager = (ActivityManager) service.getSystemService(Context.ACTIVITY_SERVICE);
-memInfo = new ActivityManager.MemoryInfo();
-activityManager.getMemoryInfo(memInfo);
-free = memInfo.availMem / 1024 /1024;
-total = memInfo.totalMem / 1024 /1024;
-
-import android.os.StatFs;
-import android.os.Environment;
-
-getStorageInfo(type) {
-  // Default type is "sdcard"
-  stat = new StatFs(type.equals("int") ? Environment.getDataDirectory().getPath() : Environment.getExternalStorageDirectory().getPath());
-
-  megsTotal = (long)stat.getBlockSize() *(long)stat.getBlockCount() / 1024D / 1024D;
-  megsAvailable = (long)stat.getBlockSize() *(long)stat.getAvailableBlocks() / 1024D /   1024D;
-
-  String[] vals = { String.format("%.2f", new Object[] { megsTotal }),            String.format("%.2f", new Object[] { megsAvailable }) };
-  return vals;
-}
-
-memory.put("int_total", getStorageInfo("int")[0]);
-memory.put("int_free", getStorageInfo("int")[1]);
-memory.put("sdcard_total", getStorageInfo("sdcard")[0]);
-memory.put("sdcard_free", getStorageInfo("sdcard")[1]);
-memory.put("ram_free", free);
-memory.put("ram_total", total);
-
-jsonVar.put("memory", memory);
-
-
-
 // Get cpu info
 
 
 source(server.props.get("serviceContext").pawHome + "/html/app/bsh/systemLoad.bsh");
 cpus = getCpus();
-load = getSystemLoad().get("load");	
+load = getSystemLoad().get("load");
 
 cpu.put("cpus", cpus);
 cpu.put("load", load);
 
 jsonVar.put("cpu", cpu);
-	
+
 
 
 
@@ -156,30 +121,30 @@ jsonVar.put("cpu", cpu);
 
 
 wifiService = service.getSystemService(Context.WIFI_SERVICE);
-	      
+
 	// Check for connected WiFi network
 	wifiInfo = wifiService.getConnectionInfo();
 	wifiActive = false;
 	if(wifiInfo != null && wifiInfo.getIpAddress() != 0) {
 		wifiActive = true;
 		ip = wifiInfo.getIpAddress();
-		
+
 		ip = String.format("%d.%d.%d.%d", (ip & 0xff), (ip >> 8 & 0xff), (ip >> 16 & 0xff),
             (ip >> 24 & 0xff));
-			
+
 		mac = wifiInfo.getMacAddress();
 	}
 	if(wifiActive) {
 		SSID = wifiInfo.getSSID();
 		if(SSID == null) { SSID = "unknown"; }
 
-		
+
 		linkspeed = wifiInfo.getLinkSpeed() + " " + WifiInfo.LINK_SPEED_UNITS;
 		if(wifiInfo.getLinkSpeed() < 0) { linkspeed = "unknown"; }
 
 		wifiStrengthPercent = (100 + wifiInfo.getRssi() + 20)+"%";
 		Rssi = wifiInfo.getRssi();
-		 
+
 	}
 wifi.put("ssid", SSID);
 wifi.put("strengthpercent", wifiStrengthPercent);
@@ -191,20 +156,20 @@ wifi.put("mac", mac);
 jsonVar.put("wifi", wifi);
 
 
-	
+
 // Get info
 
 import android.content.Context;
 import android.os.PowerManager;
-import android.provider.Settings;       
+import android.provider.Settings;
 service = server.props.get("serviceContext");
 
 pm = service.getSystemService(Context.POWER_SERVICE);
 x = pm.isScreenOn();
-info.put("lcd", x);	
+info.put("lcd", x);
 Brightness = Settings.System.getInt(service .getContentResolver(),Settings.System.SCREEN_BRIGHTNESS,0);
 
-info.put("brightness", Brightness);	
+info.put("brightness", Brightness);
 
 BOARD = android.os.Build.BOARD;
 BRAND = android.os.Build.BRAND;
@@ -217,7 +182,7 @@ USER = android.os.Build.USER;
 INCREMENTAL = android.os.Build.VERSION.INCREMENTAL;
 RELEASE = android.os.Build.VERSION.RELEASE;
 SDK = android.os.Build.VERSION.SDK;
-	
+
 //info.put("board", BOARD);
 info.put("brand", BRAND);
 //info.put("display", DISPLAY);
@@ -277,7 +242,7 @@ cursor = service.getContentResolver().query(
   SMS_CONTENT_URI, new String[] { "_id", "thread_id", "address", "person", "date", "body", "status"},"read = 0", null,"date DESC");
 if (cursor != null) {
   try {
-    count = cursor.getCount();   
+    count = cursor.getCount();
   }
   finally {
     cursor.close();
@@ -286,8 +251,8 @@ if (cursor != null) {
 info.put("new_message", count);
 
 jsonVar.put("info", info);
-	
-// Get audio info	
+
+// Get audio info
 
 
 
@@ -327,7 +292,50 @@ audiovol.put("voice_call", STREAM_VOICE_CALL);
 
 jsonVar.put("audio_volume", audiovol);
 
-jsonVar.put("test", "test");
+
+// Get memory info
+
+activityManager = (ActivityManager) service.getSystemService(Context.ACTIVITY_SERVICE);
+memInfo = new ActivityManager.MemoryInfo();
+activityManager.getMemoryInfo(memInfo);
+free = memInfo.availMem / 1024 /1024;
+
+int SDK_i = new Integer(SDK);
+
+if (SDK_i>=16){
+total = memInfo.totalMem / 1024 /1024;
+}
+ 
+
+import android.os.StatFs;
+import android.os.Environment;
+
+getStorageInfo(type) {
+  // Default type is "sdcard"
+  stat = new StatFs(type.equals("int") ? Environment.getDataDirectory().getPath() : Environment.getExternalStorageDirectory().getPath());
+
+  megsTotal = (long)stat.getBlockSize() *(long)stat.getBlockCount() / 1024D / 1024D;
+  megsAvailable = (long)stat.getBlockSize() *(long)stat.getAvailableBlocks() / 1024D /   1024D;
+
+  String[] vals = { String.format("%.2f", new Object[] { megsTotal }),            String.format("%.2f", new Object[] { megsAvailable }) };
+  return vals;
+}
+
+memory.put("int_total", getStorageInfo("int")[0]);
+memory.put("int_free", getStorageInfo("int")[1]);
+memory.put("sdcard_total", getStorageInfo("sdcard")[0]);
+memory.put("sdcard_free", getStorageInfo("sdcard")[1]);
+memory.put("ram_free", free);
+memory.put("ram_total", total);
+
+jsonVar.put("memory", memory);
+
+
+
+
+
+
+
 
 request.sendResponse(jsonVar.toString().getBytes(), "text/plain; charset=UTF-8");
 request.out.flush();

@@ -4,26 +4,49 @@
 
 <title>sms</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<link rel="stylesheet" href="app/css/default.css">
-<style>
-   td {
-    text-align: center; 
-   }
-   th {
-    text-align: center; 
-   }
-</style>
 
+<link href="css/font-awesome.css" rel="stylesheet">
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
 </head>
 <body>
 
-<div style='overflow: auto; height: 100%; width: 100%;'>
-<table border='0' cellpadding='4' cellspacing='0' style='width: 100%; font-size: 14px; border: 1px solid black;'>
-<tr><th>№</th><th>Имя</th><th>Номера</th><th>Сообщение</th><th>Дата</th><th>Время</th><th></th></tr>
+<body style="overflow-y: scroll;">
+
+
+<div class="navbar  navbar-inverse navbar-fixed-top" >
+    <div >
+         <div class="navbar-header">
+         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu">
+         <span class="sr-only">Открыть</span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+         </button>
+        </div>
+
+           <div class="collapse navbar-collapse " id="menu">
+
+               <ul class="nav navbar-nav ">
+                 <li><a href="javascript:click('call.xhtml')" ><i class="fa fa-pencil " aria-hidden="true"></i></a></li>
+                 <li><a href="javascript:click('call.xhtml')" ><i class="fa fa-th " aria-hidden="true"></i></a></li>
+
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                <li><a href="javascript:click('sms.xhtml')" ><i class="fa fa-trash-o " aria-hidden="true"></i></a></li>
+                </ul>
+           </div>
+    </div>
+</div>
+
+
+
+
+<table class="table" style="margin-top: 48px;">
+<tr class="first"><th class="numb">#</th><th class="tel">Имя</th><th class="msg">Сообщение</th><th class="date">Дата</th><th class="time">Время</th><th></th></tr>
 
 
 <bsh>
-// Enter code here...
 
 import org.json.*;
 import android.net.Uri;
@@ -47,6 +70,7 @@ total = new JSONObject();
 incoming=0;
 outgoing=0;
 draft = 0;
+error = 0;
 new_sms=0;
 
 send = parameters.get("send");
@@ -70,7 +94,7 @@ if (cursor != null) {
             do {
 				colour = colour.equals("#eaeaea") ? "white" : "#eaeaea";
 				position = cursor.getPosition();
-				
+
                 messageId = cursor.getLong(0);
                 threadId = cursor.getLong(1);
 				address= cursor.getString(2);
@@ -80,7 +104,7 @@ if (cursor != null) {
                 status = cursor.getInt(6);
 				type =  cursor.getInt(7);
 				read = cursor.getInt(8);
-				
+
 				date = d.format(timestamp);
 				time = t.format(timestamp);
 
@@ -101,11 +125,10 @@ if (cursor != null) {
 				}else{
 					name = null;
 				}
-									
+
 					if (name == null) {
 						name = "null";
 					}
-					
 
 					switch(type) {
 						case 1:
@@ -120,12 +143,19 @@ if (cursor != null) {
 						type = "draft";
 						draft = draft + 1;
 						break;
+						case 5:
+						type = "error";
+						error = error + 1;
+						break;
+						default:
+                        type = "undefined";
+                        break;
 					}
-					
+
 					if(read==0){
 						new_sms=new_sms+1;
 						}
-							
+
 					sms.put("Id", messageId);
 					sms.put("threadId", threadId);
 					sms.put("number", address);
@@ -137,9 +167,9 @@ if (cursor != null) {
 					sms.put("read", read);
 					sms.put("type", type);
 					sms.put("name", name);
-					
-					
-				
+
+
+
 
 					if(send!=null){
 						switch(send) {
@@ -156,7 +186,7 @@ if (cursor != null) {
 							}
 							}else{
 								arr.add(sms);
-							}	
+							}
 							break;
 							case "incoming":
 							if(type=="incoming"){
@@ -167,7 +197,7 @@ if (cursor != null) {
 								}else{
 									arr.add(sms);
 								}
-							}	
+							}
 							break;
 							case "outgoing":
 							if(type=="outgoing"){
@@ -178,63 +208,62 @@ if (cursor != null) {
 								}else{
 									arr.add(sms);
 								}
-							}	
+							}
 							break;
 						}
 						//print(date_now.equals(date));
 
 					}else{
-						
+
 						callImage = "";
 						callTypeLabel = "";
 						switch(type) {
 							case "incoming":
-							callImage = "app/images/call_incoming.png";
-							//callTypeLabel = translateRaw("tooltip.phone_incoming");
+							callImage = "<i class='fa fa-arrow-down' aria-hidden='true'></i>";
 							break;
 							case "outgoing":
-							callImage = "app/images/call_outgoing.png";
-							//callTypeLabel = translateRaw("tooltip.phone_outgoing");
+							callImage = "<i class='fa fa-arrow-up' aria-hidden='true'></i>";
 							break;
 							case "draft":
-							callImage = "app/images/stop.png";
-							
-							//callTypeLabel = translateRaw("tooltip.phone_missed");
+							callImage = "<i class='fa fa-pencil' aria-hidden='true'></i>";
 							break;
-							
+							case "error":
+							callImage = "<i class='fa fa-ban text-danger' aria-hidden='true'></i>";
+							break;
+
 						}
-						
+
 						if(read==0){
-								read = "<img src='app/images/mail.png' style='width: 16px;' >";
+								read = "<i class='fa fa-spin fa-envelope' aria-hidden='true'></i>";
 							}else{
 								read = "";
 							}
-						
+
 						if(!name.equals("null")) {
-							//phoneLink = "<a href='app/dial.xhtml?number=" + URLEncoder.encode(callNumber) + "' style='color: black;' class='link'>" + (callName != "null" ? callName : callNumber)  + "</a>";
+							//phoneLink = "<a href='app/dial.xhtml?number=" + URLEncoder.encode(callNumber) + "' class='link'>" + (callName != "null" ? callName : callNumber)  + "</a>";
 							phoneLink = name;
 						}else {
-							phoneLink = "Unknown";
+							phoneLink = address;
 							}
-							print("<tr style='background:"+colour+";'><td style='width: 50px; text-align:right;'>"+ ++position+"&nbsp;<img src='" + callImage + "'style='width: 16px;'  xalign='middle' title='" + callTypeLabel + "'></td><td style='width: 10%;'>" + phoneLink  + "</td><td style='width: 10%; color: black;'>"+address+"</td><td style='width: 40%; color: black;'>"+body+"</td><td style='color: black;'>"+date+"</td><td style='color: black;'>"+time+"</td><td style='color: black; width: 5%;'>" + read + "</td></tr>");
-					}	
-			
+							print("<tr><td class='numb'>"+ ++position+"&nbsp;" + callImage + "</td><td class='tel' >"+phoneLink+"</td><td class='msg'>"+body+"</td><td >"+date+"</td><td>"+time+"</td><td>" + read + "</td></tr>");
+					}
+
 			//print("проверка");
-			
+
 				sms = "";
 				sms = new JSONObject();
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-                
+
+
+
+
+
+
+
+
+
+
+
+
             } while(cursor.moveToNext());
         }
     }
@@ -249,22 +278,23 @@ total.put("draft", draft);
 total.put("outgoing", outgoing);
 total.put("incoming", incoming);
 total.put("new_sms", new_sms);
+total.put("error", error);
+
+
+if(send!=null){
 
 if(send.equals("info")){
-sand_date=total;	
+sand_date=total;
 }else{
 sand_date=arr;
 }
 
-
-
-if(send!=null){
 request.sendResponse(sand_date.toString().getBytes(), "text/plain; charset=UTF-8");
 request.out.flush();
-request.out.close();	
-	
+request.out.close();
+
 }else{
-	print("</table></div>");
+	print("</table>");
 }
 
 

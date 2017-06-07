@@ -2,24 +2,174 @@
 <html>
 <head>
 <bsh>source(server.props.get("serviceContext").pawHome + "/html/app/bsh/i18n.bsh");</bsh>
-<title><bsh>translate("call_log.title");</bsh></title>
+<title>call</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<link rel="stylesheet" href="app/css/default.css">
-<style>
-   td {
-    text-align: center; 
-   }
-   th {
-    text-align: center; 
-   }
-</style>
 
+<link href="css/font-awesome.css" rel="stylesheet">
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.js"></script>
+<script type="text/javascript">
+
+    var name;
+    var phone;
+    var text;
+
+
+
+	$(document).ready(function() {
+
+
+        if(sessionStorage.getItem('call_info')){
+            console.log(sessionStorage.getItem('call_info') + " true");
+            var call = JSON.parse(sessionStorage.getItem("call_info"))
+        }else{
+            console.log(sessionStorage.getItem('call_info')+ " false");
+        }
+
+
+        $('#all_bange').text(call.all);
+        $('#incoming_bange').text(call.incoming);
+        $('#outgoing_bange').text(call.outgoing);
+        $('#unread_bange').text(call.unread);
+        $('#missed_bange').text(call.missed);
+
+
+
+
+         $('#myModal').on('show.bs.modal', function (event) {
+            var target;
+            var event = window.event;
+            if (event.target) {
+                target = event.target;
+            } else if (event.srcElement) {
+                target = event.srcElement;
+                }
+            if (target) {
+                if (target.nodeType == 3) {
+                    target = target.parentNode;
+                }
+            if (target.tagName.toLowerCase() == "td") {
+                var row = target.parentNode;
+                var td;
+                var str = "";
+                for (var j = 0; (td = row.getElementsByTagName("td").item(j)); j++) {
+                    str += td.innerHTML + "\n";
+                    }
+                //alert(str);
+                }
+
+                name = row.getElementsByTagName("td").item(1).innerHTML
+                phone = row.getElementsByTagName("td").item(2).innerHTML
+
+                $('#name').text(name);
+                console.log( name + ":" + phone);
+            }
+        });
+
+        $('#characterLeft').text('0');
+        $('#message').keyup(function () {
+
+            var len = $(this).val().length;
+                var ch = len;
+                $('#characterLeft').text(ch + '');
+                $('#btnSubmit').removeClass('disabled');
+                $('#characterLeft').removeClass('red');
+
+            });
+
+
+	});
+
+
+    function post(val){
+
+        console.log(val);
+
+
+        if(val=="call"){
+            $('#btn_call').text("Соединение...");
+        }else if(val=="endсall"){
+            $('#btn_call').text("Звонок");
+            $('#message').val("");
+        }else if(val=="sms"){
+             text = $('#message').val();
+            $('#btnSubmit').text("Отправка...");
+        }
+
+        $.post( "set.xhtml", { send: val, number: phone,text: text }).done(function( data ) {
+            //console.log(JSON.parse(data));
+            try {
+                data = JSON.parse(data);
+                if(data.call=="true"){
+                    $('#btn_call').text("Звонок");
+                }else if(data.call=="false"){
+                    $('#btn_call').text("Ошибка");
+                }
+
+                if(data.sms=="true"){
+                    $('#btnSubmit').text("Отправить");
+                    $('#characterLeft').text("0");
+                    $('#message').val("");
+
+                }else if(data.sms=="false"){
+                    $('#btnSubmit').text("Ошибка");
+                }
+
+
+            } catch (exception) {
+                data = null;
+            }
+
+
+
+        });
+    }
+
+
+
+</script>
 </head>
-<body>
 
-<div style='overflow: auto; height: 100%; width: 100%;'>
-<table border='0' cellpadding='4' cellspacing='0' style='width: 100%; font-size: 14px; border: 1px solid black;'>
-<tr><th>№</th><th>Имя</th><th>Номера</th><th>Дата</th><th>Время</th><th>Длительность</th></tr>
+<body style="overflow-y: scroll;">
+
+
+<div class="navbar  navbar-inverse navbar-fixed-top" >
+    <div >
+         <div class="navbar-header">
+         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu">
+         <span class="sr-only">Открыть</span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+         </button>
+        </div>
+
+
+
+           <div class="collapse navbar-collapse " id="menu">
+
+               <ul class="nav navbar-nav ">
+                 <li><a href="javascript:click('call.xhtml')" ><i class="fa fa-th " aria-hidden="true"></i></a></li>
+                 <li><a href="javascript:click('sms.xhtml')" ><i class="fa fa-trash-o " aria-hidden="true"></i></a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><i class="fa fa-phone" aria-hidden="true"> <span id="all_bange" class="badge"></span></i></a></li>
+                <li><a href="#"><i class="fa fa-level-down" aria-hidden="true"> <span id="incoming_bange" class="badge"></span></i></a></li>
+                <li><a href="#"><i class="fa fa-level-up" aria-hidden="true"> <span id="outgoing_bange" class="badge"></span></i></a></li>
+                <li><a href="#"><i class="fa fa-exclamation" aria-hidden="true"><span id="unread_bange" class="badge" ></span></i></a></li>
+                <li><a href="#"><i class="fa fa-times-circle" aria-hidden="true"> <span id="missed_bange" class="badge"></span></i></a></li>
+                </ul>
+           </div>
+    </div>
+</div>
+
+
+
+<table class="table" style="margin-top: 48px;">
+<tr class="first"><th class="call_numb">#</th><th class="call_name">Имя</th><th class="call_date" >Дата</th><th class="call_time">Время</th><th class="duration">Длит.</th></tr>
 
 
 <bsh>
@@ -38,6 +188,7 @@ c = Calendar.getInstance();
 
 d = new SimpleDateFormat("dd-MM-yyyy");
 t = new SimpleDateFormat("HH:mm:ss");
+
 date_now = d.format(c.getTime());
 time_now = t.format(c.getTime());
 
@@ -68,9 +219,9 @@ cursor = service.getContentResolver().query(
   null,
   null,
   SORT_ORDER);
-  
-  
-  
+
+
+
 if (cursor != null) {
   try {
 	  colour = "#eaeaea";
@@ -79,7 +230,7 @@ if (cursor != null) {
       do {
        colour = colour.equals("#eaeaea") ? "white" : "#eaeaea";
 		position = cursor.getPosition();
-		
+
         callNumber = cursor.getString(0);
         callName = cursor.getString(1);
         callDate = cursor.getLong(2);
@@ -87,28 +238,28 @@ if (cursor != null) {
         callType = cursor.getLong(4);
 		call_new = cursor.getLong(5);
         callTypeLabel = "";
-		
-		
+
+
 		date = d.format(new Date(callDate));
 		time = t.format(new Date(callDate));
         //date = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(callDate));
-	
+
 		if (callName == null){
 		callName = "null";
 		cname = callNumber;
 		}else{
 		cname = callName;
 		}
-		
+
 		switch(callType) {
-			
+
           case CallLog.Calls.INCOMING_TYPE:
             callTypeLabel = "incoming";
 			incoming = incoming + 1;
             break;
           case CallLog.Calls.OUTGOING_TYPE:
             callTypeLabel = "outgoing";
-			outgoing = outgoing + 1; 
+			outgoing = outgoing + 1;
             break;
           case CallLog.Calls.MISSED_TYPE:
             callTypeLabel = "missed";
@@ -116,10 +267,10 @@ if (cursor != null) {
 			if(call_new==1){
 				new_call=new_call+1;
 				}
-			temp.put("unread", call_new);	
+			temp.put("unread", call_new);
           break;
         }
-		
+
 		temp.put("type", callTypeLabel);
         temp.put("number", callNumber);
 	    temp.put("name", callName);
@@ -127,15 +278,15 @@ if (cursor != null) {
         temp.put("date", date);
 		temp.put("time", time);
         temp.put("duration", callDuration);
-		
+
 		if(send!=null){
 			switch(send) {
 				case "now":
-				
+
 				    if(date_now.equals(date)){
 						arr.add(temp);
 					}
-				
+
 				break;
 				case "all":
 				    if(text!=null){
@@ -144,7 +295,7 @@ if (cursor != null) {
 					}
 					}else{
 						arr.add(temp);
-					}				    
+					}
 				break;
 				case "incoming":
 				    if(callTypeLabel.equals("incoming")){
@@ -155,8 +306,8 @@ if (cursor != null) {
 						}else{
 							arr.add(temp);
 						}
-						
-					}			    
+
+					}
 				break;
 				case "outgoing":
 				    if(callTypeLabel.equals("outgoing")){
@@ -167,8 +318,8 @@ if (cursor != null) {
 						}else{
 							arr.add(temp);
 						}
-						
-					}			    
+
+					}
 				break;
 				case "missed":
 				    if(callTypeLabel.equals("missed")){
@@ -179,66 +330,83 @@ if (cursor != null) {
 						}else{
 							arr.add(temp);
 						}
-						
-					}			    
+
+					}
 				break;
-				
-				
-				
+
+
+
         }
 
-		
+
 		}else{
-			
-			callImage = "";
-				callTypeLabel = "";
+
+            int i = callDuration;
+            Sec = i   % 60;
+            Min = i  / 60 % 60;
+            if(Min>0){
+
+                if (Sec < 10) {
+                    callDuration = Min+":0"+Sec;
+                }else{
+                    callDuration = Min+":"+Sec;
+                }
+
+            }else{
+                callDuration = Sec;
+            }
+
+
+
+            callImage = "";
+			callTypeLabel = "";
 
 				switch(callType) {
 					case CallLog.Calls.INCOMING_TYPE:
-						callImage = "app/images/call_incoming.png";
-						callTypeLabel = translateRaw("tooltip.phone_incoming");
+						callImage = "<i class='fa fa-arrow-down' aria-hidden='true'></i>";
+						callTypeLabel = "incoming";
 						break;
 					case CallLog.Calls.OUTGOING_TYPE:
-						callImage = "app/images/call_outgoing.png";
-						callTypeLabel = translateRaw("tooltip.phone_outgoing");
+		 				callImage = "<i class='fa fa-arrow-up' aria-hidden='true'></i>";
+						callTypeLabel = "outgoing";
 						break;
 					case CallLog.Calls.MISSED_TYPE:
-						callImage = "app/images/call_missed.png";
-						callTypeLabel = translateRaw("tooltip.phone_missed");
+						callImage = "<i class='fa fa-times' aria-hidden='true'></i>";
+						callTypeLabel = "missed";
 						break;
 				}
-			
-			
+
+
 			if(!callNumber.equals("-1")) {
-					phoneLink = "<a href='app/dial.xhtml?number=" + URLEncoder.encode(callNumber) + "' style='color: black;' class='link'>" + (callName != "null" ? callName : callNumber)  + "</a>";
-				//phoneLink = "Unknown";
+
+					phoneLink =	(callName != "null") ? callName : callNumber ;
 				}
 				else {
 					phoneLink = "Unknown";
 				}
 
-				print("<tr style='background:"+colour+";'><td style='width: 50px; text-align:right;'>"+ ++position+"&nbsp;<img src='" + callImage + "'style='width: 16px;'  xalign='middle' title='" + callTypeLabel + "'></td><td style='width: 20%;'>" + phoneLink  + "</td><td style='width: 20%; color: black;'>"+callNumber+"</td><td style='color: black;'>"+date+"</td><td style='color: black;'>"+time+"</td><td style='color: black; width: 5%;'>" + callDuration + "</td></tr>");
+				print("<tr class='click' data-toggle='modal' data-target='#myModal' ><td class='call_numb'>"+ ++position+"&nbsp;" + callImage + "</td><td class='call_name'>" + phoneLink  + "</td><td class='call_date'>"+date+"</td><td class='call_time'>"+time+"</td><td class='duration'>" + callDuration + "</td></tr>");
 
-			
+
 		}
 
 	    temp = "";
 	    temp = new JSONObject();
 
       } while(cursor.moveToNext());
-  
+
     }
   }
-  
 
-  
+
+
   finally {
-  
+
     cursor.close();
-	
+
 
   }
-  
+
 
 }
 
@@ -249,25 +417,43 @@ total.put("outgoing", outgoing);
 total.put("incoming", incoming);
 total.put("unread", new_call);
 
+if(send!=null){
+
 if(send.equals("info")){
-sand_date=total;	
+sand_date=total;
 }else{
 sand_date=arr;
 }
 
-
-
-if(send!=null){
-request.sendResponse(sand_date.toString().getBytes(), "text/plain; charset=UTF-8");
+request.sendResponse(sand_date.toString().getBytes(), "text/plain; charset=UTF-8 ");
 request.out.flush();
-request.out.close();	
-	
+request.out.close();
+
 }else{
-	print("</table></div>");
+	print("</table>");
 }
 
-
-
 </bsh>
+
+<div id="myModal" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header"><button class="close" type="button" data-dismiss="modal">×</button>
+<h4 class="modal-title" id="name">Имя</h4></div>
+<div class="modal-body">
+<label id="messageLabel" for="message">Сообщение </label>
+<textarea class="form-control input-sm " type="textarea" id="message" placeholder="Текст сообщения" maxlength="140" rows="7"></textarea>
+<span class="help-block"><p id="characterLeft" class="help-block "></p></span>
+<button onclick="post('sms')" class="form-control input-sm btn btn-info disabled" id="btnSubmit" name="btnSubmit" type="button" > Отправить</button>
+</div>
+<div class="modal-footer">
+<button id="btn_call" onclick="post('call')" type="button" class="btn btn-success btn-lg btn-block">Звонок</button>
+<button onclick="post('endсall')" type="button" class="btn btn-danger btn-lg btn-block">Отбой</button>
+</div>
+</div>
+</div>
+</div>
+
+
 </body>
 </html>

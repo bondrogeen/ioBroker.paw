@@ -11,17 +11,17 @@ file = new File(pawHome +"/html/setting.json");
 json = new JSONObject();
 
     // разбиваем get-запрос и преобразуем в json
-    set = parameters.entrySet(); 
+    set = parameters.entrySet();
 	for (me : set) {
 		try {
 			json.put(me.getKey(), me.getValue());
 		} catch(e) {
 			json.put("error", e);
 			}
-	}	
-		
+	}
+
 	// запись json в фаил /html/setting.json.
-	void write(json) { 
+	void write(json) {
 		try {
 			if(!file.exists()){
 				file.createNewFile();
@@ -63,21 +63,21 @@ json = new JSONObject();
 			try {
 				upload(ip,parts[i], port);
 				json.put(parts[i].toString(), "true");
-				} catch (e) { 
+				} catch (e) {
 				json.put(parts[i].toString(), "error");
 				json.put("response", "error");
-			} 
+			}
 		}
-		
+
 	}
-	
+
 	if(!json.has("file")&&parameters.size()!=0){
 		write(json);
-	}	
-	
-request.sendResponse(json.toString().getBytes(), "text/plain; charset=UTF-8");	
+	}
+
+request.sendResponse(json.toString().getBytes(), "text/plain; charset=UTF-8");
 request.out.flush();
-request.out.close();		
+request.out.close();
 
 
 </bsh>
