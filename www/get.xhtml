@@ -304,6 +304,7 @@ int SDK_i = new Integer(SDK);
 
 if (SDK_i>=16){
 total = memInfo.totalMem / 1024 /1024;
+    memory.put("ram_total", total);
 }
  
 
@@ -326,7 +327,7 @@ memory.put("int_free", getStorageInfo("int")[1]);
 memory.put("sdcard_total", getStorageInfo("sdcard")[0]);
 memory.put("sdcard_free", getStorageInfo("sdcard")[1]);
 memory.put("ram_free", free);
-memory.put("ram_total", total);
+
 
 jsonVar.put("memory", memory);
 
