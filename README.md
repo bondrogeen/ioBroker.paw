@@ -383,6 +383,27 @@ sendTo("paw.0",'dev1',{
     log(JSON.stringify(response[0]));
 });
 
+// Displays messages in a separate window
+//text: "Default text",   - Message text        
+//textsize:"50",  - font size  [5 - 300] 50 (default)
+//textcolor:"000000",   -text color [HEX]  000000 (default)
+//color:"ffffff",   - background color [HEX]  ffffff (default)
+//orientation:"0",  - orientation  - 0, 90, 180, 270,   (default: current orientation)
+//font:"NORMAL"  -  font  BOLD_ITALIC, BOLD, ITALIC,   NORMAL (default)
+
+sendTo("paw.0",'dev1',{
+    send:  'informer', 
+    text: "Default text",    
+    textsize:"50",  //Optional parameter
+    textcolor:"ff0000",  //Optional parameter
+    color:"ff00ff",//Optional parameter
+    orientation:"180",//Optional parameter
+    font:"NORMAL"  //Optional parameter
+    
+},function (response){
+    log(JSON.stringify(response[0]));
+});
+
 
 ```
 
