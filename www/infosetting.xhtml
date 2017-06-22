@@ -5,12 +5,12 @@
 </head>
 
  <style>
-   P { 
-    line-height: 2; 
-    text-align: justify; 
+   P {
+    line-height: 2;
+    text-align: justify;
    }
-  </style> 
-  
+  </style>
+
 <body>
 
 <bsh>
@@ -24,7 +24,7 @@ file = new File(pawHome +"/html/infosetting.json");
 
 jsonVar = new JSONObject();
 
-text = "{'ru_RU':{'Settings':'Настройки','Save':'Сохранить','Background color':'Цвет фона','Text color':'Цвет текста','Text Size':'Размер текста','Speed ​​of text':'Скорость текста','Text':'Tекста','Direction':'Направление'},"; 
+text = "{'ru_RU':{'Settings':'Настройки','Save':'Сохранить','Background color':'Цвет фона','Text color':'Цвет текста','Text Size':'Размер текста','Speed ​​of text':'Скорость текста','Text':'Tекста','Direction':'Направление'},";
 text = text + "'de_DE':{'Settings':'Einstellungen','Save':'Speichern','Background color':'Hintergrundfarbe','Text color':'Textfarbe','Text Size':'Schriftgröße','Speed ​​of text':'Geschwindigkeit','Text':'Text','Direction':'Textrichtung'}}";
 
 
@@ -39,8 +39,8 @@ translete(text){
      } catch (JSONException e) {
          return text;
      }
-  
-  
+
+
 }
 
 
@@ -55,26 +55,26 @@ if(file.exists()){		// чтение json из фаил /html/infosetting.json.
 			strFileContents = new String(contents, 0, bytesRead);
 		}
 		bin.close();
-		
+
 		jsonVar = new JSONObject(strFileContents);
-		
-		
-		
+
+
+
 	}else{
-	
+
 	jsonVar.put("bgcolor", "#ffffff");
 	jsonVar.put("color", "#000000");
 	jsonVar.put("fontsize", "40");
 	jsonVar.put("speed", "10");
 	jsonVar.put("direction", "left");
-	
+
 	jsonVar.put("text", "Текст по умолчанию, Default Text, der Standardtext");
 	}
 
 // если нет get и post данных создаем стриницу настроек.
 
-if(parameters.size()==0){ 
-		
+if(parameters.size()==0){
+
 	print("<h1>"+translete("Settings")+"</h1>");
 	print("<form action=\"infosetting.xhtml\"><p>");
 	print(translete("Background color")+":<br>");
@@ -89,41 +89,41 @@ if(parameters.size()==0){
 	print("<input type=\"input\" name=\"text\" size=\"100\" value=\""+jsonVar.getString("text")+"\"><br>");
 	print(translete("Direction")+":<br>");
 	print("<select name=\"direction\">");
-	print("<option "); 
+	print("<option ");
 	if(jsonVar.getString("direction").equals("left")) print("selected");
 	print(">left</option>");
-	print("<option "); 
+	print("<option ");
 	if(jsonVar.getString("direction").equals("right")) print("selected");
 	print(">right</option>");
-	print("<option "); 
+	print("<option ");
 	if(jsonVar.getString("direction").equals("up")) print("selected");
 	print(">up</option>");
-	print("<option "); 
+	print("<option ");
 	if(jsonVar.getString("direction").equals("down")) print("selected");
 	print(">down</option>");
     print("</select>");
-	
+
 	print("<br>");
 	print("<br><input type=\"submit\" value=\""+translete("Save")+"\"></p>");
 	print("</form>");
 
 }else{	//  если есть get и post данных  обрабатываем их.
-		
-	// разбор параметров запроса	
-	set = parameters.entrySet(); 
-	
+
+	// разбор параметров запроса
+	set = parameters.entrySet();
+
 	for (me : set) {
 		try {
 			jsonVar.put(me.getKey(), me.getValue());
 		} catch(e) {
 			jsonVar.put("error", e);
 			}
-	}	
-		
-	
-	
+	}
+
+
+
 	// запись json в фаил /html/infosetting.json.
-	void write(jsonVar) { 
+	void write(jsonVar) {
 		try {
 			if(!file.exists()){
 				file.createNewFile();
@@ -139,15 +139,15 @@ if(parameters.size()==0){
 		    }
 	}
 
-	
+
 	write(jsonVar);
-	request.sendResponse(jsonVar.toString().getBytes(), "text/plain; charset=UTF-8");	
+	request.sendResponse(jsonVar.toString().getBytes(), "text/plain; charset=UTF-8");
 	request.out.flush();
-	request.out.close();	
-  
+	request.out.close();
+
 
 }
-	
+
 
 </bsh>
 </body>

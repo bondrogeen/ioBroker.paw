@@ -113,12 +113,7 @@ cpu.put("load", load);
 
 jsonVar.put("cpu", cpu);
 
-
-
-
 // Get WiFi info
-
-
 
 wifiService = service.getSystemService(Context.WIFI_SERVICE);
 
@@ -304,9 +299,7 @@ int SDK_i = new Integer(SDK);
 
 if (SDK_i>=16){
 total = memInfo.totalMem / 1024 /1024;
-    memory.put("ram_total", total);
 }
- 
 
 import android.os.StatFs;
 import android.os.Environment;
@@ -327,16 +320,9 @@ memory.put("int_free", getStorageInfo("int")[1]);
 memory.put("sdcard_total", getStorageInfo("sdcard")[0]);
 memory.put("sdcard_free", getStorageInfo("sdcard")[1]);
 memory.put("ram_free", free);
-
+memory.put("ram_total", total);
 
 jsonVar.put("memory", memory);
-
-
-
-
-
-
-
 
 request.sendResponse(jsonVar.toString().getBytes(), "text/plain; charset=UTF-8");
 request.out.flush();

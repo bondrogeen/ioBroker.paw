@@ -21,7 +21,7 @@ int bytesRead = 0;
 String strFileContents;
 while ((bytesRead = bin.read(contents)) != -1) {
   strFileContents = new String(contents, 0, bytesRead);
-  
+
   }
 bin.close();
 
@@ -35,7 +35,7 @@ jsonVar = new JSONObject(strFileContents);
 	jsonVar.put("fontsize", "40");
 	jsonVar.put("speed", "10");
 	jsonVar.put("direction", "left");
-	jsonVar.put("text", "Текст по умолчанию, Default Text, der Standardtext ");
+	jsonVar.put("text", "Текст не по умолчанию, Default Text, der Standardtext ");
 }
 
 </bsh>
@@ -65,10 +65,10 @@ marquee{
 	text-shadow: #000000 0px 1px 1px;
 
 }
-   
+
 </style>
-  
- 
+
+
 <body>
 
 <bsh>
@@ -78,13 +78,13 @@ print("<marquee height=\"100%\" width=\"100%\" scrollamount=\""+jsonVar.getStrin
 
 }else{
 	print("<marquee>"+jsonVar.getString("text")+"</marquee>");
-	
+
 	print("<h1>Файл настроек не создан.</h1>");
 
 	print("<p><a href=\"infosetting.xhtml\">Настроить</a></p>");
 
 }
-	
+
 
 </bsh>
 </body>
