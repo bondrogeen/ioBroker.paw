@@ -399,6 +399,27 @@ sendTo("paw.0",'dev1',{
     log(JSON.stringify(response[0]));
 });
 
+// Вывод текстовой информации в отдельном окне
+//text: "Default text",   - Текст        
+//textsize:"50",  - размер шрифта  [5 - 300] 50 (По умолчанию )
+//textcolor:"000000",   - цвет текста [HEX]  000000 (По умолчанию )
+//color:"ffffff",   - цвет фона [HEX]  ffffff (По умолчанию )
+//orientation:"0",  - ориентация   - 0, 90, 180, 270,   (По умолчанию : текущая ориентация  )
+//font:"NORMAL"  -  font  BOLD_ITALIC, BOLD, ITALIC,   NORMAL (По умолчанию )
+
+sendTo("paw.0",'dev1',{
+    send:  'informer', 
+    text: "Default text",    
+    textsize:"50",  //Необязательный параметр
+    textcolor:"ff0000",  //Необязательный параметр
+    color:"ff00ff",//Необязательный параметр
+    orientation:"180",//Необязательный параметр
+    font:"NORMAL"  //Необязательный параметр
+    
+},function (response){
+    log(JSON.stringify(response[0]));
+});
+
 ```
 
 

@@ -232,8 +232,25 @@ sendTo("paw.0",'dev1',{
     log(JSON.stringify(response));
 });
 
-// Run the task from the Tasker application. (need root)
-sendTo("paw.0",'dev1',{send:'task',text:'auto'});
+// Run the task from the Tasker application.
+// [text] = name task
+// [value] (Optional) = parameter will be passed to the variable %par1 
+// You can pass multiple values ​​separating ",,"
+// eg  value: ' test1 ,, test2 ,, test[n] ' will be transferred  %par1, %par2 %par[n]  etc.
+sendTo("paw.0",'dev2',{
+    send:  'task',
+    text:'test',
+    value:'value_test'
+},function (response){
+    log(JSON.stringify(response[0]));
+});
+
+Error status:
+NotInstalled: no Tasker package could be found on the device
+NoPermission: calling app does not have the needed Android permission (see above)
+NotEnabled: Tasker is disabled by the user.
+AccessBlocked: external access is blocked in the user preferences. You can show the user the relevant preference with e.g. startActivity( TaskerIntent.getExternalAccessPrefsIntent() )
+NoReceiver: nothing is listening for TaskerIntents. Probably a Tasker bug.
 
 // send message.
 sendTo("paw.0",'dev1',{send:  'sms', text:  'Any text', number: '8123456789'});
