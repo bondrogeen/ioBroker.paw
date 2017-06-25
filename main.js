@@ -557,7 +557,17 @@ function restApi(req, res) {
                 adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".body", body.smsbody,true );
                 adapter.setForeignState(body.namespace+'.'+body.device+'.request.'+body.send+".number", body.number,true );
             }else if (body.send=="proximity"){
-                adapter.setForeignState(body.namespace+'.'+body.device+'.info.sensors.'+body.send, body.value,true );
+                adapter.setForeignState(body.namespace+'.'+body.device+'.info.sensors.'+body.send, body.light,true );
+            }else if (body.send=="accelerometer"){
+                if(body.x){
+                    adapter.setForeignState(body.namespace+'.'+body.device+'.info.sensors.'+body.send+"_x", body.x,true );
+                }
+                if(body.y){
+                    adapter.setForeignState(body.namespace+'.'+body.device+'.info.sensors.'+body.send+"_y", body.y,true );
+                }
+                if(body.z){
+                    adapter.setForeignState(body.namespace+'.'+body.device+'.info.sensors.'+body.send+"_z", body.z,true );
+                }
             }
 
 
