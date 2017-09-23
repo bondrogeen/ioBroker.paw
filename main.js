@@ -298,7 +298,7 @@ adapter.on('ready', function () {
 
 function setValue (id, name, val ) {
     adapter.getState(id , function (err, obj) {
-        adapter.log.info(id + '.' + ' obj: ' + obj);
+        //adapter.log.info(id + '.' + ' obj: ' + obj);
         if (obj === null) {
             adapter.setObject(id, {
                 type: 'state',
