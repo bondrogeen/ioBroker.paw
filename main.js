@@ -296,24 +296,39 @@ adapter.on('ready', function () {
     main();
 });
 
+function setValue (id, name, val ) {
+    adapter.getState(id , function (err, obj) {
+        adapter.log.info(id + '.' + ' obj: ' + obj);
+        if (obj === null) {
+            adapter.setObject(id, {
+                type: 'state',
+                common: {
+                    name: name,
+                    type: 'mixed',
+                    role: 'indicator',
+                    read: "true",
+                    write: "false"
+                },
+                native: {}
+            });
+            adapter.setState(id, {val: val, ack: true});
+        } else {
+            adapter.setState(id, {val: val, ack: true});
+        }
+
+    });
+
+}
+
+
 function setdata (setid, response ) {
+    var val;
     for (var key in response) {
-        var val = response[key];
-        //adapter.log.info("key: " + response[key]);
-        adapter.setObject(setid+'.'+key, {
-            type: 'state',
-            common: {
-                name: key,
-                type: 'mixed',
-                role: 'indicator',
-                read: "true",
-                write: "false"
-            },
-            native: {}
-        });
-        adapter.setState(setid+'.' + key, {val: val, ack: true});
+        val = response[key];
+        setValue (setid + '.' + key, key, val )
     }
 }
+
 
 
 function set_id (setid, name, val ) {
@@ -399,7 +414,7 @@ function getdata(name,ip,port,path,setdata,callback) {
         });
     });
 
-    req.on('error', (e) => {
+    req.on('error', function( e ) {
 
         adapter.log.warn(`Device is not responding : ${e.message}`);
 
