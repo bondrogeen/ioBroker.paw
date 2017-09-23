@@ -240,49 +240,50 @@ var res=[];
 var x=0;
 // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
 adapter.on('message', function (obj) {
+    if (typeof obj != null && obj != undefined) {
+        if (typeof obj == 'object' && obj.message) {
+            if (obj.command) {
+                var text = obj.command.replace(/\s+/g, '') //убрать пробелы
+                var arr = text.split(','); //разбить на массив
+                if (obj.message) {
+                    var x = 0;
+                    res = [];
+                    for (var i = 0; i < adapter.config.devices.length; i++) {
+                        var name = adapter.config.devices[i].name
+                        var ip = adapter.config.devices[i].ip
+                        var port = adapter.config.devices[i].port
+                        if (name != '' && ip != '' && port != '') {
+                            if (arr == 'all' || find(arr, name) || find(arr, ip)) { //поиск по имени и ip
 
-    if (typeof obj == 'object' && obj.message) {
-        if (obj.command) {
-            var text = obj.command.replace(/\s+/g,'') //убрать пробелы
-            var arr = text.split(','); //разбить на массив
-            if (obj.message) {
-                var x=0;
-                res=[];
-                for (var i = 0; i < adapter.config.devices.length; i++){
-                    var name = adapter.config.devices[i].name
-                    var ip = adapter.config.devices[i].ip
-                    var port = adapter.config.devices[i].port
-                    if(name!=''&&ip!=''&&port!='') {
-                        if(arr=='all'||find(arr, name)||find(arr, ip)){ //поиск по имени и ip
+                                //adapter.log.info("obj.message.html = " + obj.message.html);
+                                var set_html = "";
+                                if (typeof obj.message.html == "undefined" || obj.message.html == "set") {
+                                    set_html = "/set.xhtml";
+                                } else if (obj.message.html == "call") {
+                                    set_html = "/call.xhtml";
+                                } else if (obj.message.html == "sms") {
+                                    set_html = "/sms.xhtml";
+                                }
 
-                            //adapter.log.info("obj.message.html = " + obj.message.html);
-                            var set_html = "";
-                            if(typeof obj.message.html == "undefined"||obj.message.html == "set"){
-                                set_html = "/set.xhtml";
-                            }else if(obj.message.html=="call"){
-                                set_html = "/call.xhtml";
-                            }else if(obj.message.html=="sms"){
-                                set_html = "/sms.xhtml";
+                                getdata(name, ip, port, set_html, obj.message, function (response, ip) {
+                                    adapter.log.info(response);
+                                    try {
+                                        response = JSON.parse(response);
+                                        response.ip = ip;
+                                    } catch (exception) {
+                                        response = 'JSON.parse(response): error ';
+                                    }
+                                    res[x] = response;
+                                    x = x + 1;
+                                    if (obj.callback) {
+                                        setTimeout(function () {
+                                            adapter.sendTo(obj.from, obj.command, res, obj.callback);
+                                            //res=[];
+                                        }, 2000);
+                                    }
+                                });
+
                             }
-
-                            getdata(name, ip, port, set_html, obj.message, function (response,ip){
-                                adapter.log.info(response);
-                                try {
-                                    response = JSON.parse(response);
-                                    response.ip = ip;
-                                } catch (exception) {
-                                    response = 'JSON.parse(response): error ';
-                                }
-                                res[x]=response;
-                                x=x+1;
-                                if (obj.callback){
-                                    setTimeout(function () {
-                                        adapter.sendTo(obj.from, obj.command, res, obj.callback);
-                                        //res=[];
-                                    },2000);
-                                }
-                            });
-
                         }
                     }
                 }
