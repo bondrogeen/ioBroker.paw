@@ -19,19 +19,25 @@
     "paw",
     "Smart Home",
     "home automation",
-	"android",
-	"Tablet management",
-	"Tablet control"
+    "android",
+    "Tablet management",
+    "Tablet control"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/bondrogeen/iobroker.paw"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "main": "main.js",
   "bugs": {
     "url": "https://github.com/bondrogeen/iobroker.paw/issues"
   },
-  "readmeFilename": "README.md"
+  "readmeFilename": "README.md",
+  "scripts": {
+    "test": "node node_modules/mocha/bin/mocha"
+  },
+  "devDependencies": {
+    "mocha": "^3.5.3",
+    "chai": "^4.1.2"
+  }
 }
