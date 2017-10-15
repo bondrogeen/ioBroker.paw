@@ -28,8 +28,8 @@
 		"keywords":                 ["paw", "vis", "GUI", "graphical", "scada"],
         "readme":                   "https://github.com/bondrogeen/iobroker.paw/blob/master/README.md",
 		"loglevel":                 "info",
-        "type":                     "common adapters",
-        "restartAdapters":          ["vis"],
+        "type":                     "hardware",
+        "restartAdapters":          [],
         "messagebox": 	     	    true
     },
     "native": {
