@@ -1,3 +1,6 @@
+/* jshint -W097 */
+// jshint strict:false
+/*jslint node: true */
 "use strict";
 
 // you have to require the utils module and call adapter function
@@ -32,7 +35,8 @@ var sms={};
 
 // is called if a subscribed state changes
 adapter.on('stateChange', function (id, state) {
-    adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
+    adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state) + ', ack=' + state.ack);
+    if (state.ack) return; // we only need to handle it when ack=false
 
     var arr_id = id.split('.'); //разбить на массив
     //adapter.log.info(JSON.stringify(arr_id))
@@ -43,11 +47,11 @@ adapter.on('stateChange', function (id, state) {
     if(id===adapter.namespace+'.'+arr_id[2]+'.tts.response'){
 
         for (var i = 0; i < adapter.config.devices.length; i++) {
-            var name = adapter.config.devices[i].name
-            var ip = adapter.config.devices[i].ip
-            var port = adapter.config.devices[i].port
-            var time_start = adapter.config.devices[i].time_start
-            var time_end = adapter.config.devices[i].time_end
+            var name = adapter.config.devices[i].name;
+            var ip = adapter.config.devices[i].ip;
+            var port = adapter.config.devices[i].port;
+            var time_start = adapter.config.devices[i].time_start;
+            var time_end = adapter.config.devices[i].time_end;
             var date = new Date();
             var start = false;
             if(date.getHours()>=time_start&&date.getHours()<=time_end) start=true;  // Проверка времени оповещения
@@ -59,10 +63,10 @@ adapter.on('stateChange', function (id, state) {
                 bufer[name].port = port;
                 bufer[name].name = name;
                 if(typeof (bufer[name].text)!=='object'){
-                    bufer[name].text=[]
+                    bufer[name].text=[];
                 }
-                if(typeof (bufer[name].start)=='undefined'){
-                    bufer[name].start=true
+                if(bufer[name].start===undefined){
+                    bufer[name].start=true;
                 }
                 bufer[name].text.push(state.val);
                 if (bufer[name].start==true) {
@@ -76,15 +80,15 @@ adapter.on('stateChange', function (id, state) {
         adapter.log.info(id);
         adapter.log.info(JSON.stringify(state));
         for (var i = 0; i < adapter.config.devices.length; i++) {
-            var name = adapter.config.devices[i].name
-            var ip = adapter.config.devices[i].ip
-            var port = adapter.config.devices[i].port
+            var name = adapter.config.devices[i].name;
+            var ip = adapter.config.devices[i].ip;
+            var port = adapter.config.devices[i].port;
 
             if(state.val) {
                 com_date = {"send": "brightness", "number": state.val};
                 getdata(name, ip, port, "/set.xhtml", com_date, function (response, ip) {
                     adapter.log.info("command: " + com_date + " " + ip + " " + response);
-                })
+                });
             }
         }
 
@@ -92,11 +96,11 @@ adapter.on('stateChange', function (id, state) {
         adapter.log.info(id);
         adapter.log.info(JSON.stringify(state));
         for (var i = 0; i < adapter.config.devices.length; i++) {
-            var name = adapter.config.devices[i].name
-            var ip = adapter.config.devices[i].ip
-            var port = adapter.config.devices[i].port
-            var time_start = adapter.config.devices[i].time_start
-            var time_end = adapter.config.devices[i].time_end
+            var name = adapter.config.devices[i].name;
+            var ip = adapter.config.devices[i].ip;
+            var port = adapter.config.devices[i].port;
+            var time_start = adapter.config.devices[i].time_start;
+            var time_end = adapter.config.devices[i].time_end;
             var date = new Date();
             if(date.getHours()>=time_start&&date.getHours()<=time_end) { // Проверка времени оповещения
 
@@ -107,10 +111,10 @@ adapter.on('stateChange', function (id, state) {
                 bufer[name].port = port;
                 bufer[name].name = name;
                 if(typeof (bufer[name].text)!=='object'){
-                    bufer[name].text=[]
+                    bufer[name].text=[];
                 }
-                if(typeof (bufer[name].start)=='undefined'){
-                    bufer[name].start=true
+                if(bufer[name].start===undefined){
+                    bufer[name].start=true;
                 }
 
 
@@ -132,7 +136,7 @@ adapter.on('stateChange', function (id, state) {
             if (arr_id[2] == name) { //поиск по имени
 
                 adapter.log.info(JSON.stringify(state));
-                var com_date = null
+                var com_date = null;
                 if(state.val=="lcd_on") com_date = {"send":"lcd_on"};
                 if(state.val=="endсall") com_date = {"send":"endсall"};
                 if(state.val=="scan") com_date = {"send":"scan"};
@@ -147,7 +151,7 @@ adapter.on('stateChange', function (id, state) {
                 if(com_date != null){
                     getdata(name,ip,port,"/set.xhtml",com_date,function (response, ip){
                         adapter.log.info("command: "+com_date+" "+ip+" "+response);
-                    })
+                    });
                 }
             }
         }
@@ -187,11 +191,11 @@ adapter.on('stateChange', function (id, state) {
 
                     getdata(name,ip,port,"/set.xhtml",{"send":"lcd_on"},function (response, ip){
                         adapter.log.info("command: "+com_date+" "+ip+" "+response);
-                    })
+                    });
 
                     getdata(name,ip,port,"/set.xhtml",com_date,function (response, ip){
                         adapter.log.info("command: "+com_date+" "+ip+" "+response);
-                    })
+                    });
 
                 }
 
@@ -240,28 +244,28 @@ var res=[];
 var x=0;
 // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
 adapter.on('message', function (obj) {
-    if (typeof obj != null && obj != undefined) {
+    if (typeof obj !== null && obj !== undefined) {
         if (typeof obj == 'object' && obj.message) {
             if (obj.command) {
-                var text = obj.command.replace(/\s+/g, '') //убрать пробелы
+                var text = obj.command.replace(/\s+/g, ''); //убрать пробелы
                 var arr = text.split(','); //разбить на массив
                 if (obj.message) {
                     var x = 0;
                     res = [];
                     for (var i = 0; i < adapter.config.devices.length; i++) {
-                        var name = adapter.config.devices[i].name
-                        var ip = adapter.config.devices[i].ip
-                        var port = adapter.config.devices[i].port
+                        var name = adapter.config.devices[i].name;
+                        var ip = adapter.config.devices[i].ip;
+                        var port = adapter.config.devices[i].port;
                         if (name != '' && ip != '' && port != '') {
                             if (arr == 'all' || find(arr, name) || find(arr, ip)) { //поиск по имени и ip
 
                                 //adapter.log.info("obj.message.html = " + obj.message.html);
                                 var set_html = "";
-                                if (typeof obj.message.html == "undefined" || obj.message.html == "set") {
+                                if (obj.message.html === undefined || obj.message.html === "set") {
                                     set_html = "/set.xhtml";
-                                } else if (obj.message.html == "call") {
+                                } else if (obj.message.html === "call") {
                                     set_html = "/call.xhtml";
-                                } else if (obj.message.html == "sms") {
+                                } else if (obj.message.html === "sms") {
                                     set_html = "/sms.xhtml";
                                 }
 
@@ -296,28 +300,34 @@ adapter.on('ready', function () {
     main();
 });
 
+var existingStates = {};
 function setValue (id, name, val ) {
-    adapter.getState(id , function (err, obj) {
-        //adapter.log.info(id + '.' + ' obj: ' + obj);
-        if (obj === null) {
-            adapter.setObject(id, {
-                type: 'state',
-                common: {
-                    name: name,
-                    type: 'mixed',
-                    role: 'indicator',
-                    read: "true",
-                    write: "false"
-                },
-                native: {}
-            });
-            adapter.setState(id, {val: val, ack: true});
-        } else {
-            adapter.setState(id, {val: val, ack: true});
-        }
-
-    });
-
+    if (existingStates[id]) {
+        adapter.setState(id, {val: val, ack: true});
+    }
+    else {
+        adapter.getState(id , function (err, obj) {
+            //adapter.log.info(id + '.' + ' obj: ' + obj);
+            if (obj === null) {
+                adapter.setObjectNotExists(id, {
+                    type: 'state',
+                    common: {
+                        name: name,
+                        type: 'mixed',
+                        role: 'indicator',
+                        read: "true",
+                        write: "false"
+                    },
+                    native: {}
+                });
+                existingStates[id] = true;
+                setValue (id, name, val );
+            } else {
+                existingStates[id] = true;
+                setValue (id, name, val );
+            }
+        });
+    }
 }
 
 
@@ -325,14 +335,14 @@ function setdata (setid, response ) {
     var val;
     for (var key in response) {
         val = response[key];
-        setValue (setid + '.' + key, key, val )
+        setValue (setid + '.' + key, key, val );
     }
 }
 
 
 
 function set_id (setid, name, val ) {
-    adapter.setObject(setid+'.'+name, {
+    adapter.setObjectNotExists(setid+'.'+name, {
         type: 'state',
         common: {
             name: name,
@@ -360,7 +370,7 @@ function parsedata(name,data,path) {
         //adapter.log.info('ok: '+name);
         if(path=='/get.xhtml'){
             if(data.sensors) {
-                delete data.sensors.info
+                delete data.sensors.info;
                 setdata (name+'.info.sensors', data.sensors );
             }
             if(data.wifi) setdata (name+'.info.wifi', data.wifi );
@@ -368,7 +378,7 @@ function parsedata(name,data,path) {
             if(data.cpu) setdata (name+'.info.cpu', data.cpu );
             if(data.audio_volume.info) setdata (name+'.info.audio_volume.info', data.audio_volume.info );
             if(data.audio_volume) {
-                delete data.audio_volume.info
+                delete data.audio_volume.info;
                 setdata (name+'.info.audio_volume', data.audio_volume );
             }
             if(data.memory) setdata (name+'.info.memory', data.memory );
@@ -448,7 +458,7 @@ function find(array, value) {
     return false;
 }
 
-var  upload_file = "sms.xhtml,call.xhtml,set.xhtml,get.xhtml,infosetting.xhtml,info.xhtml"//файлы которые нужно загрузить с папки 'www' на устройства
+var  upload_file = "sms.xhtml,call.xhtml,set.xhtml,get.xhtml,infosetting.xhtml,info.xhtml"; //файлы которые нужно загрузить с папки 'www' на устройства
 
 function init(){
 
@@ -456,9 +466,9 @@ function init(){
 
 
     for (var i = 0; i < adapter.config.devices.length; i++) {
-        var name = adapter.config.devices[i].name
-        var ip = adapter.config.devices[i].ip
-        var port = adapter.config.devices[i].port
+        var name = adapter.config.devices[i].name;
+        var ip = adapter.config.devices[i].ip;
+        var port = adapter.config.devices[i].port;
 
         if(name!=''){
             getdata(name, ip, port, '/settings.xhtml', {  //запись настроек (ip,port,device,namespace )в устройство
@@ -527,7 +537,7 @@ function time_paw() {
         if(name!=''&&ip!=''&&port!=''){
 
             if(!find(ignorelist, ip)){
-                getdata(name,ip,port,'/get.xhtml','')
+                getdata(name,ip,port,'/get.xhtml','');
             }
         }
     }
@@ -688,5 +698,3 @@ function main() {
 
 
 }
-
-
