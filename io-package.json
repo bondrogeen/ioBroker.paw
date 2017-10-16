@@ -1,44 +1,52 @@
 {
     "common": {
-        "name":                     "paw",
-        "version":                  "0.1.7",
-	    "news": {
-			"0.0.6": {
-			  "en": "beta version",
-			  "de": "Betaversion",
-			  "ru": "Бета версия"
-			},
-			"0.0.1": {
-			  "en": "initial adapter",
-			  "de": "Initiale Version",
-			  "ru": "Первоначальный адаптер"
-			}
-		},
-        "title":                    "paw adapter",
-        "desc":                     {
-				 "en": "Android Device Management",
-				 "de": "Android Geräte-Management",
-				 "ru": "Управление андроид устройством"
-		},
-        "platform":                 "Javascript/Node.js",
-        "mode":                     "daemon",
-        "icon":                     "paw.png",
-        "enabled":                  false,
-		"extIcon":                  "https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/admin/paw.png",
-		"keywords":                 ["paw", "vis", "GUI", "graphical", "scada"],
-        "readme":                   "https://github.com/bondrogeen/iobroker.paw/blob/master/README.md",
-		"loglevel":                 "info",
-        "type":                     "hardware",
-        "restartAdapters":          [],
-        "messagebox": 	     	    true
+        "name": "paw",
+        "version": "0.1.7",
+        "news": {
+            "0.0.6": {
+                "en": "beta version",
+                "de": "Betaversion",
+                "ru": "Бета версия"
+            },
+            "0.0.1": {
+                "en": "initial adapter",
+                "de": "Initiale Version",
+                "ru": "Первоначальный адаптер"
+            }
+        },
+        "title": "paw adapter",
+        "desc": {
+            "en": "Android Device Management",
+            "de": "Android Geräte-Management",
+            "ru": "Управление андроид устройством"
+        },
+        "platform": "Javascript/Node.js",
+        "mode": "daemon",
+        "icon": "paw.png",
+        "enabled": false,
+        "extIcon": "https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/admin/paw.png",
+        "keywords": [
+            "paw",
+            "vis",
+            "GUI",
+            "graphical",
+            "scada"
+        ],
+        "readme": "https://github.com/bondrogeen/iobroker.paw/blob/master/README.md",
+        "loglevel": "info",
+        "type": "hardware",
+        "restartAdapters": [],
+        "messagebox": true,
+        "authors": [
+            {
+                "name": "bondrogeen",
+                "email": "bondrogeen@gmail.com"
+            }
+        ]
     },
     "native": {
-      "interval":"10000",
-      "port":"8898"
+        "interval": "10000",
+        "port": "8898"
     },
-    "objects": [
-
-    ]
-
-
+    "objects": []
 }
