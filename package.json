@@ -13,6 +13,9 @@
     }
   ],
   "homepage": "https://github.com/bondrogeen/iobroker.paw",
+  "authors": [
+    "bondrogeen <bondrogeen@gmail.com>"
+  ],
   "license": "MIT",
   "keywords": [
     "ioBroker",
