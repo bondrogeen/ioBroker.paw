@@ -5,7 +5,7 @@
 
 // you have to require the utils module and call adapter function
 var utils =    require(__dirname + '/lib/utils'); // Get common adapter utils
-var adapter = utils.adapter('paw');
+var adapter = utils.Adapter('paw');
 var http = require('http');
 var querystring = require('querystring');
 var url = require('url');
