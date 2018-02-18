@@ -147,16 +147,29 @@ switch (send) {
 			break;
 			
 			case "lcd_on":
-			    import android.content.Context;
-				import android.os.PowerManager;
-				service = server.props.get("serviceContext");
-				PowerManager pm = service.getSystemService(Context.POWER_SERVICE);
-				int wakeFlags;
-				wakeFlags = PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP;
-				wakeLock = pm.newWakeLock(wakeFlags, "paw");
-				wakeLock.acquire();
-				jsonVar.put("lcd_on", "true");
+	import android.content.Context;
+        import android.os.PowerManager;
+        service = server.props.get("serviceContext");
+        PowerManager pm = service.getSystemService(Context.POWER_SERVICE);
+        int wakeFlags;
+        wakeFlags = PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP;
+        wakeLock = pm.newWakeLock(wakeFlags, "paw");
+        wakeLock.acquire();
+        jsonVar.put("lcd_on", "true");
 			break;
+			
+   case "lcd_off":
+        import android.content.Context;
+        import android.os.PowerManager;
+        service = server.props.get("serviceContext");
+        PowerManager pm = service.getSystemService(Context.POWER_SERVICE);
+        int wakeFlags;
+        wakeFlags = PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE;
+        wakeLock = pm.newWakeLock(wakeFlags, "paw");
+        wakeLock.acquire();
+        wakeLock.release();
+        jsonVar.put("lcd_off", "true");
+			break; 
 
             case "new_contact":
                 if (number != null&&text != null) {
