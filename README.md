@@ -16,77 +16,74 @@ Tasker and Locale Plug-in support.
 
 ## Install the program and configure the adapter.
  
-Download and install the application. [apk](app/app-debug.apk)
-
-
+Download and install the application. [apk](https://github.com/bondrogeen/ioBroker.paw/raw/master/app/app-debug.apk)
 
 
 ![Screenshot](admin/img/Screenshot_1.jpg)
 
 
-***paw.0.[name_device].tts.response*** (one device)   
+## Object
 
-or 
-  
-***paw.0.all_device.tts_response*** (all device)   
+[name_device] - name device
+
+For each device, two main object branches are created:
+
+***paw.0.[name_device].info.*** - information about the device
+***paw.0.[name_device].comm.*** - control commands
+
+There is also a branch for all devices:
+***paw.0.all_device.*** - control commands for all devices
 
 
-It's the same for the other variables, but only some commands
-require a second parameter, which is entered through a comma.
+***paw.0.[name_device].comm.audio.alarm***
+***paw.0.[name_device].comm.audio.music***
+***paw.0.[name_device].comm.audio.notification***
+***paw.0.[name_device].comm.audio.ring***
+***paw.0.[name_device].comm.audio.system***
+***paw.0.[name_device].comm.audio.voice***
+> Set the volume on the device [number]
 
-***paw.0.[name_device].command.alert***
-> Example: Warning, No connection !!!
-> Warnings
-
-***paw.0.[name_device].command.alertinput*** 
-> Example: Attention! , Enter the command	    
-> Warnings with the request, the answer is saved in the variable paw.*.[name_device].request.alertinput
-
-***paw.0.[name_device].command.send_sms***
-> Example: 123456789, Test message	  
-> Send an SMS message to the number [number], with the text [text]  
-	
-***paw.0.[name_device].command.noti***
-> Example: Attention, No response from the device.	  
-> Notification [name of notification], [notification text] 
-
-***paw.0.[name_device].command.app_start***			
-> Example: lcf.clock	   
-> Launch the application  
-
-***paw.0.[name_device].command.call***
-> Example: 123456789   
+***paw.0.[name_device].comm.call.number***
 > Call the number [number]  
 
-***paw.0.[name_device].command.clipboard***
-> Example: Ab123
-> Save text to the clipboard  
+***paw.0.[name_device].comm.call.end***
+> Reject call [boolean]
 
-***paw.0.[name_device].command.dial***	
-> Example: 123456789
-> Dial the number on the device.
+***paw.0.[name_device].comm.display.brightness***
+> Backlight brightness level from 4-100 [number]
 
-***paw.0.[name_device].command.brightness***
-> Example: 255
-> Backlight brightness level from 1-255
+***paw.0.[name_device].comm.display.mode***
+> Backlight type automatic or manual [boolean]
+
+***paw.0.[name_device].comm.display.toWake***
+> Wake up devices from sleep [boolean]
+
+***paw.0.[name_device].comm.display.turnOnOff***
+> Turn on screen [boolean]
+
+***paw.0.[name_device].comm.display.timeOff***
+> Set backlight time [number] (sec)
+
+***paw.0.[name_device].comm.other.home***
+> Go to home screen [boolean]
+
+***paw.0.[name_device].comm.other.openURL***
+> Open url in browser [string]
+
+***paw.0.[name_device].comm.other.play***
+> Play notification melody [boolean]
+
+***paw.0.[name_device].comm.other.vibrate***
+> Enable vibration, time in seconds [number]
+
+***paw.0.[name_device].comm.tts.request***
+> Send text to speech [string]
+
+***paw.0.[name_device].comm.tts.stop***
+> Stop speech  [boolean]
+
+
 	
-***paw.0.[name_device].command.openurl***
-> Example: http://google.com
-> Open url in browser
-
-***paw.0.[name_device].command.rec***
-> Example: 1000
-> Enable recording with the duration [time (ms)]
-
-***paw.0.[name_device].command.vibrate***
-> Example: 500
-> Enable vibration, time in milliseconds [time (ms)]  
-
-***paw.0.[name_device].command.volume*** 
-> Example: 7
-> Set the volume on the device from 0 to the maximum value,
-> The maximum value can be found here (usually 15)
-> > paw.*.[name_device].info.audio_volume.info.music_max 
 
    
 ![Screenshot](admin/img/Screenshot_2.jpg)
