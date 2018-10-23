@@ -1,5 +1,5 @@
 ![Logo](admin/paw.png)
-# ioBroker.paw
+# ioBroker.paw 2  BETA
 =================
 
 [![NPM version](http://img.shields.io/npm/v/iobroker.paw.svg)](https://www.npmjs.com/package/iobroker.paw)
@@ -17,6 +17,7 @@ Tasker and Locale Plug-in support.
 ## Install the program and configure the adapter.
  
 Download and install the application.
+
 
 
 
