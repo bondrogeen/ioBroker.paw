@@ -40,7 +40,9 @@
     },
     "native": {
         "interval": "60",
-        "port": "8898"
+        "port": "8898",
+        "server":""
+
     },
     "objects": []
 }
