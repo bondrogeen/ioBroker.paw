@@ -14,7 +14,7 @@
     ]
   ],
   "_from": "https://github.com/bondrogeen/ioBroker.paw/tarball/master",
-  "_id": "iobroker.paw@0.1.7",
+  "_id": "iobroker.paw@0.2.0",
   "_inCache": true,
   "_location": "/iobroker.paw",
   "_phantomChildren": {},
@@ -77,5 +77,5 @@
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha --exit"
   },
-  "version": "0.1.7"
+  "version": "0.2.0"
 }
