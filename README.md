@@ -12,12 +12,13 @@
 
 It is an adapter to control Android devices. 
 It can speak texts, control volume, send SMS, make calls, vibrate, and much more ...
-
 Tasker and Locale Plug-in support.
 
 ## Install the program and configure the adapter.
  
-Download and install the application.
+Download and install the application. [apk](app/app-debug.apk)
+
+
 
 
 ![Screenshot](admin/img/Screenshot_1.jpg)
