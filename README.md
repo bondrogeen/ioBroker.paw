@@ -1,4 +1,4 @@
-![Logo](admin/paw_big.png)
+![Logo](admin/paw.png)
 # ioBroker.paw
 =================
 
@@ -7,22 +7,16 @@
 
 [![NPM](https://nodei.co/npm/iobroker.paw.png?downloads=true)](https://nodei.co/npm/iobroker.paw/)
 
-[Русский](https://github.com/bondrogeen/iobroker.paw/blob/master/docs/ru/paw.md)
-
-[Deutsch](https://github.com/bondrogeen/iobroker.paw/blob/master/docs/de/paw.md)
-
 ## Description
+
 It is an adapter to control Android devices. 
 It can speak texts, control volume, send SMS, make calls, vibrate, and much more ...
 
 Tasker and Locale Plug-in support.
-PHP plug-in is available too for PAW app.
 
 ## Install the program and configure the adapter.
  
-Download and install the application PAW Android.
-
-https://play.google.com/store/apps/details?id=de.fun2code.android.pawserver 
+Download and install the application.
 
 
 
