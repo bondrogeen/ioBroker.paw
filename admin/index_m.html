@@ -1,0 +1,394 @@
+<html>
+
+<head>
+  <!-- these 4 files always have to be included -->
+  <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
+  <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
+
+  <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+
+  <!-- these files always have to be included -->
+  <script type="text/javascript" src="../../js/translate.js"></script>
+  <script type="text/javascript" src="../../lib/js/materialize.js"></script>
+  <script type="text/javascript" src="../../js/adapter-settings.js"></script>
+  <script type="text/javascript" src="words.js"></script>
+  <style>
+    .m .col .select-wrapper+label {
+      top: -26px;
+    }
+
+    .m span {
+      font-size: 0.9em;
+    }
+
+    .card-action a {
+      margin-right: 5px;
+    }
+
+    .card .card-action {
+      padding: 10px 15px !important;
+    }
+
+    .span-value {
+      font-weight: bold;
+    }
+
+    .switch {
+      margin-top: 8px;
+    }
+
+    .marg{
+      margin-bottom: 5px !important;
+    }
+
+  </style>
+  <!-- you have to define 2 functions in the global scope: -->
+  <script type="text/javascript">
+    // the function loadSettings has to exist ...
+
+    var idItem = 0;
+
+    var image = ['card_logo1.jpg','card_logo2.jpg','card_logo3.jpg','card_logo4.jpg'];
+
+    var myOnChange;
+
+    function openModulEdit(name, ip, port, state, id) {
+
+      $('#modalEdit').find('#edit_name').val(name);
+      $('#modalEdit').find('#edit_ip').val(ip);
+      $('#modalEdit').find('#edit_port').val(port);
+      $('#modalEdit').attr('itemId', id)
+      $('#modalEdit').modal('open');
+
+      M.updateTextFields();
+    }
+
+    function random(){
+      return Math.floor(Math.random() * 4);
+    }
+    function addcard(name, ip, port, state, id, onChange) {
+
+      $("#card_list").append(
+        $('<div/>', {
+          class: 'col s12 m6 l4 item',
+          id: id,
+          append: $('<div/>', {
+            class: 'card horizontal hoverable',
+            append: $('<div/>', {
+              class: 'card-image',
+              append: $('<img/>', {
+                src: 'img/' + image[random()]
+              })
+            }).add($('<div/>', {
+              class: 'card-stacked',
+              append: ($('<div/>', {
+                class: 'card-content',
+                append: ($('<p/>', {
+                    text: 'Name: ',
+                    append: $('<span/>', {
+                      id: 'name',
+                      class: 'span-value',
+                      text: name
+                    })
+                  }))
+                  .add($('<p/>', {
+                    text: 'IP: ',
+                    append: $('<span/>', {
+                      id: 'ip',
+                      class: 'span-value',
+                      text: ip
+                    })
+                  }))
+                  .add($('<p/>', {
+                    text: 'Port: ',
+                    append: $('<span/>', {
+                      id: 'port',
+                      class: 'span-value',
+                      text: port
+                    })
+                  }))
+              })).add($('<div/>', {
+                class: 'card-action',
+                append: ($('<div/>', {
+                    class: 'switch left',
+                    append: ($('<label/>', {
+                      append: ($('<input/>', {
+                        id: 'input',
+                        type: 'checkbox',
+                        checked: state,
+                        click: function(e) {
+                          if (onChange) onChange();
+                        }
+                      }).add($('<span/>', {
+                        class: 'lever'
+                      })))
+                    }))
+                  })).add($('<a/>', {
+                    class: 'btn-floating btn-small waves-effect waves-light red right',
+                    append: $('<i/>', {
+                      class: 'material-icons',
+                      text: "delete",
+                      click: function(e) {
+                        $(this).parents(".item").remove();
+                        if (onChange) onChange();
+                      }
+                    })
+                  }))
+                  .add($('<a/>', {
+                    class: 'btn-floating btn-small waves-effect waves-light blue right',
+                    append: $('<i/>', {
+                      class: 'material-icons',
+                      text: "create",
+                      click: function() {
+                        var name_val = $(this).parents(".item").find('#name').text()
+                        var ip_val = $(this).parents(".item").find("#ip").text();
+                        var port_val = $(this).parents(".item").find("#port").text();
+                        var state_val = $(this).parents(".item").find("#input").is(':checked');
+                        var state_id = $(this).parents(".item").attr('id');
+
+                        console.log($(this).find("#ip"));
+                        console.log("name:" + name_val + " ip:" + ip_val + " port:" + port_val + " state:" + state_val + " id:" + state_id);
+                        openModulEdit(name_val, ip_val, port_val, state_val, state_id);
+                        if (onChange) onChange();
+                      }
+                    })
+                  }))
+              }))
+            }))
+          })
+        }))
+    }
+
+    function setValue(id, value, onChange) {
+      // example: select elements with id=key and class=value and insert value
+      if ($('#' + id + '.value').attr('type') == 'checkbox') {
+        $('#' + id + '.value').prop('checked', value).change(function() {
+          onChange();
+        });
+      } else {
+        $('#' + id + '.value').val(value).change(function() {
+          onChange();
+        }).keyup(function() {
+          // Chack that only numbers entered
+          if ($(this).hasClass('number')) {
+            var val = $(this).val();
+            if (val) {
+              var newVal = '';
+              for (var i = 0; i < val.length; i++) {
+                if (val[i] >= '0' && val[i] <= '9') {
+                  newVal += val[i];
+                }
+              }
+
+              if (val != newVal) $(this).val(newVal);
+            }
+          }
+
+          onChange();
+        });
+      }
+    }
+
+    function load(settings, onChange) {
+      if (!settings) return;
+      myOnChange = onChange;
+      console.log(typeof(settings));
+      for (var key in settings) {
+        if (typeof(settings[key]) === 'object') {
+          var devices = settings[key] || [];
+          devices.forEach(function(item, i, arr) {
+            addcard(item.name, item.ip, item.port, item.state, "item_" + i, onChange)
+            idItem = i;
+          });
+        } else {
+          setValue(key, settings[key], onChange)
+        }
+      }
+      onChange(true);
+    }
+
+
+    function save(callback) {
+      var obj = {};
+      $('.value').each(function() {
+        var $this = $(this);
+        if ($this.attr('type') == 'checkbox') {
+          obj[$this.attr('id')] = $this.prop('checked');
+        } else {
+          obj[$this.attr('id')] = $this.val();
+        }
+      });
+
+      var item = $("#card_list .item");
+      console.log(item.length);
+      obj.devices = [];
+      if (item.length > 0) {
+        item.each(function(index) {
+          var item_value = {};
+          item_value.name = $(this).find('#name').text()
+          item_value.ip = $(this).find("#ip").text();
+          item_value.port = $(this).find("#port").text();
+          item_value.state = $(this).find("#input").is(':checked');
+
+          obj.devices[index] = item_value;
+
+        });
+      }
+      callback(obj);
+    }
+
+    $(document).ready(function() {
+
+      M.updateTextFields();
+
+      $(".add-card").click(function() {
+        $('#modalCreate').modal('open');
+        myOnChange();
+      });
+
+      $('.modal').modal();
+
+      $(".open_edit_modul").click(function(event) {
+        $('.modal').modal('open');
+      });
+
+      $(".save-card").click(function(event) {
+        var name = $("#modul_name").val();
+        var ip = $("#modul_ip").val().replace(" ", "");
+        var port = $("#modul_port").val();
+        idItem = idItem + 1
+        addcard(name, ip, port, true, 'item_' + idItem, myOnChange);
+      });
+
+      $(".save-edit_card").click(function(event) {
+        var name = $("#edit_name").val();
+        var ip = $("#edit_ip").val().replace(" ", "");
+        var port = $("#edit_port").val();
+        var id = $('#modalEdit').attr('itemId')
+
+        $("#" + id).find('#name').text(name)
+        $("#" + id).find("#ip").text(ip);
+        $("#" + id).find('#port').text(port)
+      });
+
+    });
+
+  </script>
+</head>
+
+<body>
+  <!-- you have to put your config page in a div with id adapter-container -->
+  <div class="m adapter-container">
+    <!-- Modal Structure -->
+
+    <div id="modalCreate" class="modal">
+      <div class="modal-content">
+        <h5>Create device</h5>
+        <div class="input-field col s8 offset-s2">
+          <input type="text" id="modul_name" />
+          <label for="modul_name">Name</label>
+          <span class="translate">modul_name</span>
+        </div>
+        <div class="input-field col s8 offset-s2">
+          <input id="modul_ip" type="text">
+          <label for="modul_ip">IP</label>
+          <span class="translate">modul_ip</span>
+        </div>
+        <div class="input-field col s8 offset-s2">
+          <input type="number" id="modul_port" value="8080" />
+          <label for="modul_port">Port</label>
+          <span class="translate">modul_port</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat blue-text save-card">Save</a>
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
+      </div>
+    </div>
+
+    <div id="modalEdit" class="modal">
+      <div class="modal-content">
+        <h5>Edit device</h5>
+        <div class="input-field col s8 offset-s2">
+          <input type="text" id="edit_name" />
+          <label for="edit_name">Name</label>
+          <span class="translate">modul_name</span>
+        </div>
+        <div class="input-field col s8 offset-s2">
+          <input id="edit_ip" type="text">
+          <label for="edit_ip">IP</label>
+          <span class="translate">modul_ip</span>
+        </div>
+        <div class="input-field col s8 offset-s2">
+          <input type="number" id="edit_port" value="8080" />
+          <label for="edit_port">Port</label>
+          <span class="translate">modul_port</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat blue-text save-edit_card">Save</a>
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
+      </div>
+    </div>
+
+    <div class="row">
+
+      <div class="row marg">
+        <div class="input-field col s12 m6 l4">
+          <input class="value" id="server" placeholder="192.168.1.10" type="text">
+          <label for="server">Server</label>
+          <span class="translate">server</span>
+        </div>
+        <div class="input-field col s12 m6 l4">
+          <input type="number" class="value" id="port" placeholder="8898" />
+          <label for="port">Port</label>
+          <span class="translate">port_server</span>
+        </div>
+        <div class="input-field col s12 m6 l4">
+          <input type="number" class="value" id="interval" placeholder="60" />
+          <label for="interval">Interval</label>
+          <span class="translate">interval</span>
+        </div>
+      </div>
+
+      <div class="row marg">
+
+        <div class="col s12">
+          <a class="btn-floating btn-small waves-effect waves-light red add-card"><i class="material-icons">add</i></a>
+
+          <!--          <a class="btn-floating btn-small waves-effect waves-light red refresh"><i class="material-icons">add</i></a>-->
+        </div>
+
+      </div>
+    </div>
+
+    <div class="row" id=card_list>
+
+      <!--
+      <div class="col s12 m6 l4">
+        <div class="card horizontal">
+          <div class="card-image">
+            <img src="img/image.jpg">
+          </div>
+          <div class="card-stacked">
+            <div class="card-content">
+              <p>Name: <span>I9300</span></p>
+              <p>IP: <span><a href="http://192.168.1.48:8080">192.168.1.10</a></span></p>
+              <p>Port: <span>8080</span> </p>
+            </div>
+            <div class="card-action">
+              <div class='switch left'><label><input checked type='checkbox'><span class='lever'></span></label></div>
+              <a class="btn-floating btn-small waves-effect waves-light red right delete-card"><i class="material-icons">delete</i></a>
+              <a class="btn-floating btn-small waves-effect waves-light blue right"><i class="material-icons" onclick="openModulEdit();">create</i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+-->
+
+    </div>
+  </div>
+</body>
+
+</html>

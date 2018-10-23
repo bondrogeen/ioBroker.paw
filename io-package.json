@@ -1,20 +1,15 @@
 {
     "common": {
         "name": "paw",
-        "version": "0.1.7",
+        "version": "0.2.0",
         "news": {
-            "0.0.6": {
-                "en": "beta version",
-                "de": "Betaversion",
-                "ru": "Бета версия"
-            },
-            "0.0.1": {
+            "0.2.0": {
                 "en": "initial adapter",
                 "de": "Initiale Version",
                 "ru": "Первоначальный адаптер"
             }
         },
-        "title": "paw adapter",
+        "title": "PAW adapter",
         "desc": {
             "en": "Android Device Management",
             "de": "Android Geräte-Management",
@@ -37,6 +32,7 @@
         "type": "hardware",
         "restartAdapters": [],
         "messagebox": true,
+        "materialize": true,
         "authors": [
             {
                 "name": "bondrogeen",
@@ -45,7 +41,7 @@
         ]
     },
     "native": {
-        "interval": "10000",
+        "interval": "60",
         "port": "8898"
     },
     "objects": []

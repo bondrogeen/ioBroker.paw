@@ -64,5 +64,5 @@ vis.binds.paw = {
         }
     }
 };
-	
+
 vis.binds.paw.showVersion();

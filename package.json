@@ -1,10 +1,46 @@
 {
-  "name": "iobroker.paw",
-  "version": "0.1.7",
-  "description": "ioBroker paw Adapter",
+  "_args": [
+    [
+      {
+        "raw": "https://github.com/bondrogeen/ioBroker.paw/tarball/master",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "https://github.com/bondrogeen/ioBroker.paw/tarball/master",
+        "spec": "https://github.com/bondrogeen/ioBroker.paw/tarball/master",
+        "type": "remote"
+      },
+      "C:\\iobroker\\node_modules\\iobroker"
+    ]
+  ],
+  "_from": "https://github.com/bondrogeen/ioBroker.paw/tarball/master",
+  "_id": "iobroker.paw@0.1.7",
+  "_inCache": true,
+  "_location": "/iobroker.paw",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "https://github.com/bondrogeen/ioBroker.paw/tarball/master",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "https://github.com/bondrogeen/ioBroker.paw/tarball/master",
+    "spec": "https://github.com/bondrogeen/ioBroker.paw/tarball/master",
+    "type": "remote"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://github.com/bondrogeen/ioBroker.paw/tarball/master",
+  "_shasum": "8741eff8418526dc4cb4eef5adb69eeedb3298ab",
+  "_shrinkwrap": null,
+  "_spec": "https://github.com/bondrogeen/ioBroker.paw/tarball/master",
+  "_where": "C:\\iobroker\\node_modules\\iobroker",
   "author": {
     "name": "bondrogeen",
     "email": "bondrogeen@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/bondrogeen/iobroker.paw/issues"
   },
   "contributors": [
     {
@@ -12,8 +48,13 @@
       "email": "bondrogeen@gmail.com"
     }
   ],
+  "dependencies": {},
+  "description": "ioBroker paw Adapter",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^4.1.0"
+  },
   "homepage": "https://github.com/bondrogeen/iobroker.paw",
-  "license": "MIT",
   "keywords": [
     "ioBroker",
     "paw",
@@ -23,21 +64,18 @@
     "Tablet management",
     "Tablet control"
   ],
+  "license": "MIT",
+  "main": "main.js",
+  "name": "iobroker.paw",
+  "optionalDependencies": {},
+  "readme": "![Logo](admin/paw_big.png)\n# ioBroker.paw\n=================\n\n[![NPM version](http://img.shields.io/npm/v/iobroker.paw.svg)](https://www.npmjs.com/package/iobroker.paw)\n[![Downloads](https://img.shields.io/npm/dm/iobroker.paw.svg)](https://www.npmjs.com/package/iobroker.paw)\n\n[![NPM](https://nodei.co/npm/iobroker.paw.png?downloads=true)](https://nodei.co/npm/iobroker.paw/)\n\n[Русский](https://github.com/bondrogeen/iobroker.paw/blob/master/docs/ru/paw.md)\n\n[Deutsch](https://github.com/bondrogeen/iobroker.paw/blob/master/docs/de/paw.md)\n\n## Description\nIt is an adapter to control Android phones via PAW Application. \nIt can speak texts, control volume, send SMS, make calls, vibrate, and much more ...\n\nTasker and Locale Plug-in support.\nPHP plug-in is available too for PAW app.\n\n## Install the program and configure the adapter.\n \nDownload and install the application PAW Server for Android.\n\nhttps://play.google.com/store/apps/details?id=de.fun2code.android.pawserver \n\nOpen the PAW Server for Android app on your device\n\nafter initialization, you need to transfer it to the ..paw / html folder.\n\nfiles:\n\n+ settings.xhtml\n+ call.xhtml \n+ get.xhtml\n+ set.xhtml\n+ sms.xhtml\n\n\nIt's enough to download and transfer only the file \"settings.xhtml\" the other files are downloaded using the adapter\n\nand with future adapter updates, will be updated themselves.\n\nfiles to take here https://github.com/bondrogeen/iobroker.paw/tree/master/www\n\nLaunch PAW Server for Android.\n\nInstall the driver iobroke.paw with GitHub.\n\nhttps://github.com/bondrogeen/iobroker.paw\n\n![pic](admin/1.jpg)\n\nstart and end - this is the working time of the notification via the speech synthesizer.\n               \nFor example, all messages from 7h to 23h that will be sent to\n               \nSpeech synthesizer (ttl), and the rest of the time will be ignored.\n               \nThis rule applies only to changes in these variables \n\n***paw.0.[name_device].tts.response*** (one device)   \n\nor \n  \n***paw.0.all_device.tts_response*** (all device)   \n\nWhen sending through javascript this rule does not work.\n\nAlso provided for the ttl buffer, all messages arriving at the synthesizer will be told.\n   \nThat is, if you have 10-00 sending to ttl an alert (time or weather) and at this\n    \nTime comes a message (at least 10pcs), then all messages will be told.\n\nIgnore - if you do not need to receive basic information from the device.\n\n\nTo control via vis, you can control the device [name_device] by changing the variable\n\n***paw.0.[name_device].command.command*** \n\n+ lcd_on\n> activate the screen\n+ home\n> emulate pressing the HOME button\n+ endсall     \n> end call \n+ scan        \n> launch the barcode scanner application.\n+ speech\n> voice activation\n+ restart\n> reboot server paw\n+ kill\n> disable paw server\n+ gong\n> plays the file ..paw/html/gong.mp3 \n+ sound_noti\n> loses the standard notification sound\n+ sound_ring\n> loses the standard ring tone\n\n\nIt's the same for the other variables, but only some commands\nrequire a second parameter, which is entered through a comma.\n\n***paw.0.[name_device].command.alert***\n> Example: Warning, No connection !!!\n> Warnings\n\n***paw.0.[name_device].command.alertinput*** \n> Example: Attention! , Enter the command\t    \n> Warnings with the request, the answer is saved in the variable paw.*.[name_device].request.alertinput\n\n***paw.0.[name_device].command.send_sms***\n> Example: 123456789, Test message\t  \n> Send an SMS message to the number [number], with the text [text]  \n\t\n***paw.0.[name_device].command.noti***\n> Example: Attention, No response from the device.\t  \n> Notification [name of notification], [notification text] \n\n***paw.0.[name_device].command.app_start***\t\t\t\n> Example: lcf.clock\t   \n> Launch the application  \n\n***paw.0.[name_device].command.call***\n> Example: 123456789   \n> Call the number [number]  \n\n***paw.0.[name_device].command.clipboard***\n> Example: Ab123\n> Save text to the clipboard  \n\n***paw.0.[name_device].command.dial***\t\n> Example: 123456789\n> Dial the number on the device.\n\n***paw.0.[name_device].command.brightness***\n> Example: 255\n> Backlight brightness level from 1-255\n\t\n***paw.0.[name_device].command.openurl***\n> Example: http://google.com\n> Open url in browser\n\n***paw.0.[name_device].command.rec***\n> Example: 1000\n> Enable recording with the duration [time (ms)]\n\n***paw.0.[name_device].command.vibrate***\n> Example: 500\n> Enable vibration, time in milliseconds [time (ms)]  \n\n***paw.0.[name_device].command.volume*** \n> Example: 7\n> Set the volume on the device from 0 to the maximum value,\n> The maximum value can be found here (usually 15)\n> > paw.*.[name_device].info.audio_volume.info.music_max   \n   \n\n\n\n![pic](admin/2.jpg)\n\n\n\n## Commands for javascript\n\n\n\n```javascript\n/*\n[dev1] - is the name of the device, you can also enter IP devices.\nYou can specify multiple devices separated by commas 'dev1, dev3, 192.168.1.71'\nall - send to all devices.\n*/\n\n// send the text to the speech synthesizer.\nsendTo(\"paw.0\",'dev1,dev3',{send:  'say', text:  'test text'});\n\n// with callback\nsendTo(\"paw.0\",'all',{\n    send:  'say', \n    text:  'Check text'},function (response){\n    log(JSON.stringify(response));\n});\n\n// set the screen backlight time in milliseconds. '-1' - do not quit the screen (does not work on all devices) \nsendTo(\"paw.0\",'dev1',{send:'screen_off_time',number: '5000'});\n\n// activate the screen on the device.\nsendTo(\"paw.0\",'all',{send:'lcd_on'});\n\n// backlight brightness level from 1-255\nsendTo(\"paw.0\",'dev1',{send:'brightness',number: '50'});\n\n// execute shell command (need root)\n// \"input tap x y\" emulates a click on the screen x - coordinates along the mountains. Y - vertical coordinates.\n// \"poweroff -f\" turn off devices\n// \"reboot\" reboot device\nsendTo(\"paw.0\",'all',{send:'exec',text:'input tap 100 100'});\n\n// emulate pressing the HOME button\nsendTo(\"paw.0\",'all',{send:'home'});\n\n// disable battery tracking, translates 0% (need root)\nsendTo(\"paw.0\",'dev1',{send:'battery_off'});\n\n// run the application, for example - Tablet Clock indicates \"system name\"\nsendTo(\"paw.0\",'all',{send:'app_start',value:'lcf.clock'});\n\nsendTo(\"paw.0\",'dev1',{\n    send:'app_start',\n    value:'lcf.clock'\n},function (response){\n    log(JSON.stringify(response));\n});\n\n// get the list of installed applications \"name\": \"system name\"\nsendTo(\"paw.0\",'dev1',{\n    send:  'apps'\n},function (response){\n    log(JSON.stringify(response));\n});\n\n// Get the task list from the Tasker application \"tasks\": [auto, bubble, call, clock]\nsendTo(\"paw.0\",'dev1',{\n    send:  'tasker'\n},function (response){\n    log(JSON.stringify(response));\n});\n\n// Run the task from the Tasker application.\n// [text] = name task\n// [value] (Optional) = parameter will be passed to the variable %par1 \n// You can pass multiple values ​​separating \",,\"\n// eg  value: ' test1 ,, test2 ,, test[n] ' will be transferred  %par1, %par2 %par[n]  etc.\nsendTo(\"paw.0\",'dev2',{\n    send:  'task',\n    text:'test',\n    value:'value_test'\n},function (response){\n    log(JSON.stringify(response[0]));\n});\n\nError status:\nNotInstalled: no Tasker package could be found on the device\nNoPermission: calling app does not have the needed Android permission (see above)\nNotEnabled: Tasker is disabled by the user.\nAccessBlocked: external access is blocked in the user preferences. You can show the user the relevant preference with e.g. startActivity( TaskerIntent.getExternalAccessPrefsIntent() )\nNoReceiver: nothing is listening for TaskerIntents. Probably a Tasker bug.\n\n// send message.\nsendTo(\"paw.0\",'dev1',{send:  'sms', text:  'Any text', number: '8123456789'});\n\nsendTo(\"paw.0\",'192.168.1.71',{\n    send:  'sms', \n    text:  'Any text',\n    number: '8123456789'\n},function (response){\n    log(JSON.stringify(response));\n});\n\n/*\nsetting the volume from 0 to 15, the maximum volume is set by the system,\nalso checked to ensure that it does not exceed the set values)\nmode = can be(STREAM_NOTIFICATION, STREAM_MUSIC ,STREAM_ALARM, \nSTREAM_RING, STREAM_SYSTEM, STREAM_VOICE_CALL)  \nIf not specified, the default is  STREAM_MUSIC\n*/\n\nsendTo(\"paw.0\",'dev1',{send:  'volume', number: '5'});\n\n// with callback\nsendTo(\"paw.0\",'192.168.1.71',{\n    send:  'volume', \n    number: '10',\n    mode: 'STREAM_NOTIFICATION'\n},function (response){\n    log(JSON.stringify(response));\n});\n\n// call to number\nsendTo(\"paw.0\",'dev1',{send:  'dial', number: '0611'});\n\n// with  callback\nsendTo(\"paw.0\",'192.168.1.71',{\n    send:  'dial', \n    number: '0611'\n},function (response){\n    log(JSON.stringify(response));\n});\n\n// call the number or send ussd command.\nsendTo(\"paw.0\",'dev1',{send:  'call', number: '*100#'});\n\n// callback\nsendTo(\"paw.0\",'192.168.1.71',{\n    send:  'call', \n    number: '0611'\n},function (response){\n    log(JSON.stringify(response));\n});\n\n// enables vibration, [number] (time in milliseconds)\nsendTo(\"paw.0\",'dev1',{send:  'vibrate', number: '1000'});\n\nsendTo(\"paw.0\",'192.168.1.71',{\n    send:  'vibrate', \n    number: '100'\n},function (response){\n    log(JSON.stringify(response));\n});\n\n// send notifications to devices\nsendTo(\"paw.0\",'dev1',{send:  'noti', texthead: 'Attention',text: 'Any text'});\n\n// with callback\nsendTo(\"paw.0\",'192.168.1.71',{\n    send:  'noti',\n    texthead: 'Attention',\n    text: 'Any text'\n},function (response){\n    log(JSON.stringify(response));\n});\n\n// send warning to devices.\nsendTo(\"paw.0\",'dev1',{send:  'alert', texthead: 'Attention',text: 'Any text'});\n\n\nsendTo(\"paw.0\",'192.168.1.71',{\n    send:  'alert',\n    texthead: 'Attention',\n    text: 'Any text'\n},function (response){\n    log(JSON.stringify(response));\n});\n\n\n// open the browser at the specified address\nsendTo(\"paw.0\",'dev1',{send:  'openurl', text: 'http://iobroker.net'});\n\n\nsendTo(\"paw.0\",'192.168.1.71',{\n    send:  'openurl',\n    text: 'http://ya.ru'\n},function (response){\n    log(JSON.stringify(response));\n});\n\n// end call\nsendTo(\"paw.0\",'dev1',{send:  'endсall'});\n\n// send text to the clipboard  \nsendTo(\"paw.0\",'dev1',{send:  'clipboard',text:'test or number'});\n\n\n// restart server paw \nsendTo(\"paw.0\",'dev1',{send:  'server',text:'restart'});\n\n// stop paw the server\nsendTo(\"paw.0\",'dev1',{send:  'server',text:'kill'});\n\n// get call log\n// [send] Required.\n// \"now\" for today\n// \"all\" all calls,\n// \"incoming\" incoming calls\n// \"missed\" missed calls\n// \"outgoing\" outgoing calls\n// \"info\" only information about the number of calls\n// [date] is not a required parameter.\n// you can get only for the specified date the request format \"01-05-2017\"\n// You can also just go to the address http://IP:8080/call.xhtml to get the list as a html page\nsendTo(\"paw.0\",'dev1',{\n    html:'call',\n    send:  'incoming',\n    date:'01-05-2017'\n},function (response){\n    log(JSON.stringify(response[0]));\n});\n\n// get messages\n// [send] Required.\n// \"now\" for today\n// \"all\" all messages,\n// \"incoming\" incoming messages\n// \"outgoing\" outgoing messages\n// \"info\" only information about the number of all messages\n// [date] is not a required parameter.\n// you can get only for the specified date the request format \"01-05-2017\"\n// you can also just go to http: // IP: 8080 / sms.xhtml to get the list as a html page\nsendTo(\"paw.0\",'dev1',{\n    html:'sms',\n    send:  'incoming',\n    date:'03-05-2017'\n},function (response){\n    log(JSON.stringify(response[0]));\n});\n\n// Displays messages in a separate window\n//text: \"Default text\",   - Message text        \n//textsize:\"50\",  - font size  [5 - 300] 50 (default)\n//textcolor:\"000000\",   -text color [HEX]  000000 (default)\n//color:\"ffffff\",   - background color [HEX]  ffffff (default)\n//orientation:\"0\",  - orientation  - 0, 90, 180, 270,   (default: current orientation)\n//font:\"NORMAL\"  -  font  BOLD_ITALIC, BOLD, ITALIC,   NORMAL (default)\n\nsendTo(\"paw.0\",'dev1',{\n    send:  'informer', \n    text: \"Default text\",    \n    textsize:\"50\",  //Optional parameter\n    textcolor:\"ff0000\",  //Optional parameter\n    color:\"ff00ff\",//Optional parameter\n    orientation:\"180\",//Optional parameter\n    font:\"NORMAL\"  //Optional parameter\n    \n},function (response){\n    log(JSON.stringify(response[0]));\n});\n\n\n```\n\n\n\n\n### 0.0.8 (2017-05-07)\n\n* (bondrogeen) fix\n\n### 0.0.7 (2017-05-03)\n\n* (bondrogeen) Added read sms\n\n### 0.0.6 (2017-05-01)\n\n* (bondrogeen) Added call logging\n\n#### 0.0.5\n* (bondrogeen) initial release\n\n## License\nThe MIT License (MIT)\n\nCopyright (c) 2017 bondrogeen <bondrogeen@gmail.com>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n",
+  "readmeFilename": "README.md",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bondrogeen/iobroker.paw"
+    "url": "git+https://github.com/bondrogeen/iobroker.paw.git"
   },
-  "dependencies": {},
-  "main": "main.js",
-  "bugs": {
-    "url": "https://github.com/bondrogeen/iobroker.paw/issues"
-  },
-  "readmeFilename": "README.md",
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha --exit"
   },
-  "devDependencies": {
-    "mocha": "^4.1.0",
-    "chai": "^4.1.2"
-  }
+  "version": "0.1.7"
 }
