@@ -26,21 +26,21 @@ Download and install the application. [apk](https://github.com/bondrogeen/ioBrok
 
 [name_device] - name device
 
-For each device, two main object branches are created:
+For each device, two main object branches are created:   
 
-***paw.0.[name_device].info.*** - information about the device
-***paw.0.[name_device].comm.*** - control commands
+***paw.0.[name_device].info.*** - information about the device   
+***paw.0.[name_device].comm.*** - control commands   
 
-There is also a branch for all devices:
-***paw.0.all_device.*** - control commands for all devices
+There is also a branch for all devices:   
+***paw.0.all_device.*** - control commands for all devices   
 
 
-***paw.0.[name_device].comm.audio.alarm***
-***paw.0.[name_device].comm.audio.music***
-***paw.0.[name_device].comm.audio.notification***
-***paw.0.[name_device].comm.audio.ring***
-***paw.0.[name_device].comm.audio.system***
-***paw.0.[name_device].comm.audio.voice***
+***paw.0.[name_device].comm.audio.alarm***   
+***paw.0.[name_device].comm.audio.music***   
+***paw.0.[name_device].comm.audio.notification***    
+***paw.0.[name_device].comm.audio.ring***    
+***paw.0.[name_device].comm.audio.system***    
+***paw.0.[name_device].comm.audio.voice***    
 > Set the volume on the device [number]
 
 ***paw.0.[name_device].comm.call.number***
