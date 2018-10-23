@@ -20,7 +20,7 @@ Tasker and Locale Plug-in support.
 Download and install the application.
 
 
-![Screenshot](admin/Screenshot_1.jpg)
+![Screenshot](admin/img/Screenshot_1.jpg)
 
 
 ***paw.0.[name_device].tts.response*** (one device)   
@@ -88,7 +88,7 @@ require a second parameter, which is entered through a comma.
 > > paw.*.[name_device].info.audio_volume.info.music_max 
 
    
-![Screenshot](admin/Screenshot_2.jpg)
+![Screenshot](admin/img/Screenshot_2.jpg)
 
 
 ## Commands for javascript
