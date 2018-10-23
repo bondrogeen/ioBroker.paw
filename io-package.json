@@ -22,10 +22,8 @@
         "extIcon": "https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/admin/paw.png",
         "keywords": [
             "paw",
-            "vis",
-            "GUI",
-            "graphical",
-            "scada"
+            "android",
+            "tablet"
         ],
         "readme": "https://github.com/bondrogeen/iobroker.paw/blob/master/README.md",
         "loglevel": "info",
