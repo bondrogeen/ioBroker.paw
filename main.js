@@ -12,7 +12,11 @@ var url = require('url');
 var fs = require('fs');
 var server = null;
 
-
+var ignorelist = [];
+var subscribe = [];
+var resArray = [];
+var existingStates = {};
+var listConnection = [];
 
 adapter.on('unload', function (callback) {
   try {
@@ -62,11 +66,8 @@ adapter.on('stateChange', function (id, state) {
   if (id.indexOf(myIdItem) !== -1) sendPost(name, id ,{item: state.val,topic: '1212'});
 
   if (id.indexOf(myIdAll + 'tts.request') !== -1) sendPostAll(name, id ,{tts: state.val});
-
-
 });
 
-var resArray = [];
 adapter.on('message', function (obj) {
   if (typeof obj !== null && obj !== undefined) {
     if (typeof obj == 'object' && obj.message) {
@@ -79,6 +80,7 @@ adapter.on('message', function (obj) {
           for (var i = 0; i < adapter.config.devices.length; i++) {
             var name = adapter.config.devices[i].name;
             var ip = adapter.config.devices[i].ip;
+
             if (name !== '' && ip !== '') {
               if ((comm == 'all' || find(comm, name) || find(comm, ip)) && listConnection.indexOf(name) != -1) { //поиск по имени и ip
 //                adapter.log.debug('name : ' + listConnection.indexOf(name));
@@ -121,6 +123,7 @@ function sendPostAll(name, id, data) {
     var deviceName = adapter.config.devices[i].name;
     var ip = adapter.config.devices[i].ip;
     var port = adapter.config.devices[i].port;
+    var state = adapter.config.devices[i].state;
     //    adapter.log.info('deviceName: ' + deviceName );
     if (listConnection.indexOf(deviceName) !== -1) {
       post(ip, 8080, '/api/set.json', data, function (res) {
@@ -128,9 +131,7 @@ function sendPostAll(name, id, data) {
       });
     }
   }
-
 }
-var existingStates = {};
 
 function setValue(id, val) {
   if (existingStates[id]) {
@@ -164,7 +165,6 @@ function setValue(id, val) {
 }
 
 function post(ip, port, path, setdata, callback) {
-  //  var setdata = querystring.stringify(setdata);
   var setdata = JSON.stringify(setdata);
   var options = {
     host: ip,
@@ -187,15 +187,11 @@ function post(ip, port, path, setdata, callback) {
     });
   });
   req.on('error', function (e) {
-    //    adapter.log.warn(`Device is not responding : ${e.message}`);
     if (callback) callback(e,ip);
   });
   req.write(setdata);
   req.end();
 }
-
-var ignorelist = [];
-var subscribe = [];
 
 function find(array, value) {
   for (var i = 0; i < array.length; i++) {
@@ -263,11 +259,8 @@ function findDevice(val) {
   return false;
 }
 
-var listConnection = [];
-
 
 function initOnlyOne(name){
-
       setValue(name + '.comm.call.number', '');
       setValue(name + '.comm.call.end', '');
       setValue(name + '.comm.sms.number', '');
@@ -303,8 +296,9 @@ function init() {
     var name = adapter.config.devices[i].name;
     var ip = adapter.config.devices[i].ip;
     var port = adapter.config.devices[i].port;
+    var state = adapter.config.devices[i].state;
 
-    if (name != '') {
+    if (name != '' && state) {
       post(ip, port, '/api/settings.json', { //запись настроек (ip,port,device,namespace )в устройство
         ip: adapter.config.server,
         device: name,
@@ -322,6 +316,7 @@ function init() {
           if(res.status === "ERROR" && res.device){
             adapter.log.debug('initOnlyOne');
             initOnlyOne(res.device);
+            getDeviceInfo();
           }
 
           if(res.device && !find(listConnection,res.device)) {
@@ -331,10 +326,8 @@ function init() {
           }
         }
       });
-
     }
   }
-
   setValue(adapter.namespace + '.all_devices.tts.request', '');
   setValue(adapter.namespace + '.all_devices.tts.stop', '');
   adapter.subscribeStates(adapter.namespace + '.all_devices.*');

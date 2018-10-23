@@ -32,25 +32,25 @@
 
     .span-value {
       font-weight: bold;
+      font-size: 16px !important;
     }
 
     .switch {
       margin-top: 8px;
     }
 
-    .marg{
+    .marg {
       margin-bottom: 5px !important;
+      margin-top: 10px;
     }
 
   </style>
   <!-- you have to define 2 functions in the global scope: -->
   <script type="text/javascript">
     // the function loadSettings has to exist ...
-
     var idItem = 0;
-
-    var image = ['card_logo1.jpg','card_logo2.jpg','card_logo3.jpg','card_logo4.jpg'];
-
+    var url = document.location.hostname;
+    var image = ['card_logo1.jpg', 'card_logo2.jpg', 'card_logo3.jpg', 'card_logo4.jpg'];
     var myOnChange;
 
     function openModulEdit(name, ip, port, state, id) {
@@ -64,9 +64,10 @@
       M.updateTextFields();
     }
 
-    function random(){
+    function random() {
       return Math.floor(Math.random() * 4);
     }
+
     function addcard(name, ip, port, state, id, onChange) {
 
       $("#card_list").append(
@@ -130,8 +131,11 @@
                       class: 'material-icons',
                       text: "delete",
                       click: function(e) {
-                        $(this).parents(".item").remove();
-                        if (onChange) onChange();
+                        var name_val = $(this).parents(".item").find('#name').text()
+                        if (confirm("Delete device: " +name_val+ "?")) {
+                          $(this).parents(".item").remove();
+                          if (onChange) onChange();
+                        }
                       }
                     })
                   }))
@@ -198,11 +202,18 @@
         if (typeof(settings[key]) === 'object') {
           var devices = settings[key] || [];
           devices.forEach(function(item, i, arr) {
-            addcard(item.name, item.ip, item.port, item.state, "item_" + i, onChange)
+            addcard(item.name, item.ip, item.port, item.state, "item_" + i, onChange);
             idItem = i;
           });
         } else {
-          setValue(key, settings[key], onChange)
+          console.log(key);
+          console.log(settings[key]);
+          if (key === 'server') {
+            setValue(key, settings[key] !== '' ? settings[key] : url, onChange);
+          } else {
+            setValue(key, settings[key], onChange);
+          }
+
         }
       }
       onChange(true);
@@ -284,21 +295,18 @@
 
     <div id="modalCreate" class="modal">
       <div class="modal-content">
-        <h5>Create device</h5>
+        <h5>Add device</h5>
         <div class="input-field col s8 offset-s2">
           <input type="text" id="modul_name" />
-          <label for="modul_name">Name</label>
-          <span class="translate">modul_name</span>
+          <label for="modul_name" class="translate">modul_name</label>
         </div>
         <div class="input-field col s8 offset-s2">
           <input id="modul_ip" type="text">
-          <label for="modul_ip">IP</label>
-          <span class="translate">modul_ip</span>
+          <label for="modul_ip" class="translate">modul_ip</label>
         </div>
         <div class="input-field col s8 offset-s2">
           <input type="number" id="modul_port" value="8080" />
-          <label for="modul_port">Port</label>
-          <span class="translate">modul_port</span>
+          <label for="modul_port" class="translate">modul_port</label>
         </div>
       </div>
       <div class="modal-footer">
@@ -312,18 +320,15 @@
         <h5>Edit device</h5>
         <div class="input-field col s8 offset-s2">
           <input type="text" id="edit_name" />
-          <label for="edit_name">Name</label>
-          <span class="translate">modul_name</span>
+          <label for="modul_name" class="translate">modul_name</label>
         </div>
         <div class="input-field col s8 offset-s2">
           <input id="edit_ip" type="text">
-          <label for="edit_ip">IP</label>
-          <span class="translate">modul_ip</span>
+          <label for="modul_ip" class="translate">modul_ip</label>
         </div>
         <div class="input-field col s8 offset-s2">
           <input type="number" id="edit_port" value="8080" />
-          <label for="edit_port">Port</label>
-          <span class="translate">modul_port</span>
+          <label for="modul_port" class="translate">modul_port</label>
         </div>
       </div>
       <div class="modal-footer">
@@ -333,60 +338,27 @@
     </div>
 
     <div class="row">
-
       <div class="row marg">
         <div class="input-field col s12 m6 l4">
           <input class="value" id="server" placeholder="192.168.1.10" type="text">
-          <label for="server">Server</label>
-          <span class="translate">server</span>
+          <label for="server" class="translate">server</label>
         </div>
         <div class="input-field col s12 m6 l4">
           <input type="number" class="value" id="port" placeholder="8898" />
-          <label for="port">Port</label>
-          <span class="translate">port_server</span>
+          <label for="port" class="translate">port_server</label>
         </div>
         <div class="input-field col s12 m6 l4">
           <input type="number" class="value" id="interval" placeholder="60" />
-          <label for="interval">Interval</label>
-          <span class="translate">interval</span>
+          <label for="interval" class="translate">interval</label>
         </div>
       </div>
-
       <div class="row marg">
-
         <div class="col s12">
           <a class="btn-floating btn-small waves-effect waves-light red add-card"><i class="material-icons">add</i></a>
-
-          <!--          <a class="btn-floating btn-small waves-effect waves-light red refresh"><i class="material-icons">add</i></a>-->
         </div>
-
       </div>
     </div>
-
     <div class="row" id=card_list>
-
-      <!--
-      <div class="col s12 m6 l4">
-        <div class="card horizontal">
-          <div class="card-image">
-            <img src="img/image.jpg">
-          </div>
-          <div class="card-stacked">
-            <div class="card-content">
-              <p>Name: <span>I9300</span></p>
-              <p>IP: <span><a href="http://192.168.1.48:8080">192.168.1.10</a></span></p>
-              <p>Port: <span>8080</span> </p>
-            </div>
-            <div class="card-action">
-              <div class='switch left'><label><input checked type='checkbox'><span class='lever'></span></label></div>
-              <a class="btn-floating btn-small waves-effect waves-light red right delete-card"><i class="material-icons">delete</i></a>
-              <a class="btn-floating btn-small waves-effect waves-light blue right"><i class="material-icons" onclick="openModulEdit();">create</i></a>
-            </div>
-          </div>
-        </div>
-      </div>
--->
-
     </div>
   </div>
 </body>
