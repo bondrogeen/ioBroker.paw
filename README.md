@@ -16,7 +16,7 @@ Tasker and Locale Plug-in support.
 
 ## Install the program and configure the adapter.
  
-Download and install the application. [apk](https://github.com/bondrogeen/ioBroker.paw/raw/master/app/app-debug.apk)
+Download and install the application. [apk](https://github.com/bondrogeen/ioBroker.paw/raw/master/app/app-release.apk)
 
 
 ![Screenshot](admin/img/Screenshot_1.jpg)
@@ -213,6 +213,8 @@ sendTo("paw.0",'dev1',{callEnd: 'true'});
 
 ```
 
+#### 0.2.1
+* (bondrogeen) release app
 
 #### 0.2.0
 * (bondrogeen) initial release
