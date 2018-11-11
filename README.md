@@ -82,9 +82,6 @@ There is also a branch for all devices:
 ***paw.0.[name_device].comm.tts.stop***
 > Stop speech  [boolean]
 
-
-	
-
    
 ![Screenshot](admin/img/Screenshot_2.jpg)
 
@@ -104,8 +101,8 @@ sendTo("paw.0",'dev1,dev3',{tts:  'Hello World'});
 
 // with callback
 sendTo("paw.0",'all',{
-    tts:  'Hello World'},function (response){
-    log(JSON.stringify(response));
+    tts:  'Hello World'},function (res){
+    log(JSON.stringify(res));
 });
 
 // set the screen backlight time in seconds. '0' - do not quit the screen (does not work on all devices) 
@@ -129,61 +126,45 @@ sendTo("paw.0",'all',{home:'true'});
 // disable battery tracking, translates 0% (need root)
 sendTo("paw.0",'dev1',{send:'battery_off'});
 
-// run the application. You can enter a title name 'ru.codedevice.iobrokerpawii' or package name 'ioBroker.PAW II'
+// run the application. You can enter a package name 'ru.codedevice.iobrokerpawii' or title name 'ioBroker.PAW II'
 sendTo("paw.0",'all',{startApp:'lcf.clock'});
 
 // get the list of installed applications.
 sendTo("paw.0",'dev1',{
     apps:  'installed'  // or apps: 'all'  - get all applications
-},function (response){
-    log(JSON.stringify(response));
+},function (res){
+    log(JSON.stringify(res));
 });
 
 // Get the task list from the Tasker application "tasks": [auto, bubble, call, clock]
 sendTo("paw.0",'dev1',{
-    send:  'tasker'
-},function (response){
-    log(JSON.stringify(response));
+    taskerList:  'tasker'
+},function (res){
+    log(JSON.stringify(res));
 });
 
 // Run the task from the Tasker application.
-// [text] = name task
-// [value] (Optional) = parameter will be passed to the variable %par1 
-// You can pass multiple values ​​separating ",,"
-// eg  value: ' test1 ,, test2 ,, test[n] ' will be transferred  %par1, %par2 %par[n]  etc.
 sendTo("paw.0",'dev2',{
-    send:  'task',
-    text:'test',
-    value:'value_test'
-},function (response){
-    log(JSON.stringify(response[0]));
+    tasker : 'task_name',        // Name task
+    myKeyOne : 123,              // (Optional) parameter will be passed to the variable %myKeyOne 
+    myKeyTwo : "Hello World",    // (Optional) parameter will be passed to the variable %myKeyTwo
+                                 // ... and so on
+},function (res){
+    log(JSON.stringify(res));
 });
 
-//Error status:
-//NotInstalled: no Tasker package could be found on the device
-//NoPermission: calling app does not have the needed Android permission (see above)
-//NotEnabled: Tasker is disabled by the user.
-//AccessBlocked: external access is blocked in the user preferences. You can show the user the relevant preference with e.g. startActivity( TaskerIntent.getExternalAccessPrefsIntent() )
-//NoReceiver: nothing is listening for TaskerIntents. Probably a Tasker bug.
-
 // send message.
-sendTo("paw.0",'dev1',{send:  'sms', text:  'Any text', number: '8123456789'});
+sendTo("paw.0",'dev1',{message: '8123456789',text:  'Any text'});
 
 sendTo("paw.0",'192.168.1.71',{
-    send:  'sms', 
-    text:  'Any text',
-    number: '8123456789'
-},function (response){
+    message: '8123456789',
+    text:  'Any text'
+},function (res){
     log(JSON.stringify(response));
 });
 
-/*
-setting the volume from 0 to 15, the maximum volume is set by the system,
-also checked to ensure that it does not exceed the set values)
-mode = can be(STREAM_NOTIFICATION, STREAM_MUSIC ,STREAM_ALARM, 
-STREAM_RING, STREAM_SYSTEM, STREAM_VOICE_CALL)  
-If not specified, the default is  STREAM_MUSIC
-*/
+
+// setting the volume from 0 to 15, the maximum volume is set by the system,
 sendTo("paw.0",'dev1',{volume: 5});
 
 // call to number
@@ -229,9 +210,6 @@ sendTo("paw.0",'dev1',{link: 'http://iobroker.net'});
 
 // end call
 sendTo("paw.0",'dev1',{callEnd: 'true'});
-
-// restart server paw 
-sendTo("paw.0",'dev1',{reboot: 'restart'});
 
 ```
 

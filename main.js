@@ -59,16 +59,6 @@ adapter.on('stateChange', function (id, state) {
   if (id.indexOf(myIdComm + 'other.openURL') !== -1) sendPost(name, id ,{link: state.val});
   if (id.indexOf(myIdComm + 'tts.request') !== -1) sendPost(name, id ,{tts: state.val});
   if (id.indexOf(myIdComm + 'tts.stop') !== -1) sendPost(name, id ,{ttsStop: state.val});
-  if (id.indexOf(myIdComm + 'notification.alert') !== -1) sendPost(name, id ,{alert: state.val});
-  if (id.indexOf(myIdComm + 'notification.create') !== -1) sendPost(name, id ,{noti: state.val});
-  if (id.indexOf(myIdComm + 'notification.delete') !== -1) sendPost(name, id ,{delNoti: state.val});
-
-  if (id.indexOf(myIdComm + 'sms.numberMessage') !== -1) {
-    var data = state.val.split(';')
-    if(data[0] && data[1]){
-       sendPost(name, id ,{sms: data[0], text:data[1]});
-      }
-    }
 
   if (id.indexOf(myIdItem) !== -1) sendPost(name, id ,{item: state.val,topic: '1212'});
 
@@ -270,16 +260,12 @@ function findDevice(val) {
 function initOnlyOne(name){
       setValue(name + '.comm.call.number', '');
       setValue(name + '.comm.call.end', '');
-      setValue(name + '.comm.sms.numberMessage', '');
       setValue(name + '.comm.tts.request', '');
       setValue(name + '.comm.tts.stop', '');
       setValue(name + '.comm.display.brightness', '');
       setValue(name + '.comm.display.mode', '');
       setValue(name + '.comm.display.toWake', '');
       setValue(name + '.comm.display.timeOff', '');
-      setValue(name + '.comm.notification.create', '');
-      setValue(name + '.comm.notification.delete', '');
-      setValue(name + '.comm.notification.alert', '');
       setValue(name + '.comm.other.home', '');
       setValue(name + '.comm.other.openURL', '');
       setValue(name + '.comm.other.vibrate', '');
