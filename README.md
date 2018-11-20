@@ -17,7 +17,7 @@ Tasker and Locale Plug-in support.
 ## Install the program and configure the adapter.
  
 Download and install the application. [apk](https://github.com/bondrogeen/ioBroker.paw/raw/master/app/app-release.apk)
-
+> !!! Do not forget to update the application.
 
 ![Screenshot](admin/img/Screenshot_1.jpg)
 
@@ -211,7 +211,29 @@ sendTo("paw.0",'dev1',{link: 'http://iobroker.net'});
 // end call
 sendTo("paw.0",'dev1',{callEnd: 'true'});
 
+// get list Notification Sounds
+sendTo("paw.0",'dev1',{listNotificationSounds: 'true'});
+
+// get list Notification Sounds
+sendTo("paw.0",'dev1',{
+  listNotificationSounds: 'true'
+},function(res){
+     log(JSON.stringify(res)); 
+                
+// [[{"uri":"content://media/internal/audio/media/14","title":"Beep once"},
+// {"uri":"content://media/internal/audio/media/62","title":"Beep once"},
+// {"uri":"content://media/internal/audio/media/29","title":"Whistle"}]]
+});
+
+// set sounds notification
+sendTo("paw.0",'dev1',{sound: 'content://media/internal/audio/media/62'});  
+
+
+
 ```
+
+#### 0.2.2
+* (bondrogeen) minor fix, add item feedback
 
 #### 0.2.1
 * (bondrogeen) release app

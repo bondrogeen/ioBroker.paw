@@ -60,7 +60,7 @@ adapter.on('stateChange', function (id, state) {
   if (id.indexOf(myIdComm + 'tts.request') !== -1) sendPost(name, id ,{tts: state.val});
   if (id.indexOf(myIdComm + 'tts.stop') !== -1) sendPost(name, id ,{ttsStop: state.val});
 
-  if (id.indexOf(myIdItem) !== -1) sendPost(name, id ,{item: state.val,topic: '1212'});
+  if (id.indexOf(myIdItem) !== -1) sendPost(name, id ,{item: id.substring(id.indexOf('.item.') + 6).replace(/\./g, "/") ,value: state.val}, true);
 
   if (id.indexOf(myIdAll + 'tts.request') !== -1) sendPostAll(name, id ,{tts: state.val});
 });
@@ -105,12 +105,12 @@ adapter.on('ready', function () {
   main();
 });
 
-function sendPost(name, id, data) {
+function sendPost(name, id, data, isTrue) {
   if (listConnection.indexOf(name) !== -1) {
     post(findDevice(name), '8080', '/api/set.json', data, function (res) {
       adapter.log.debug('res : ' + res);
       res = parseStringToJson(res);
-      if (res && res.status === 'OK') setValue(id, '');
+      if (res && res.status === 'OK' && !isTrue) setValue(id, '');
     });
   }
 }
@@ -282,6 +282,36 @@ function initOnlyOne(name){
       adapter.subscribeStates(name + '.item.*');
 }
 
+function getObjectItem() {
+  var objectItem = {};
+  adapter.log.debug('getObjectItem ');
+  adapter.log.debug('adapter.instance ' + adapter.instance);
+
+
+  adapter.objects.getObjectList({
+    include_docs: false
+  }, function (err, res) {
+
+
+    if (res && !err) {
+      for (var i = 0; i < res.rows.length; i++) {
+
+        var idSplit = res.rows[i].id.split('.');
+        if (idSplit[0] === 'paw' && idSplit[2] && idSplit[3] === 'item') {
+          var name = idSplit[2];
+          var id = res.rows[i].id.split('.');
+
+          adapter.getObject(res.rows[i].id, function (err, state) {
+            adapter.log.debug('state ' + JSON.stringify(state));
+
+          });
+        }
+      }
+      adapter.log.debug('objectItem ' + objectItem);
+    }
+  });
+
+}
 function init() {
 
   for (var i = 0; i < adapter.config.devices.length; i++) {
@@ -295,7 +325,9 @@ function init() {
         ip: adapter.config.server,
         device: name,
         namespace: adapter.namespace,
-        port: adapter.config.port
+        port: adapter.config.port,
+        path: 'api/',
+        send: true,
       }, function (res) {
         adapter.log.debug('/api/settings.json: ' + res);
         res = parseStringToJson(res);
@@ -336,7 +368,7 @@ function newObject(str) {
           adapter.setForeignState(str[k].namespace + '.' + str[k].device + '.' + str[k].path, str[k].value, true);
         }
         //        adapter.log.info(str[k].device + '.' + str[k].path + ' + ' + str[k].value);
-        //        adapter.log.info(JSON.stringify(str[k]));
+                adapter.log.info(JSON.stringify(str[k]));
       }
     }
   }else{
@@ -344,8 +376,10 @@ function newObject(str) {
   }
 }
 
-
 function restApi(req, res) {
+  var urlStr = req.url;
+  var urlObj = url.parse(decodeURI(req.url));
+  adapter.log.debug(req.url);
   if (req.method == 'POST') {
     var respons = 'OK';
     var body = '';
@@ -354,38 +388,39 @@ function restApi(req, res) {
     });
     req.on('end', function () {
       adapter.log.debug('POST ' + body);
-      newObject(parseStringToJson(body));
+      adapter.log.debug('urlStr' + urlStr);
+      if(urlStr === '/api/') newObject(parseStringToJson(body));
+
     });
     res.writeHead(200, {
       'Content-Type': 'text/html'
     });
     res.end(respons);
-  } else {
-    var srvUrl = url.parse(decodeURI(req.url));
-    adapter.log.debug(req.url);
-    //adapter.log.info(srvUrl.pathname);
-    if (srvUrl.pathname == '/') srvUrl.pathname = '/index.html';
-    //adapter.log.info(srvUrl.pathname);
-    if (fs.existsSync(__dirname + '/www' + srvUrl.pathname)) {
-      var html = fs.readFileSync(__dirname + '/www' + srvUrl.pathname);
+  } else if (req.method == 'GET') {
+    if (urlObj.pathname == '/') urlObj.pathname = '/index.html';
+
+    if (fs.existsSync(__dirname + '/www' + urlObj.pathname)) {
+      var html = fs.readFileSync(__dirname + '/www' + urlObj.pathname);
+      res.writeHead(200, {
+        'Content-Type': 'text/html'
+      });
+      res.end(html);
     } else {
-      if (srvUrl.pathname == '/favicon.ico') {
-        res.end();
-      } else {
-        var html = '<html><body>404 Not Found</body>';
-      }
+      var html = '<html><body>404 Not Found</body></html>';
+      res.writeHead(404, {
+        'Content-Type': 'text/html'
+      });
+      res.end(html);
     }
-    res.writeHead(200, {
-      'Content-Type': 'text/html'
-    });
-    res.end(html);
+
   }
 }
 
 
 
-
 function main() {
+
+  getObjectItem();
 
   if (!adapter.config.devices.length || !adapter.config.interval || !adapter.config.server || !adapter.config.port) {
     adapter.log.warn('Enter the data ip, port, interval and devices');
