@@ -231,6 +231,8 @@ sendTo("paw.0",'dev1',{sound: 'content://media/internal/audio/media/62'});
 
 
 ```
+#### 0.2.3
+* (bondrogeen) minor fix app
 
 #### 0.2.2
 * (bondrogeen) minor fix, add item feedback
