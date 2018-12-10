@@ -20,6 +20,7 @@ Download and install the application. [apk](https://github.com/bondrogeen/ioBrok
 
 > !!! Do not forget to update the application.   
 
+     
 
 ![Screenshot](admin/img/Screenshot_1.jpg)
 
@@ -233,6 +234,9 @@ sendTo("paw.0",'dev1',{sound: 'content://media/internal/audio/media/62'});
 
 
 ```
+#### 0.2.5
+* (bondrogeen) npm publish
+
 #### 0.2.3
 * (bondrogeen) minor fix app
 

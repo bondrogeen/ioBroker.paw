@@ -132,7 +132,7 @@
                       text: "delete",
                       click: function(e) {
                         var name_val = $(this).parents(".item").find('#name').text()
-                        if (confirm("Delete device: " +name_val+ "?")) {
+                        if (confirm("Delete device: " + name_val + "?")) {
                           $(this).parents(".item").remove();
                           if (onChange) onChange();
                         }
@@ -252,13 +252,12 @@
     $(document).ready(function() {
 
       M.updateTextFields();
+      $('.modal').modal();
 
       $(".add-card").click(function() {
         $('#modalCreate').modal('open');
         myOnChange();
       });
-
-      $('.modal').modal();
 
       $(".open_edit_modul").click(function(event) {
         $('.modal').modal('open');
@@ -283,6 +282,8 @@
         $("#" + id).find('#port').text(port)
       });
 
+      $('#modalAttention').modal('open');
+
     });
 
   </script>
@@ -292,6 +293,18 @@
   <!-- you have to put your config page in a div with id adapter-container -->
   <div class="m adapter-container">
     <!-- Modal Structure -->
+
+    <div id="modalAttention" class="modal">
+      <div class="modal-content">
+        <h5 class="translate" >Attention!!! BETA testing</h5>
+        <p class="translate" >This version of the adapter works only with the new application.</p>
+        <a href="https://github.com/bondrogeen/ioBroker.paw/raw/master/app/app-release.apk">ioBroker.PAW II</a>
+        <p>Write about errors <a target="_blank" href="https://github.com/bondrogeen/ioBroker.paw/issues">here</a>.</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">OK</a>
+      </div>
+    </div>
 
     <div id="modalCreate" class="modal">
       <div class="modal-content">
