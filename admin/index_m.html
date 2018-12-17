@@ -95,10 +95,14 @@
                   }))
                   .add($('<p/>', {
                     text: 'IP: ',
-                    append: $('<span/>', {
-                      id: 'ip',
-                      class: 'span-value',
-                      text: ip
+                    append: $('<a/>', {
+                      href:'http://'+ ip + ':' + port,
+                      target:'_blank',
+                      append: $('<span/>', {
+                        id: 'ip',
+                        class: 'span-value',
+                        text: ip,
+                      })
                     })
                   }))
                   .add($('<p/>', {
@@ -282,6 +286,14 @@
         $("#" + id).find('#port').text(port)
       });
 
+      $('#modul_name').keyup(function(e) {
+        if (e.keyCode == 32) $("#modul_name").val($(this).val().replace(/ /g, "_"));
+      });
+
+      $('#edit_name').keyup(function(e) {
+        if (e.keyCode == 32) $("#edit_name").val($(this).val().replace(/ /g, "_"));
+      });
+
       $('#modalAttention').modal('open');
 
     });
@@ -296,8 +308,9 @@
 
     <div id="modalAttention" class="modal">
       <div class="modal-content">
-        <h5 class="translate" >Attention!!! BETA testing</h5>
-        <p class="translate" >This version of the adapter works only with the new application.</p>
+        <h5 class="translate">Attention!!! BETA testing</h5>
+        <p class="translate">This version of the adapter works only with the new application.</p>
+        <p class="translate">When updating the adapter, do not forget to update the application!!!</p>
         <a href="https://github.com/bondrogeen/ioBroker.paw/raw/master/app/app-release.apk">ioBroker.PAW II</a>
         <p>Write about errors <a target="_blank" href="https://github.com/bondrogeen/ioBroker.paw/issues">here</a>.</p>
       </div>

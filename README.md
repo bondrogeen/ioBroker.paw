@@ -234,6 +234,10 @@ sendTo("paw.0",'dev1',{sound: 'content://media/internal/audio/media/62'});
 
 
 ```
+
+#### 0.2.6
+* (bondrogeen) minor fix adapter and app
+
 #### 0.2.5
 * (bondrogeen) npm publish
 
