@@ -139,23 +139,6 @@ sendTo("paw.0",'dev1',{
     log(JSON.stringify(res));
 });
 
-// Get the task list from the Tasker application "tasks": [auto, bubble, call, clock]
-sendTo("paw.0",'dev1',{
-    taskerList:  'tasker'
-},function (res){
-    log(JSON.stringify(res));
-});
-
-// Run the task from the Tasker application.
-sendTo("paw.0",'dev2',{
-    tasker : 'task_name',        // Name task
-    myKeyOne : 123,              // (Optional) parameter will be passed to the variable %myKeyOne 
-    myKeyTwo : "Hello World",    // (Optional) parameter will be passed to the variable %myKeyTwo
-                                 // ... and so on
-},function (res){
-    log(JSON.stringify(res));
-});
-
 // send message.
 sendTo("paw.0",'dev1',{message: '8123456789',text:  'Any text'});
 
@@ -184,13 +167,15 @@ sendTo("paw.0",'dev1',{vibrate: '1000'});
 
 // send notifications to devices
 sendTo("paw.0",'all',{
-    noti:  'Any text', // text notifications
-    title: 'Title',    //optional (default: Title)
-    info: 'Any text',  //optional (default: '')
-    vibrate:false,     //optional (default: false)
-    sound:false,       //optional (default: false)
-    light:true,        //optional (default: false)
-    id:2               //optional (default, id++)
+    noti:  'Any text',       // text notifications
+    title: 'Title',          //optional (default: Title)
+    info: 'Any text',        //optional (default: '')
+    vibrate:false,           //optional (default: false)  only works on SDK <= 26 
+    sound:false,             //optional (default: false)  only works on SDK <= 26 
+    light:true,              //optional (default: false)  only works on SDK <= 26 
+    id:2,                    //optional (default: id++)
+    channel:'Notification_2' //optional (default: 'Notification') Notification profile name, only works on SDK >= 26 
+                      
 },function(res){
      log(JSON.stringify(res));
 });
@@ -232,8 +217,31 @@ sendTo("paw.0",'dev1',{
 sendTo("paw.0",'dev1',{sound: 'content://media/internal/audio/media/62'});  
 
 
+/*******  Tasker  *******/
+
+// Attention!!! Enable in settings Tasker "Allow external access"
+
+// Get the task list from the Tasker application "tasks": [auto, bubble, call, clock]
+sendTo("paw.0",'dev1',{
+    taskerList:  'tasker'
+},function (res){
+    log(JSON.stringify(res));
+});
+
+// Run the task from the Tasker application.
+sendTo("paw.0",'dev2',{
+    tasker : 'task_name',        // Name task
+    myKeyOne : 123,              // (Optional) parameter will be passed to the variable %myKeyOne 
+    myKeyTwo : "Hello World",    // (Optional) parameter will be passed to the variable %myKeyTwo
+                                 // ... and so on
+},function (res){
+    log(JSON.stringify(res));
+});
+
 
 ```
+#### 0.2.7
+* (bondrogeen) fix alert dialog, noti SDK >=26 app
 
 #### 0.2.6
 * (bondrogeen) minor fix adapter and app

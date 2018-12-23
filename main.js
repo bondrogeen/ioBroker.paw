@@ -455,11 +455,11 @@ function main() {
   if (adapter.config.interval < 5) adapter.config.interval = 5;
   setInterval(getDeviceInfo, Number(adapter.config.interval)  * 1000);
 
-  adapter.log.info('devices: ' + JSON.stringify(adapter.config.devices));
-  adapter.log.info('interval: ' + adapter.config.interval);
-  adapter.log.info('server: ' + adapter.config.server);
-  adapter.log.info('port: ' + adapter.config.port);
-  adapter.log.info('namespace: ' + adapter.namespace);
+  adapter.log.debug('devices: ' + JSON.stringify(adapter.config.devices));
+  adapter.log.debug('interval: ' + adapter.config.interval);
+  adapter.log.debug('server: ' + adapter.config.server);
+  adapter.log.debug('port: ' + adapter.config.port);
+  adapter.log.debug('namespace: ' + adapter.namespace);
 
   init();
 }
