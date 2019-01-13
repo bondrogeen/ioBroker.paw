@@ -96,8 +96,8 @@
                   .add($('<p/>', {
                     text: 'IP: ',
                     append: $('<a/>', {
-                      href:'http://'+ ip + ':' + port,
-                      target:'_blank',
+                      href: 'http://' + ip + ':' + port,
+                      target: '_blank',
                       append: $('<span/>', {
                         id: 'ip',
                         class: 'span-value',
@@ -115,21 +115,7 @@
                   }))
               })).add($('<div/>', {
                 class: 'card-action',
-                append: ($('<div/>', {
-                    class: 'switch left',
-                    append: ($('<label/>', {
-                      append: ($('<input/>', {
-                        id: 'input',
-                        type: 'checkbox',
-                        checked: state,
-                        click: function(e) {
-                          if (onChange) onChange();
-                        }
-                      }).add($('<span/>', {
-                        class: 'lever'
-                      })))
-                    }))
-                  })).add($('<a/>', {
+                append: ($('<a/>', {
                     class: 'btn-floating btn-small waves-effect waves-light red right',
                     append: $('<i/>', {
                       class: 'material-icons',
@@ -221,6 +207,9 @@
         }
       }
       onChange(true);
+
+
+
     }
 
 
@@ -244,7 +233,8 @@
           item_value.name = $(this).find('#name').text()
           item_value.ip = $(this).find("#ip").text();
           item_value.port = $(this).find("#port").text();
-          item_value.state = $(this).find("#input").is(':checked');
+          item_value.state = true;
+          //          item_value.state = $(this).find("#input").is(':checked');
 
           obj.devices[index] = item_value;
 
@@ -275,6 +265,46 @@
         addcard(name, ip, port, true, 'item_' + idItem, myOnChange);
       });
 
+      $(".search-device").click(function(event) {
+        console.log("click");
+        getAdapterInstances('paw', function(res) {
+          console.log(res);
+          if (res[0].common.enabled) {
+
+            var ip = $("#search_modul_ip").val().replace(" ", "");
+
+            if (ip !== '') {
+              $(".progress").removeClass('hide');
+              $(".search-device").addClass('disabled');
+              $("#search_modul_ip").removeClass('invalid');
+              sendTo("paw.0", 'info', {
+                ip: ip
+              }, function(res) {
+                console.log(res);
+
+                if (res && res.info) {
+                  $("#modul_name").val(res.info.device);
+                  $("#modul_ip").val(res.info.ip);
+                  $("#modul_port").val(res.info.port);
+                  $('#modalCreate').modal('open');
+                  M.updateTextFields();
+                  myOnChange();
+                } else {
+                  $("#search_modul_ip").addClass('invalid');
+                }
+                $(".progress").addClass('hide');
+                $(".search-device").removeClass('disabled');
+              });
+            } else {
+              $("#search_modul_ip").focus();
+            }
+
+          } else {
+            alert('Start adapter!!!');
+          }
+        })
+      });
+
       $(".save-edit_card").click(function(event) {
         var name = $("#edit_name").val();
         var ip = $("#edit_ip").val().replace(" ", "");
@@ -286,13 +316,13 @@
         $("#" + id).find('#port').text(port)
       });
 
-      $('#modul_name').keyup(function(e) {
-        if (e.keyCode == 32) $("#modul_name").val($(this).val().replace(/ /g, "_"));
-      });
-
-      $('#edit_name').keyup(function(e) {
-        if (e.keyCode == 32) $("#edit_name").val($(this).val().replace(/ /g, "_"));
-      });
+      //      $('#modul_name').keyup(function(e) {
+      //        if (e.keyCode == 32) $("#modul_name").val($(this).val().replace(/ /g, "_"));
+      //      });
+      //
+      //      $('#edit_name').keyup(function(e) {
+      //        if (e.keyCode == 32) $("#edit_name").val($(this).val().replace(/ /g, "_"));
+      //      });
 
       $('#modalAttention').modal('open');
 
@@ -321,14 +351,15 @@
 
     <div id="modalCreate" class="modal">
       <div class="modal-content">
-        <h5>Add device</h5>
-        <div class="input-field col s8 offset-s2">
-          <input type="text" id="modul_name" />
-          <label for="modul_name" class="translate">modul_name</label>
-        </div>
-        <div class="input-field col s8 offset-s2">
+        <h5 class="center">Add device</h5>
+
+        <div class="input-field col s10">
           <input id="modul_ip" type="text">
           <label for="modul_ip" class="translate">modul_ip</label>
+        </div>
+        <div class="input-field col s8">
+          <input type="text" id="modul_name" />
+          <label for="modul_name" class="translate">modul_name</label>
         </div>
         <div class="input-field col s8 offset-s2">
           <input type="number" id="modul_port" value="8080" />
@@ -363,6 +394,10 @@
       </div>
     </div>
 
+    <div class="progress hide">
+      <div class="indeterminate"></div>
+    </div>
+
     <div class="row">
       <div class="row marg">
         <div class="input-field col s12 m6 l4">
@@ -379,8 +414,13 @@
         </div>
       </div>
       <div class="row marg">
-        <div class="col s12">
-          <a class="btn-floating btn-small waves-effect waves-light red add-card"><i class="material-icons">add</i></a>
+        <div class="input-field col s10">
+          <input id="search_modul_ip" type="text">
+          <label for="modul_ip" class="translate">modul_ip</label>
+        </div>
+
+        <div class="input-field col s2">
+          <button class="btn waves-effect waves-light search-device"><i class="material-icons">search</i></button>
         </div>
       </div>
     </div>

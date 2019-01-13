@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "paw",
-        "version": "0.2.7",
+        "version": "0.2.8",
         "news": {
             "0.2.0": {
                 "en": "initial adapter",
@@ -18,7 +18,7 @@
         "platform": "Javascript/Node.js",
         "mode": "daemon",
         "icon": "paw.png",
-        "enabled": false,
+        "enabled": true,
         "extIcon": "https://raw.githubusercontent.com/bondrogeen/iobroker.paw/master/admin/paw.png",
         "keywords": [
             "paw",

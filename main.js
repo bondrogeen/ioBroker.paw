@@ -64,14 +64,34 @@ adapter.on('stateChange', function (id, state) {
 
   if (id.indexOf(myIdAll + 'tts.request') !== -1) sendPostAll(name, id ,{tts: state.val});
 });
-
 adapter.on('message', function (obj) {
   if (typeof obj !== null && obj !== undefined) {
     if (typeof obj == 'object' && obj.message) {
+
+      if (obj.command === 'info') {
+
+        adapter.log.debug('command : ' + JSON.stringify(obj.command));
+
+        if (obj.message) {
+
+          adapter.log.debug('message : ' + JSON.stringify(obj.message));
+
+
+          post(obj.message.ip, '8080', '/api/get.json', obj.message, function (res) {
+            if (obj.callback) {
+              var resObj = parseStringToJson(res);
+              adapter.sendTo(obj.from, obj.command, resObj, obj.callback);
+
+            }
+          })
+        }
+        return;
+      }
+
       if (obj.command) {
         var comm = obj.command.replace(/\s+/g, ''); //убрать пробелы
         comm = comm.split(','); //разбить на массив
-//        adapter.log.debug('comm : ' + comm);
+        //        adapter.log.debug('comm : ' + comm);
         if (obj.message) {
           resArray = [];
           for (var i = 0; i < adapter.config.devices.length; i++) {
@@ -80,7 +100,7 @@ adapter.on('message', function (obj) {
 
             if (name !== '' && ip !== '') {
               if ((comm == 'all' || find(comm, name) || find(comm, ip)) && listConnection.indexOf(name) != -1) { //поиск по имени и ip
-//                adapter.log.debug('name : ' + listConnection.indexOf(name));
+                //                adapter.log.debug('name : ' + listConnection.indexOf(name));
                 post(ip, '8080', '/api/set.json', obj.message, function (res) {
                   var resObj = parseStringToJson(res);
                   adapter.log.debug('res : ' + JSON.stringify(res));
@@ -455,11 +475,11 @@ function main() {
   if (adapter.config.interval < 5) adapter.config.interval = 5;
   setInterval(getDeviceInfo, Number(adapter.config.interval)  * 1000);
 
-  adapter.log.debug('devices: ' + JSON.stringify(adapter.config.devices));
-  adapter.log.debug('interval: ' + adapter.config.interval);
-  adapter.log.debug('server: ' + adapter.config.server);
-  adapter.log.debug('port: ' + adapter.config.port);
-  adapter.log.debug('namespace: ' + adapter.namespace);
+  adapter.log.info('devices: ' + JSON.stringify(adapter.config.devices));
+  adapter.log.info('interval: ' + adapter.config.interval);
+  adapter.log.info('server: ' + adapter.config.server);
+  adapter.log.info('port: ' + adapter.config.port);
+  adapter.log.info('namespace: ' + adapter.namespace);
 
   init();
 }
