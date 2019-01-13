@@ -442,7 +442,7 @@ function main() {
 
   getObjectItem();
 
-  if (!adapter.config.devices.length || !adapter.config.interval || !adapter.config.server || !adapter.config.port) {
+  if (!adapter.config.interval || !adapter.config.server || !adapter.config.port) {
     adapter.log.warn('Enter the data ip, port, interval and devices');
     return;
   }
