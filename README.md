@@ -240,6 +240,9 @@ sendTo("paw.0",'dev2',{
 
 
 ```
+#### 0.2.8
+* (bondrogeen) minore fix application item, map SDK >=29 and changed adding device.
+
 #### 0.2.7
 * (bondrogeen) fix alert dialog, noti SDK >=26 app
 
