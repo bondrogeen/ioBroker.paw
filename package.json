@@ -35,6 +35,9 @@
         "Tablet control"
     ],
     "license": "MIT",
+    "engines": {
+        "node": ">=6.0.0"
+    },
     "main": "main.js",
     "name": "iobroker.paw",
     "optionalDependencies": {},
