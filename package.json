@@ -21,7 +21,8 @@
         "mocha": "^4.1.0",
         "@iobroker/testing": "^1.1.1",
         "axios": "^0.18.0",
-        "gulp": "^4.0.0"
+        "gulp": "^4.0.0",
+        "eslint": "^5.9.0"
     },
     "homepage": "https://github.com/bondrogeen/iobroker.paw",
     "keywords": [
@@ -48,5 +49,5 @@
         "test:package": "node_modules/.bin/mocha test/packageFiles --exit",
         "test:integration": "node_modules/.bin/mocha test/integrationAdapter --exit"
     },
-    "version": "0.2.8"
+    "version": "0.3.0"
 }

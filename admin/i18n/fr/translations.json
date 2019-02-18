@@ -1,4 +1,8 @@
 {
-    "server": "Server",
-    "port_server": "Port"
+    "interval": "Interval (sec)",
+    "modul_ip": "IP address",
+    "modul_name": "Name device",
+    "modul_port": "Port",
+    "port_server": "Port",
+    "server": "Server"
 }

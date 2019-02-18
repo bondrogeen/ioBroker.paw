@@ -5,7 +5,7 @@
 
 // you have to require the utils module and call adapter function
 const utils = require('@iobroker/adapter-core');
-const adapter = utils.Adapter('paw');
+let adapter;
 const http = require('http');
 // const querystring = require('querystring');
 const url = require('url');
@@ -18,112 +18,124 @@ let resArray = [];
 const existingStates = {};
 const listConnection = [];
 
-adapter.on('unload', function (callback) {
-    try {
-        adapter.log.info('cleaned everything up...');
-        callback();
-    } catch (e) {
-        callback();
-    }
-});
+function startAdapter(options) {
+    options = options || {};
+    Object.assign(options, {
+        name: 'paw'
+    });
 
-// is called if a subscribed object changes
-adapter.on('objectChange', function (id, obj) {
-    // Warning, obj can be null if it was deleted
-    adapter.log.info('objectChange ' + id + ' ' + JSON.stringify(obj));
-});
+    adapter = new utils.Adapter(options);
 
-// is called if a subscribed state changes
-adapter.on('stateChange', function (id, state) {
-    //  adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state) + ', ack=' + state.ack);
-    if (state.ack || state.val === '') return; // we only need to handle it when ack=false
+    adapter.on('unload', function (callback) {
+        try {
+            adapter.log.info('cleaned everything up...');
+            callback();
+        } catch (e) {
+            callback();
+        }
+    });
 
-    const arr_id = id.split('.');
-    const myIdComm = adapter.namespace + '.' + arr_id[2] + '.comm.';
-    const myIdItem = adapter.namespace + '.' + arr_id[2] + '.item.';
-    const myIdAll = adapter.namespace + '.all_devices.';
-    const name = arr_id[2];
-    adapter.log.debug(id);
+    // is called if a subscribed object changes
+    adapter.on('objectChange', function (id, obj) {
+        // Warning, obj can be null if it was deleted
+        adapter.log.info('objectChange ' + id + ' ' + JSON.stringify(obj));
+    });
 
-    if (id.indexOf(myIdComm + 'audio') !== -1) sendPost(name, id ,{volume: state.val,type: arr_id[5]});
-    if (id.indexOf(myIdComm + 'call.number') !== -1) sendPost(name, id ,{call: state.val});
-    if (id.indexOf(myIdComm + 'call.end') !== -1) sendPost(name, id ,{callEnd: state.val});
-    if (id.indexOf(myIdComm + 'display.brightness') !== -1) sendPost(name, id ,{brightness: state.val});
-    if (id.indexOf(myIdComm + 'display.mode') !== -1) sendPost(name, id ,{brightnessMode: state.val});
-    if (id.indexOf(myIdComm + 'display.timeOff') !== -1) sendPost(name, id ,{timeOff: state.val});
-    if (id.indexOf(myIdComm + 'display.toWake') !== -1) sendPost(name, id ,{toWake: state.val});
-    if (id.indexOf(myIdComm + 'display.turnOnOff') !== -1) sendPost(name, id ,{turnOnOff: state.val});
-    if (id.indexOf(myIdComm + 'other.home') !== -1) sendPost(name, id ,{home: state.val});
-    if (id.indexOf(myIdComm + 'other.play') !== -1) sendPost(name, id ,{play: true});
-    if (id.indexOf(myIdComm + 'other.vibrate') !== -1) sendPost(name, id ,{vibrate: state.val});
-    if (id.indexOf(myIdComm + 'other.openURL') !== -1) sendPost(name, id ,{link: state.val});
-    if (id.indexOf(myIdComm + 'tts.request') !== -1) sendPost(name, id ,{tts: state.val});
-    if (id.indexOf(myIdComm + 'tts.stop') !== -1) sendPost(name, id ,{ttsStop: state.val});
+    // is called if a subscribed state changes
+    adapter.on('stateChange', function (id, state) {
+        //  adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state) + ', ack=' + state.ack);
+        if (state.ack || state.val === '') return; // we only need to handle it when ack=false
 
-    if (id.indexOf(myIdItem) !== -1) sendPost(name, id ,{item: id.substring(id.indexOf('.item.') + 6).replace(/\./g, '/') ,value: state.val}, true);
+        const arr_id = id.split('.');
+        const myIdComm = adapter.namespace + '.' + arr_id[2] + '.comm.';
+        const myIdItem = adapter.namespace + '.' + arr_id[2] + '.item.';
+        const myIdAll = adapter.namespace + '.all_devices.';
+        const name = arr_id[2];
+        adapter.log.debug(id);
 
-    if (id.indexOf(myIdAll + 'tts.request') !== -1) sendPostAll(name, id ,{tts: state.val});
-});
-adapter.on('message', function (obj) {
-    if (obj !== null && obj !== undefined) {
-        if (typeof obj == 'object' && obj.message) {
+        if (id.indexOf(myIdComm + 'audio') !== -1) sendPost(name, id, {volume: state.val, type: arr_id[5]});
+        if (id.indexOf(myIdComm + 'call.number') !== -1) sendPost(name, id, {call: state.val});
+        if (id.indexOf(myIdComm + 'call.end') !== -1) sendPost(name, id, {callEnd: state.val});
+        if (id.indexOf(myIdComm + 'display.brightness') !== -1) sendPost(name, id, {brightness: state.val});
+        if (id.indexOf(myIdComm + 'display.mode') !== -1) sendPost(name, id, {brightnessMode: state.val});
+        if (id.indexOf(myIdComm + 'display.timeOff') !== -1) sendPost(name, id, {timeOff: state.val});
+        if (id.indexOf(myIdComm + 'display.toWake') !== -1) sendPost(name, id, {toWake: state.val});
+        if (id.indexOf(myIdComm + 'display.turnOnOff') !== -1) sendPost(name, id, {turnOnOff: state.val});
+        if (id.indexOf(myIdComm + 'other.home') !== -1) sendPost(name, id, {home: state.val});
+        if (id.indexOf(myIdComm + 'other.play') !== -1) sendPost(name, id, {play: true});
+        if (id.indexOf(myIdComm + 'other.vibrate') !== -1) sendPost(name, id, {vibrate: state.val});
+        if (id.indexOf(myIdComm + 'other.openURL') !== -1) sendPost(name, id, {link: state.val});
+        if (id.indexOf(myIdComm + 'tts.request') !== -1) sendPost(name, id, {tts: state.val});
+        if (id.indexOf(myIdComm + 'tts.stop') !== -1) sendPost(name, id, {ttsStop: state.val});
 
-            if (obj.command === 'info') {
+        if (id.indexOf(myIdItem) !== -1) sendPost(name, id, {
+            item: id.substring(id.indexOf('.item.') + 6).replace(/\./g, '/'),
+            value: state.val
+        }, true);
 
-                adapter.log.debug('command : ' + JSON.stringify(obj.command));
+        if (id.indexOf(myIdAll + 'tts.request') !== -1) sendPostAll(name, id, {tts: state.val});
+    });
+    adapter.on('message', function (obj) {
+        if (obj !== null && obj !== undefined) {
+            if (typeof obj == 'object' && obj.message) {
 
-                if (obj.message) {
+                if (obj.command === 'info') {
 
-                    adapter.log.debug('message : ' + JSON.stringify(obj.message));
+                    adapter.log.debug('command : ' + JSON.stringify(obj.command));
+
+                    if (obj.message) {
+
+                        adapter.log.debug('message : ' + JSON.stringify(obj.message));
 
 
-                    post(obj.message.ip, '8080', '/api/get.json', obj.message, function (res) {
-                        if (obj.callback) {
-                            const resObj = parseStringToJson(res);
-                            adapter.sendTo(obj.from, obj.command, resObj, obj.callback);
+                        post(obj.message.ip, '8080', '/api/get.json', obj.message, function (res) {
+                            if (obj.callback) {
+                                const resObj = parseStringToJson(res);
+                                adapter.sendTo(obj.from, obj.command, resObj, obj.callback);
 
-                        }
-                    });
+                            }
+                        });
+                    }
+                    return;
                 }
-                return;
-            }
 
-            if (obj.command) {
-                let comm = obj.command.replace(/\s+/g, ''); //убрать пробелы
-                comm = comm.split(','); //разбить на массив
-                //        adapter.log.debug('comm : ' + comm);
-                if (obj.message) {
-                    resArray = [];
-                    for (let i = 0; i < adapter.config.devices.length; i++) {
-                        const name = adapter.config.devices[i].name;
-                        const ip = adapter.config.devices[i].ip;
+                if (obj.command) {
+                    let comm = obj.command.replace(/\s+/g, ''); //убрать пробелы
+                    comm = comm.split(','); //разбить на массив
+                    //        adapter.log.debug('comm : ' + comm);
+                    if (obj.message) {
+                        resArray = [];
+                        for (let i = 0; i < adapter.config.devices.length; i++) {
+                            const name = adapter.config.devices[i].name;
+                            const ip = adapter.config.devices[i].ip;
 
-                        if (name !== '' && ip !== '') {
-                            if ((comm == 'all' || find(comm, name) || find(comm, ip)) && listConnection.indexOf(name) != -1) { //поиск по имени и ip
-                                //                adapter.log.debug('name : ' + listConnection.indexOf(name));
-                                post(ip, '8080', '/api/set.json', obj.message, function (res) {
-                                    const resObj = parseStringToJson(res);
-                                    adapter.log.debug('res : ' + JSON.stringify(res));
-                                    resArray[resArray.length] = resObj ? resObj : res;
-                                });
+                            if (name !== '' && ip !== '') {
+                                if ((comm == 'all' || find(comm, name) || find(comm, ip)) && listConnection.indexOf(name) != -1) { //поиск по имени и ip
+                                    //                adapter.log.debug('name : ' + listConnection.indexOf(name));
+                                    post(ip, '8080', '/api/set.json', obj.message, function (res) {
+                                        const resObj = parseStringToJson(res);
+                                        adapter.log.debug('res : ' + JSON.stringify(res));
+                                        resArray[resArray.length] = resObj ? resObj : res;
+                                    });
+                                }
                             }
                         }
-                    }
-                    if (obj.callback) {
-                        setTimeout(function () {
-                            adapter.sendTo(obj.from, obj.command, resArray, obj.callback);
-                            //res=[];
-                        }, 2000);
+                        if (obj.callback) {
+                            setTimeout(function () {
+                                adapter.sendTo(obj.from, obj.command, resArray, obj.callback);
+                                //res=[];
+                            }, 2000);
+                        }
                     }
                 }
             }
         }
-    }
-});
+    });
 
-adapter.on('ready', function () {
-    main();
-});
+    adapter.on('ready', function () {
+        main();
+    });
+} // endStartAdapter
 
 function sendPost(name, id, data, isTrue) {
     if (listConnection.indexOf(name) !== -1) {
@@ -199,12 +211,12 @@ function post(ip, port, path, setdata, callback) {
         res.on('data', function (data) {
             buffer = buffer + data;
         });
-        res.on('end', function (data) {
+        res.on('end', function (/*data*/) {
             if (callback) callback(buffer);
         });
     });
     req.on('error', function (e) {
-        if (callback) callback(e,ip);
+        if (callback) callback(e, ip);
     });
     req.write(setdata);
     req.end();
@@ -277,7 +289,7 @@ function findDevice(val) {
 }
 
 
-function initOnlyOne(name){
+function initOnlyOne(name) {
     setValue(name + '.comm.call.number', '');
     setValue(name + '.comm.call.end', '');
     setValue(name + '.comm.tts.request', '');
@@ -332,6 +344,7 @@ function getObjectItem() {
     });
 
 }
+
 function init() {
 
     for (let i = 0; i < adapter.config.devices.length; i++) {
@@ -351,19 +364,19 @@ function init() {
             }, function (res) {
                 adapter.log.debug('/api/settings.json: ' + res);
                 res = parseStringToJson(res);
-                if(res) {
+                if (res) {
 
-                    if(res.status === 'OK') {
+                    if (res.status === 'OK') {
                         adapter.getForeignObject('system.adapter.' + adapter.namespace, (err, obj) => adapter.setForeignObject(obj._id, obj));
                     }
 
-                    if(res.status === 'ERROR' && res.device){
+                    if (res.status === 'ERROR' && res.device) {
                         adapter.log.debug('initOnlyOne');
                         initOnlyOne(res.device);
                         getDeviceInfo();
                     }
 
-                    if(res.device && !find(listConnection,res.device)) {
+                    if (res.device && !find(listConnection, res.device)) {
                         adapter.log.debug('res: ' + res.status);
                         listConnection[listConnection.length] = res.device;
                         setValue(adapter.namespace + '.info.connection', listConnection.join(','));
@@ -391,7 +404,7 @@ function newObject(str) {
                 adapter.log.info(JSON.stringify(str[k]));
             }
         }
-    }else{
+    } else {
         adapter.log.debug('parse_data_error: ' + str);
     }
 }
@@ -401,7 +414,7 @@ function restApi(req, res) {
     const urlObj = url.parse(decodeURI(req.url));
     adapter.log.debug(req.url);
     if (req.method == 'POST') {
-        const respons = 'OK';
+        const response = 'OK';
         let body = '';
         req.on('data', function (data) {
             body += data;
@@ -409,13 +422,13 @@ function restApi(req, res) {
         req.on('end', function () {
             adapter.log.debug('POST ' + body);
             adapter.log.debug('urlStr' + urlStr);
-            if(urlStr === '/api/') newObject(parseStringToJson(body));
+            if (urlStr === '/api/') newObject(parseStringToJson(body));
 
         });
         res.writeHead(200, {
             'Content-Type': 'text/html'
         });
-        res.end(respons);
+        res.end(response);
     } else if (req.method === 'GET') {
         if (urlObj.pathname === '/') urlObj.pathname = '/index.html';
 
@@ -435,7 +448,6 @@ function restApi(req, res) {
 
     }
 }
-
 
 
 function main() {
@@ -473,7 +485,7 @@ function main() {
     }
 
     if (adapter.config.interval < 5) adapter.config.interval = 5;
-    setInterval(getDeviceInfo, Number(adapter.config.interval)  * 1000);
+    setInterval(getDeviceInfo, Number(adapter.config.interval) * 1000);
 
     adapter.log.info('devices: ' + JSON.stringify(adapter.config.devices));
     adapter.log.info('interval: ' + adapter.config.interval);
@@ -482,4 +494,11 @@ function main() {
     adapter.log.info('namespace: ' + adapter.namespace);
 
     init();
+}
+
+if (module.parent) {
+    module.exports = startAdapter;
+} else {
+    // or start the instance directly
+    startAdapter();
 }
