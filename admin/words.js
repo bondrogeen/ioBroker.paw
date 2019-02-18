@@ -3,64 +3,64 @@
 'use strict';
 
 systemDictionary = {
-  "server": {
-    "en": "Server",
-    "de": "Server",
-    "ru": "Server",
-    "pt": "Server",
-    "nl": "Server",
-    "fr": "Server",
-    "it": "Server",
-    "es": "Server"
-  },
-  "port_server": {
-    "en": "Port",
-    "de": "Port",
-    "ru": "Port",
-    "pt": "Port",
-    "nl": "Port",
-    "fr": "Port",
-    "it": "Port",
-    "es": "Port"
-  },
-  "interval": {
-    "en": "Interval (sec)",
-    "de": "Interval (sec)",
-    "ru": "Interval (sec)",
-    "pt": "Interval (sec)",
-    "nl": "Interval (sec)",
-    "fr": "Interval (sec)",
-    "it": "Interval (sec)",
-    "es": "Interval (sec)"
-  },
-  "modul_name": {
-    "en": "Name device",
-    "de": "Name device",
-    "ru": "Name device",
-    "pt": "Name device",
-    "nl": "Name device",
-    "fr": "Name device",
-    "it": "Name device",
-    "es": "Name device"
-  },
-  "modul_ip": {
-    "en": "IP address",
-    "de": "IP address",
-    "ru": "IP address",
-    "pt": "IP address",
-    "nl": "IP address",
-    "fr": "IP address",
-    "it": "IP address",
-    "es": "IP address"
-  },
-  "modul_port": {
-    "en": "Port",
-    "de": "Port",
-    "ru": "Port",
-    "pt": "Port",
-    "nl": "Port",
-    "fr": "Port",
-    "it": "Port",
-    "es": "Port"
-  }
+    'server': {
+        'en': 'Server',
+        'de': 'Server',
+        'ru': 'Server',
+        'pt': 'Server',
+        'nl': 'Server',
+        'fr': 'Server',
+        'it': 'Server',
+        'es': 'Server'
+    },
+    'port_server': {
+        'en': 'Port',
+        'de': 'Port',
+        'ru': 'Port',
+        'pt': 'Port',
+        'nl': 'Port',
+        'fr': 'Port',
+        'it': 'Port',
+        'es': 'Port'
+    },
+    'interval': {
+        'en': 'Interval (sec)',
+        'de': 'Interval (sec)',
+        'ru': 'Interval (sec)',
+        'pt': 'Interval (sec)',
+        'nl': 'Interval (sec)',
+        'fr': 'Interval (sec)',
+        'it': 'Interval (sec)',
+        'es': 'Interval (sec)'
+    },
+    'modul_name': {
+        'en': 'Name device',
+        'de': 'Name device',
+        'ru': 'Name device',
+        'pt': 'Name device',
+        'nl': 'Name device',
+        'fr': 'Name device',
+        'it': 'Name device',
+        'es': 'Name device'
+    },
+    'modul_ip': {
+        'en': 'IP address',
+        'de': 'IP address',
+        'ru': 'IP address',
+        'pt': 'IP address',
+        'nl': 'IP address',
+        'fr': 'IP address',
+        'it': 'IP address',
+        'es': 'IP address'
+    },
+    'modul_port': {
+        'en': 'Port',
+        'de': 'Port',
+        'ru': 'Port',
+        'pt': 'Port',
+        'nl': 'Port',
+        'fr': 'Port',
+        'it': 'Port',
+        'es': 'Port'
+    }
 };

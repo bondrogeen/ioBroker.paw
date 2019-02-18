@@ -9,13 +9,14 @@
                 "ru": "Первоначальный адаптер"
             }
         },
-        "title": "PAW adapter",
+        "title": "PAW",
         "desc": {
             "en": "Android Device Management",
             "de": "Android Geräte-Management",
             "ru": "Управление android устройством"
         },
         "platform": "Javascript/Node.js",
+        "license": "MIT",
         "mode": "daemon",
         "icon": "paw.png",
         "enabled": true,
@@ -31,6 +32,7 @@
         "restartAdapters": [],
         "messagebox": true,
         "materialize": true,
+        "compact": true,
         "authors": [
             {
                 "name": "bondrogeen",
