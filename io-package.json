@@ -1,21 +1,25 @@
 {
     "common": {
         "name": "paw",
-        "version": "0.2.8",
+        "version": "0.3.0",
         "news": {
+            "0.3.0": {
+                "en": "added compact mode"
+            },
             "0.2.0": {
                 "en": "initial adapter",
                 "de": "Initiale Version",
                 "ru": "Первоначальный адаптер"
             }
         },
-        "title": "PAW adapter",
+        "title": "PAW",
         "desc": {
             "en": "Android Device Management",
             "de": "Android Geräte-Management",
             "ru": "Управление android устройством"
         },
         "platform": "Javascript/Node.js",
+        "license": "MIT",
         "mode": "daemon",
         "icon": "paw.png",
         "enabled": true,
@@ -31,6 +35,7 @@
         "restartAdapters": [],
         "messagebox": true,
         "materialize": true,
+        "compact": true,
         "authors": [
             {
                 "name": "bondrogeen",

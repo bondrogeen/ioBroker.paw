@@ -240,6 +240,10 @@ sendTo("paw.0",'dev2',{
 
 
 ```
+
+### 0.3.0
+* (foxriver76) added compact mode compatibility
+
 #### 0.2.8
 * (bondrogeen) minore fix application item, map SDK >=29 and changed adding device.
 
