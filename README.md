@@ -240,8 +240,10 @@ sendTo("paw.0",'dev2',{
 
 
 ```
+### 0.3.1
+* (bondrogeen) (adapter) Minor fixes. (app) added widget and expanded item functionality
 
-### 0.3.0
+#### 0.3.0
 * (foxriver76) added compact mode compatibility
 
 #### 0.2.8
