@@ -15,12 +15,15 @@ It can speak texts, control volume, send SMS, make calls, vibrate, and much more
 Tasker and Locale Plug-in support.
 
 ## Install the program and configure the adapter.
+
+
  
 Download and install the application. [apk](https://github.com/bondrogeen/ioBroker.paw/raw/master/app/app-release.apk)
 
 > !!! Do not forget to update the application.   
 
-     
+[Google Play](https://play.google.com/store/apps/details?id=ru.codedevice.iobrokerpawii)
+
 
 ![Screenshot](admin/img/Screenshot_1.jpg)
 
