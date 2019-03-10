@@ -24,8 +24,16 @@ Download and install the application. [apk](https://github.com/bondrogeen/ioBrok
 
 [Google Play](https://play.google.com/store/apps/details?id=ru.codedevice.iobrokerpawii)
 
+     
+
+![Screenshot](admin/img/Picture_for_description.jpg)     
+     
+     
+     
 
 ![Screenshot](admin/img/Screenshot_1.jpg)
+
+
 
 
 ## Object
