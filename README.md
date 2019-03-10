@@ -22,9 +22,12 @@ Download and install the application. [apk](https://github.com/bondrogeen/ioBrok
 
 > !!! Do not forget to update the application.   
 
-[Google Play](https://play.google.com/store/apps/details?id=ru.codedevice.iobrokerpawii)
+It's also on Google Play:
 
-     
+<a href="https://play.google.com/store/apps/details?id=ru.codedevice.iobrokerpawii" target="_blank">
+  <img alt="Get it on Google Play"
+       src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height="60"/>
+</a>
 
 ![Screenshot](admin/img/Picture_for_description.jpg)     
      
