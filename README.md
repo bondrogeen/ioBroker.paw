@@ -17,9 +17,6 @@ Tasker and Locale Plug-in support.
 ## Install the program and configure the adapter.
 
 
- 
-Download and install the application. [apk](https://github.com/bondrogeen/ioBroker.paw/raw/master/app/app-release.apk)
-
 > !!! Do not forget to update the application.   
 
 It's also on Google Play:
