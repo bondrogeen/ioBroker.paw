@@ -3,7 +3,7 @@
 # ioBroker.paw 2  BETA
 =================
 
-[![NPM version](http://img.shields.io/npm/v/iobroker.paw.svg)](https://www.npmjs.com/package/iobroker.paw)
+![Number of Installations](http://iobroker.live/badges/paw-installed.svg) ![Number of Installations](http://iobroker.live/badges/paw-stable.svg) [![NPM version](http://img.shields.io/npm/v/iobroker.paw.svg)](https://www.npmjs.com/package/iobroker.paw)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.paw.svg)](https://www.npmjs.com/package/iobroker.paw)
 
 [![NPM](https://nodei.co/npm/iobroker.paw.png?downloads=true)](https://nodei.co/npm/iobroker.paw/)
