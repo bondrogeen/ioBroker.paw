@@ -152,9 +152,6 @@ function sendPostAll(name, id, data) {
   for (let i = 0; i < adapter.config.devices.length; i++) {
     const deviceName = adapter.config.devices[i].name;
     const ip = adapter.config.devices[i].ip;
-    // const port = adapter.config.devices[i].port;
-    // const state = adapter.config.devices[i].state;
-    // adapter.log.info('deviceName: ' + deviceName );
     if (listConnection.indexOf(deviceName) !== -1) {
       post(ip, 8080, '/api/set.json', data, function (res) {
         adapter.log.debug('res : ' + res);
@@ -269,15 +266,10 @@ function parseInfo(info, name) {
 
 function getDeviceInfo() {
   for (let i = 0; i < adapter.config.devices.length; i++) {
-    // const deviceName = adapter.config.devices[i].name;
     const ip = adapter.config.devices[i].ip;
-    // const port = adapter.config.devices[i].port;
-    const state = adapter.config.devices[i].state;
-    if (state) {
-      post(ip, 8080, '/api/get.json', {}, function (res, ip) {
-        parseInfo(parseStringToJson(res), findDevice(ip));
-      });
-    }
+    post(ip, 8080, '/api/get.json', {}, function (res, ip) {
+      parseInfo(parseStringToJson(res), findDevice(ip));
+    });
   }
 }
 
@@ -291,6 +283,7 @@ function findDevice(val) {
 
 
 function initOnlyOne(name) {
+  adapter.log.debug('initOnlyOne');
   setValue(name + '.comm.call.number', '');
   setValue(name + '.comm.call.end', '');
   setValue(name + '.comm.tts.request', '');
@@ -309,7 +302,6 @@ function initOnlyOne(name) {
   setValue(name + '.comm.audio.notification', '');
   setValue(name + '.comm.audio.system', '');
   setValue(name + '.comm.audio.voice', '');
-  setValue(name + '.comm.display.turnOnOff', '');
 
   adapter.subscribeStates(name + '.comm.*');
   adapter.subscribeStates(name + '.item.*');
@@ -321,27 +313,21 @@ function getObjectItem() {
   adapter.log.debug('getObjectItem ');
   adapter.log.debug('adapter.instance ' + adapter.instance);
 
-
   adapter.objects.getObjectList({
     include_docs: false
   }, function (err, res) {
 
-
     if (res && !err) {
       for (let i = 0; i < res.rows.length; i++) {
-
+//        adapter.log.debug('res.rows[i] ' + JSON.stringify(res.rows[i]));
         const idSplit = res.rows[i].id.split('.');
         if (idSplit[0] === 'paw' && idSplit[2] && idSplit[3] === 'item') {
-          // const name = idSplit[2];
-          // const id = res.rows[i].id.split('.');
-
           adapter.getObject(res.rows[i].id, function (err, state) {
             adapter.log.debug('state ' + JSON.stringify(state));
-
           });
         }
       }
-      adapter.log.debug('objectItem ' + objectItem);
+//      adapter.log.debug('objectItem ' + JSON.stringify(res));
     }
   });
 
@@ -358,7 +344,6 @@ function init() {
     if (name != '' && state) {
       post(ip, port, '/api/settings.json', { //запись настроек (ip,port,device,namespace )в устройство
         ip: "http://" + adapter.config.server,
-        device: name,
         namespace: adapter.namespace,
         port: adapter.config.port,
         path: '/api/',
@@ -367,26 +352,19 @@ function init() {
         adapter.log.debug('/api/settings.json: ' + res);
         res = parseStringToJson(res);
         if (res) {
-
           if (res.status === 'OK') {
             adapter.getForeignObject('system.adapter.' + adapter.namespace, (err, obj) => adapter.setForeignObject(obj._id, obj));
           }
-
           if (res.status === 'ERROR' && res.device) {
-            adapter.log.debug('initOnlyOne');
             initOnlyOne(res.device);
             getDeviceInfo();
-          }
-
-          if (res.device && !find(listConnection, res.device)) {
-            adapter.log.debug('res: ' + res.status);
-            listConnection[listConnection.length] = res.device;
-            setValue(adapter.namespace + '.info.connection', listConnection.join(','));
           }
         }
       });
     }
   }
+
+  setValue(adapter.namespace + '.info.connection', '');
   setValue(adapter.namespace + '.all_devices.tts.request', '');
   setValue(adapter.namespace + '.all_devices.tts.stop', '');
   adapter.subscribeStates(adapter.namespace + '.all_devices.*');
@@ -396,14 +374,19 @@ function init() {
 function newObject(str) {
   if (str) {
     for (const k in str) {
+      let device = str[k].device;
       if (typeof (str[k]) === 'object') {
         if (adapter.namespace === str[k].namespace) {
-          setValue(str[k].device + '.' + str[k].path, str[k].value);
+          setValue(device + '.' + str[k].path, str[k].value);
         } else {
-          adapter.setForeignState(str[k].namespace + '.' + str[k].device + '.' + str[k].path, str[k].value, true);
+          adapter.setForeignState(str[k].namespace + '.' + device + '.' + str[k].path, str[k].value, true);
         }
         //        adapter.log.info(str[k].device + '.' + str[k].path + ' + ' + str[k].value);
-        adapter.log.info(JSON.stringify(str[k]));
+        adapter.log.debug(JSON.stringify(str[k]));
+      }
+      if (device && listConnection.indexOf(device) === -1) {
+        listConnection[listConnection.length] = device;
+        setValue(adapter.namespace + '.info.connection', listConnection.join(','));
       }
     }
   } else {
@@ -412,9 +395,8 @@ function newObject(str) {
 }
 
 function restApi(req, res) {
-  const urlStr = req.url;
-  const urlObj = url.parse(decodeURI(req.url));
-  adapter.log.debug(req.url);
+  const path = url.parse(decodeURI(req.url));
+  adapter.log.debug(path);
   if (req.method == 'POST') {
     const response = 'OK';
     let body = '';
@@ -422,9 +404,8 @@ function restApi(req, res) {
       body += data;
     });
     req.on('end', function () {
-      adapter.log.debug('POST ' + body);
-      adapter.log.debug('urlStr' + urlStr);
-      if (urlStr === '/api/') newObject(parseStringToJson(body));
+      adapter.log.debug('path: ' + path.pathname + ' POST: ' + body);
+      if (path.pathname === '/api/') newObject(parseStringToJson(body));
 
     });
     res.writeHead(200, {
@@ -432,10 +413,10 @@ function restApi(req, res) {
     });
     res.end(response);
   } else if (req.method === 'GET') {
-    if (urlObj.pathname === '/') urlObj.pathname = '/index.html';
+    if (path.pathname === '/') path.pathname = '/index.html';
 
-    if (fs.existsSync(__dirname + '/www' + urlObj.pathname)) {
-      const html = fs.readFileSync(__dirname + '/www' + urlObj.pathname);
+    if (fs.existsSync(__dirname + '/www' + path.pathname)) {
+      const html = fs.readFileSync(__dirname + '/www' + path.pathname);
       res.writeHead(200, {
         'Content-Type': 'text/html'
       });
@@ -454,7 +435,7 @@ function restApi(req, res) {
 
 function main() {
 
-  getObjectItem();
+//  getObjectItem();
 
   if (!adapter.config.interval || !adapter.config.server || !adapter.config.port) {
     adapter.log.warn('Enter the data ip, port, interval and devices');

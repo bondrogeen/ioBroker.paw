@@ -129,25 +129,6 @@
                       }
                     })
                   }))
-                  .add($('<a/>', {
-                    class: 'btn-floating btn-small waves-effect waves-light blue right',
-                    append: $('<i/>', {
-                      class: 'material-icons',
-                      text: "create",
-                      click: function() {
-                        var name_val = $(this).parents(".item").find('#name').text()
-                        var ip_val = $(this).parents(".item").find("#ip").text();
-                        var port_val = $(this).parents(".item").find("#port").text();
-                        var state_val = $(this).parents(".item").find("#input").is(':checked');
-                        var state_id = $(this).parents(".item").attr('id');
-
-                        console.log($(this).find("#ip"));
-                        console.log("name:" + name_val + " ip:" + ip_val + " port:" + port_val + " state:" + state_val + " id:" + state_id);
-                        openModulEdit(name_val, ip_val, port_val, state_val, state_id);
-                        if (onChange) onChange();
-                      }
-                    })
-                  }))
               }))
             }))
           })
@@ -207,9 +188,6 @@
         }
       }
       onChange(true);
-
-
-
     }
 
 
@@ -370,28 +348,6 @@
       </div>
       <div class="modal-footer">
         <a href="#!" class="modal-close waves-effect waves-green btn-flat blue-text save-card">Save</a>
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
-      </div>
-    </div>
-
-    <div id="modalEdit" class="modal">
-      <div class="modal-content">
-        <h5>Edit device</h5>
-        <div class="input-field col s8 offset-s2">
-          <input type="text" id="edit_name" />
-          <label for="modul_name" class="translate">modul_name</label>
-        </div>
-        <div class="input-field col s8 offset-s2">
-          <input id="edit_ip" type="text">
-          <label for="modul_ip" class="translate">modul_ip</label>
-        </div>
-        <div class="input-field col s8 offset-s2">
-          <input type="number" id="edit_port" value="8080" />
-          <label for="modul_port" class="translate">modul_port</label>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat blue-text save-edit_card">Save</a>
         <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
       </div>
     </div>
