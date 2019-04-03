@@ -18,6 +18,9 @@ let resArray = [];
 const existingStates = {};
 const listConnection = [];
 
+const minVersionApp = 33;
+
+
 function startAdapter(options) {
   options = options || {};
   Object.assign(options, {
@@ -79,21 +82,15 @@ function startAdapter(options) {
   adapter.on('message', function (obj) {
     if (obj !== null && obj !== undefined) {
       if (typeof obj == 'object' && obj.message) {
-
         if (obj.command === 'info') {
-
           adapter.log.debug('command : ' + JSON.stringify(obj.command));
-
           if (obj.message) {
-
             adapter.log.debug('message : ' + JSON.stringify(obj.message));
-
-
             post(obj.message.ip, '8080', '/api/get.json', obj.message, function (res) {
               if (obj.callback) {
                 const resObj = parseStringToJson(res);
+                if(resObj) resObj.minVersionApp = minVersionApp;
                 adapter.sendTo(obj.from, obj.command, resObj, obj.callback);
-
               }
             });
           }
@@ -237,9 +234,28 @@ function parseStringToJson(str) {
   }
 }
 
+function addDevice(device, version) {
+  if (version && minVersionApp <= version) {
+    if (device && listConnection.indexOf(device) === -1) {
+      listConnection[listConnection.length] = device;
+      setValue(adapter.namespace + '.info.connection', listConnection.join(','));
+    }
+  }else{
+    adapter.log.warn('Update app on device: ' + device);
+  }
+}
+
+function deleteDevice(device) {
+  if (device && listConnection.indexOf(device) === -1) {
+    listConnection[listConnection.length] = device;
+    setValue(adapter.namespace + '.info.connection', listConnection.join(','));
+  }
+}
+
 function parseInfo(info, name) {
   if (info) {
     const device = info.info.device;
+    const version = info.info.versionCode;
     for (const k in info) {
       if (typeof (info[k]) === 'object' && k !== 'info') {
         const subInfo = info[k];
@@ -252,15 +268,9 @@ function parseInfo(info, name) {
       }
     }
     adapter.log.debug('device ' + device + ' : ' + listConnection.indexOf(device));
-    if (device && listConnection.indexOf(device) === -1) {
-      listConnection[listConnection.length] = device;
-      setValue(adapter.namespace + '.info.connection', listConnection.join(','));
-    }
+    addDevice(device, version);
   } else {
-    if (name && listConnection.indexOf(name) !== -1) {
-      listConnection.splice(listConnection.indexOf(name), 1);
-      setValue(adapter.namespace + '.info.connection', listConnection.join(','));
-    }
+    deleteDevice(name);
   }
 }
 
@@ -375,19 +385,18 @@ function newObject(str) {
   if (str) {
     for (const k in str) {
       let device = str[k].device;
+      let version = str[k].versionCode;
+
       if (typeof (str[k]) === 'object') {
         if (adapter.namespace === str[k].namespace) {
           setValue(device + '.' + str[k].path, str[k].value);
         } else {
           adapter.setForeignState(str[k].namespace + '.' + device + '.' + str[k].path, str[k].value, true);
         }
-        //        adapter.log.info(str[k].device + '.' + str[k].path + ' + ' + str[k].value);
         adapter.log.debug(JSON.stringify(str[k]));
       }
-      if (device && listConnection.indexOf(device) === -1) {
-        listConnection[listConnection.length] = device;
-        setValue(adapter.namespace + '.info.connection', listConnection.join(','));
-      }
+      adapter.log.debug('version: ' + version);
+      addDevice(device, version);
     }
   } else {
     adapter.log.debug('parse_data_error: ' + str);

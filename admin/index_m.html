@@ -226,15 +226,6 @@
       M.updateTextFields();
       $('.modal').modal();
 
-      $(".add-card").click(function() {
-        $('#modalCreate').modal('open');
-        myOnChange();
-      });
-
-      $(".open_edit_modul").click(function(event) {
-        $('.modal').modal('open');
-      });
-
       $(".save-card").click(function(event) {
         var name = $("#modul_name").val();
         var ip = $("#modul_ip").val().replace(" ", "");
@@ -259,6 +250,7 @@
                 ip: ip
               }, function(res) {
                 console.log(res);
+                console.log("error");
 
                 if (res && res.info) {
                   $("#modul_name").val(res.info.device);
@@ -266,6 +258,15 @@
                   $("#modul_port").val(res.info.port);
                   $('#modalCreate').modal('open');
                   M.updateTextFields();
+
+                  console.log('res.minVersionApp: ' + res.minVersionApp);
+                  console.log('res.info.versionCode: ' + res.info.versionCode);
+                  console.log('res' + JSON.stringify(res));
+
+                  if(!res.info.versionCode || res.minVersionApp > res.info.versionCode){
+                    $(".save-card").hide();
+                    $(".update_app").removeClass('hide');
+                  }
                   myOnChange();
                 } else {
                   $("#search_modul_ip").addClass('invalid');
@@ -283,25 +284,6 @@
         })
       });
 
-      $(".save-edit_card").click(function(event) {
-        var name = $("#edit_name").val();
-        var ip = $("#edit_ip").val().replace(" ", "");
-        var port = $("#edit_port").val();
-        var id = $('#modalEdit').attr('itemId')
-
-        $("#" + id).find('#name').text(name)
-        $("#" + id).find("#ip").text(ip);
-        $("#" + id).find('#port').text(port)
-      });
-
-      //      $('#modul_name').keyup(function(e) {
-      //        if (e.keyCode == 32) $("#modul_name").val($(this).val().replace(/ /g, "_"));
-      //      });
-      //
-      //      $('#edit_name').keyup(function(e) {
-      //        if (e.keyCode == 32) $("#edit_name").val($(this).val().replace(/ /g, "_"));
-      //      });
-
       $('#modalAttention').modal('open');
 
     });
@@ -318,7 +300,7 @@
       <div class="modal-content">
         <h5 class="translate">Attention!!! BETA testing</h5>
         <p class="translate">This version of the adapter works only with the new application.</p>
-        <p class="translate">When updating the adapter, do not forget to update the application!!!</p>
+        <p class="translate red-text">When updating the adapter, do not forget to update the application!!!</p>
         <a href="https://play.google.com/store/apps/details?id=ru.codedevice.iobrokerpawii" target="_blank">
           <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height="60"/>
         </a>
@@ -344,6 +326,9 @@
         <div class="input-field col s8 offset-s2">
           <input type="number" id="modul_port" value="8080" />
           <label for="modul_port" class="translate">modul_port</label>
+        </div>
+        <div class="update_app col s8 hide">
+          <h5 class="red-text translate">You need to update the application version.</h5>
         </div>
       </div>
       <div class="modal-footer">
