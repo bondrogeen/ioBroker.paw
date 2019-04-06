@@ -246,10 +246,10 @@ function addDevice(device, version) {
 }
 
 function deleteDevice(device) {
-  if (device && listConnection.indexOf(device) === -1) {
-    listConnection[listConnection.length] = device;
-    setValue(adapter.namespace + '.info.connection', listConnection.join(','));
-  }
+  if (device && listConnection.indexOf(device) !== -1) {
+      listConnection.splice(listConnection.indexOf(device), 1);
+      setValue(adapter.namespace + '.info.connection', listConnection.join(','));
+    }
 }
 
 function parseInfo(info, name) {
