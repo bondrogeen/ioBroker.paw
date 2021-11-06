@@ -323,7 +323,7 @@ function getObjectItem() {
   adapter.log.debug('getObjectItem ');
   adapter.log.debug('adapter.instance ' + adapter.instance);
 
-  adapter.objects.getObjectList({
+  adapter.getObjectList({
     include_docs: false
   }, function (err, res) {
 
